@@ -1,0 +1,20 @@
+{
+  "name": "ChaseTrackr",
+  "short_name": "ChaseTrackr",
+  "description": "TCG Price Intelligence — track, alert, and trade smarter.",
+  "start_url": "/app.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4F8FF",
+  "theme_color": "#2979FF",
+  "icons": [
+    {
+      "src": "Homescreen App icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "utilities"],
+  "screenshots": []
+}

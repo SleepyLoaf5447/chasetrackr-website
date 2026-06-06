@@ -1,0 +1,383 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Exo+2:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue-bg:#1A6FE8;
+  --blue-mid:#2979FF;
+  --blue-light:#4A9FFF;
+  --blue-pale:#EBF3FF;
+  --blue-deep:#0D3B8F;
+  --navy:#0A1628;
+  --cyan:#00D4FF;
+  --cyan2:#29B6F6;
+  --gold:#F5A623;
+  --gold2:#FFD045;
+  --white:#FFFFFF;
+  --off-white:#F4F8FF;
+  --text-dark:#0A1628;
+  --text-mid:#3A5A8A;
+  --text-muted:#7A96BB;
+  --border:#C5D9F5;
+  --surface:#F0F6FF;
+  --green:#00C48C;
+  --red:#FF4D6A;
+  --purple:#7B61FF;
+}
+body{background:#F4F8FF;color:var(--text-dark);font-family:'Exo 2',sans-serif;font-size:15px;line-height:1.5}
+.page{max-width:960px;margin:0 auto;padding:40px 28px}
+
+.header{background:var(--blue-mid);border-radius:16px;padding:36px 40px;display:flex;justify-content:space-between;align-items:center;margin-bottom:40px}
+.hdr-left{}
+.hdr-eyebrow{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:.25em;color:rgba(255,255,255,.65);text-transform:uppercase;margin-bottom:8px}
+.hdr-title{font-family:'Nunito',sans-serif;font-size:34px;font-weight:900;color:#fff;line-height:1.1}
+.hdr-title .cyan{color:var(--cyan)}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.wordmark{font-family:'Nunito',sans-serif;font-size:30px;font-weight:900;color:#fff;letter-spacing:.02em}
+.wordmark .cyan{color:var(--cyan)}
+.version-pill{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:11px;color:rgba(255,255,255,.8);letter-spacing:.1em}
+
+.section{margin-bottom:48px}
+.sec-label{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.sec-dot{width:8px;height:8px;border-radius:50%;background:var(--blue-mid);flex-shrink:0}
+.sec-name{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--blue-mid);text-transform:uppercase}
+
+.logo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.logo-var{border-radius:12px;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.logo-var.dark-bg{background:var(--navy)}
+.logo-var.white-bg{background:#fff;border:1px solid var(--border)}
+.logo-var.blue-bg{background:var(--blue-mid)}
+.logo-var.light-bg{background:var(--blue-pale);border:1px solid var(--border)}
+.wm{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;letter-spacing:.02em}
+.wm .w{color:#fff}
+.wm .c{color:var(--cyan)}
+.wm-dark .w{color:var(--text-dark)}
+.wm-dark .c{color:var(--blue-mid)}
+.var-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.var-label.dark-lbl{color:var(--text-muted)}
+
+.palette-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sw{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:center}
+.sw-circle{width:48px;height:48px;border-radius:50%;flex-shrink:0}
+.sw-name{font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
+.sw-codes{display:flex;flex-direction:column;gap:2px}
+.sw-code{font-family:monospace;font-size:10px;color:var(--text-muted)}
+
+.type-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:12px;display:grid;grid-template-columns:180px 1fr;gap:28px;align-items:start}
+.tm-name{font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;color:var(--blue-mid);text-transform:uppercase;margin-bottom:4px}
+.tm-weight{font-size:11px;color:var(--text-muted);margin-bottom:14px}
+.use-tag{display:inline-block;background:var(--blue-pale);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:10px;color:var(--blue-deep);font-weight:600;letter-spacing:.06em;margin:0 3px 4px 0}
+.ts-abc{font-size:44px;font-weight:800;line-height:1;margin-bottom:10px;color:var(--text-dark)}
+.ts-chars{font-size:13px;color:var(--text-muted);line-height:1.9}
+
+.scale-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px 28px}
+.scale-row{display:flex;align-items:baseline;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px}
+.scale-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.scale-meta{font-size:10px;color:var(--text-muted);text-align:right;line-height:1.6}
+
+.icon-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.icon-box{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.icon-sym{font-size:22px}
+.icon-label{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-align:center}
+
+.btn-surface{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px 28px}
+.btn-row{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;margin-bottom:20px}
+.btn-wrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.btn-lbl{font-size:10px;font-weight:600;color:var(--text-muted);letter-spacing:.06em;text-align:center}
+.btn-prim{background:var(--blue-mid);color:#fff;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;border:none;border-radius:8px;padding:11px 24px;cursor:pointer}
+.btn-cyn{background:var(--cyan);color:var(--navy);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;border:none;border-radius:8px;padding:11px 24px;cursor:pointer}
+.btn-out{background:#fff;color:var(--blue-mid);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;border:2px solid var(--blue-mid);border-radius:8px;padding:9px 24px;cursor:pointer}
+.btn-ghost{background:var(--blue-pale);color:var(--blue-deep);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:600;letter-spacing:.08em;border:none;border-radius:8px;padding:11px 24px;cursor:pointer}
+.btn-pill{background:var(--blue-mid);color:#fff;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;border:none;border-radius:100px;padding:9px 20px;cursor:pointer}
+.btn-danger{background:#fff;color:var(--red);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:600;letter-spacing:.08em;border:1px solid var(--red);border-radius:8px;padding:11px 24px;cursor:pointer}
+
+.usage-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.usage-card{border-radius:10px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start}
+.usage-card.ok{background:#EAFAF5;border:1px solid #A3E6CF}
+.usage-card.no{background:#FFF0F2;border:1px solid #FFBCC6}
+.u-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.u-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.ok .u-title{color:#00875A}
+.no .u-title{color:#C0003C}
+.u-body{font-size:12px;color:var(--text-mid);line-height:1.6}
+
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.voice-card{background:#fff;border-radius:10px;padding:18px 20px}
+.voice-card.do{border-left:3px solid var(--green)}
+.voice-card.dont{border-left:3px solid var(--red)}
+.v-tag{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+.do .v-tag{color:var(--green)}
+.dont .v-tag{color:var(--red)}
+.v-line{font-size:13px;color:var(--text-dark);line-height:1.6}
+
+.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tag{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.05em}
+.tag.blue{background:var(--blue-pale);color:var(--blue-deep)}
+.tag.cyan{background:#E0F9FF;color:#006688}
+.tag.gold{background:#FFF7E0;color:#7A5200}
+.tag.green{background:#E6FAF4;color:#005C3B}
+
+.info-bar{background:var(--blue-pale);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:11px;color:var(--text-mid);line-height:1.7}
+
+.footer{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.f-logo{font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;color:var(--blue-mid)}
+.f-logo span{color:var(--cyan)}
+.f-meta{font-size:10px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
+</style>
+
+<div class="page">
+
+<div class="header">
+  <div class="hdr-left">
+    <div class="hdr-eyebrow">Official Brand Guidelines</div>
+    <div class="hdr-title">Chase<span class="cyan">Trackr</span><br>Brand Identity</div>
+  </div>
+  <div class="hdr-right">
+    <div class="wordmark">Chase<span class="cyan">Trackr</span></div>
+    <div class="version-pill">Version 2.0 · 2026</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Primary Logo</div></div>
+  <div style="background:var(--blue-mid);border-radius:14px;padding:40px;display:flex;justify-content:center;align-items:center;margin-bottom:12px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <div style="font-family:'Nunito',sans-serif;font-size:48px;font-weight:900;color:#fff;letter-spacing:.02em;line-height:1">Chase<span style="color:var(--cyan)">Trackr</span></div>
+      <div style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:5px 18px;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.85);text-transform:uppercase">TCG Price Intelligence</div>
+    </div>
+  </div>
+  <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:600;color:var(--text-muted);text-align:center;letter-spacing:.12em;text-transform:uppercase">Nunito · 900 Weight · White + Cyan #00D4FF · Blue BG #2979FF</div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Logo Variations</div></div>
+  <div class="logo-grid">
+    <div class="logo-var dark-bg">
+      <div class="wm"><span class="w">Chase</span><span class="c">Trackr</span></div>
+      <div class="var-label">Dark / Navy</div>
+    </div>
+    <div class="logo-var blue-bg">
+      <div class="wm"><span class="w">Chase</span><span class="c">Trackr</span></div>
+      <div class="var-label">Blue (Primary)</div>
+    </div>
+    <div class="logo-var white-bg">
+      <div class="wm wm-dark"><span class="w">Chase</span><span class="c">Trackr</span></div>
+      <div class="var-label dark-lbl">Light / White</div>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.15em;color:var(--blue-mid);text-transform:uppercase;margin-bottom:10px">Clearspace Rule</div>
+    <div style="display:flex;justify-content:center;align-items:center;padding:20px 0">
+      <div style="position:relative;padding:16px 32px;border:1.5px dashed var(--blue-light);border-radius:4px">
+        <div style="position:absolute;top:4px;left:6px;font-size:9px;color:var(--blue-light);font-family:monospace">X</div>
+        <div style="position:absolute;top:4px;right:6px;font-size:9px;color:var(--blue-light);font-family:monospace">X</div>
+        <div style="position:absolute;bottom:4px;left:6px;font-size:9px;color:var(--blue-light);font-family:monospace">X</div>
+        <div style="position:absolute;bottom:4px;right:6px;font-size:9px;color:var(--blue-light);font-family:monospace">X</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;color:var(--blue-mid)">Chase<span style="color:var(--cyan2)">Trackr</span></div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);text-align:center">X = cap-height of logotype on all sides · Minimum width 80px on screen</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Brand Palette</div></div>
+  <div class="palette-grid">
+    <div class="sw">
+      <div class="sw-circle" style="background:#2979FF"></div>
+      <div><div class="sw-name">Electric Blue — Primary</div><div class="sw-codes"><div class="sw-code">HEX #2979FF</div><div class="sw-code">RGB 41, 121, 255</div><div class="sw-code">HSL 220°, 100%, 58%</div></div></div>
+    </div>
+    <div class="sw">
+      <div class="sw-circle" style="background:#00D4FF"></div>
+      <div><div class="sw-name">Cyan — Accent / "Trackr"</div><div class="sw-codes"><div class="sw-code">HEX #00D4FF</div><div class="sw-code">RGB 0, 212, 255</div><div class="sw-code">HSL 189°, 100%, 50%</div></div></div>
+    </div>
+    <div class="sw">
+      <div class="sw-circle" style="background:#1A6FE8"></div>
+      <div><div class="sw-name">Royal Blue — Hover/Depth</div><div class="sw-codes"><div class="sw-code">HEX #1A6FE8</div><div class="sw-code">RGB 26, 111, 232</div><div class="sw-code">HSL 216°, 81%, 51%</div></div></div>
+    </div>
+    <div class="sw">
+      <div class="sw-circle" style="background:#F5A623"></div>
+      <div><div class="sw-name">Gold — Chase Indicator</div><div class="sw-codes"><div class="sw-code">HEX #F5A623</div><div class="sw-code">RGB 245, 166, 35</div><div class="sw-code">HSL 38°, 91%, 55%</div></div></div>
+    </div>
+    <div class="sw">
+      <div class="sw-circle" style="background:#0A1628"></div>
+      <div><div class="sw-name">Deep Navy — Text / Dark BG</div><div class="sw-codes"><div class="sw-code">HEX #0A1628</div><div class="sw-code">RGB 10, 22, 40</div><div class="sw-code">HSL 215°, 60%, 10%</div></div></div>
+    </div>
+    <div class="sw">
+      <div class="sw-circle" style="background:#EBF3FF;border:1px solid var(--border)"></div>
+      <div><div class="sw-name">Ice Blue — Surface / BG</div><div class="sw-codes"><div class="sw-code">HEX #EBF3FF</div><div class="sw-code">RGB 235, 243, 255</div><div class="sw-code">HSL 215°, 100%, 96%</div></div></div>
+    </div>
+    <div class="sw">
+      <div class="sw-circle" style="background:#7A96BB"></div>
+      <div><div class="sw-name">Steel — Secondary Text</div><div class="sw-codes"><div class="sw-code">HEX #7A96BB</div><div class="sw-code">RGB 122, 150, 187</div><div class="sw-code">HSL 215°, 27%, 61%</div></div></div>
+    </div>
+    <div class="sw">
+      <div class="sw-circle" style="background:#FFFFFF;border:1px solid var(--border)"></div>
+      <div><div class="sw-name">White — Pure / Cards</div><div class="sw-codes"><div class="sw-code">HEX #FFFFFF</div><div class="sw-code">RGB 255, 255, 255</div><div class="sw-code">HSL 0°, 0%, 100%</div></div></div>
+    </div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-top:12px">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.15em;color:var(--blue-mid);text-transform:uppercase;margin-bottom:10px">Semantic Colors</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#00C48C"></div><span style="font-size:11px;color:var(--text-muted)">#00C48C · Price Up / Success</span></div>
+      <div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#FF4D6A"></div><span style="font-size:11px;color:var(--text-muted)">#FF4D6A · Price Down / Danger</span></div>
+      <div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#F5A623"></div><span style="font-size:11px;color:var(--text-muted)">#F5A623 · Warning / Alert</span></div>
+      <div style="display:flex;align-items:center;gap:8px"><div style="width:12px;height:12px;border-radius:50%;background:#7B61FF"></div><span style="font-size:11px;color:var(--text-muted)">#7B61FF · Chase / Ultra Rare</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Typography</div></div>
+  <div class="type-card">
+    <div>
+      <div class="tm-name">Nunito</div>
+      <div class="tm-weight">800 ExtraBold · 900 Black</div>
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Used for</div>
+      <span class="use-tag">Logotype</span><span class="use-tag">Hero Headings</span><span class="use-tag">Display</span><span class="use-tag">Prices</span>
+    </div>
+    <div>
+      <div class="ts-abc" style="font-family:'Nunito',sans-serif">Ab</div>
+      <div class="ts-chars" style="font-family:'Nunito',sans-serif">ABCDEFGHIJKLMN<br>OPQRSTUVWXYZ<br>abcdefghijklmn<br>0123456789</div>
+    </div>
+  </div>
+  <div class="type-card">
+    <div>
+      <div class="tm-name">Exo 2</div>
+      <div class="tm-weight">400 · 500 · 600 · 700 · 800</div>
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">Used for</div>
+      <span class="use-tag">Body Text</span><span class="use-tag">Buttons</span><span class="use-tag">Labels</span><span class="use-tag">Data</span><span class="use-tag">Navigation</span>
+    </div>
+    <div>
+      <div class="ts-abc" style="font-family:'Exo 2',sans-serif">Ab</div>
+      <div class="ts-chars" style="font-family:'Exo 2',sans-serif">ABCDEFGHIJKLMN<br>OPQRSTUVWXYZ<br>abcdefghijklmn<br>0123456789</div>
+    </div>
+  </div>
+  <div class="scale-card">
+    <div style="font-size:10px;font-weight:700;letter-spacing:.15em;color:var(--blue-mid);text-transform:uppercase;margin-bottom:20px">Type Scale</div>
+    <div class="scale-row">
+      <div style="font-family:'Nunito',sans-serif;font-size:32px;font-weight:900;color:var(--text-dark)">Display / Price</div>
+      <div class="scale-meta">Nunito 900 · 32–48px</div>
+    </div>
+    <div class="scale-row">
+      <div style="font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--text-dark)">Section Heading</div>
+      <div class="scale-meta">Nunito 800 · 20–24px</div>
+    </div>
+    <div class="scale-row">
+      <div style="font-family:'Exo 2',sans-serif;font-size:17px;font-weight:700;color:var(--text-dark)">Subheading / Card Title</div>
+      <div class="scale-meta">Exo 2 700 · 16–18px</div>
+    </div>
+    <div class="scale-row">
+      <div style="font-family:'Exo 2',sans-serif;font-size:14px;font-weight:400;color:var(--text-muted)">Body — descriptions, labels, secondary info</div>
+      <div class="scale-meta">Exo 2 400 · 13–15px · lh 1.6</div>
+    </div>
+    <div class="scale-row">
+      <div style="font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--blue-mid)">CAPTION / OVERLINE / LABEL</div>
+      <div class="scale-meta">Exo 2 700 · 10–11px · uppercase · ls +0.15em</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Iconography Style</div></div>
+  <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--text-muted);line-height:1.7">
+    Use <strong style="color:var(--text-dark)">SF Symbols</strong> (iOS) at <strong style="color:var(--text-dark)">Regular weight</strong> — clean, rounded, approachable. Color icons with Electric Blue (#2979FF) for primary actions, Cyan (#00D4FF) for highlights, and Gold (#F5A623) for chase/rarity indicators. Avoid overly detailed or heavy stroke icons.
+  </div>
+  <div class="icon-grid">
+    <div class="icon-box"><div class="icon-sym" style="color:var(--blue-mid)"><i class="ti ti-trending-up" aria-hidden="true"></i></div><div class="icon-label">Price Chart</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--gold)"><i class="ti ti-star" aria-hidden="true"></i></div><div class="icon-label">Chase Card</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--blue-mid)"><i class="ti ti-bell" aria-hidden="true"></i></div><div class="icon-label">Alert</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--cyan2)"><i class="ti ti-chart-bar" aria-hidden="true"></i></div><div class="icon-label">Market Data</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--blue-mid)"><i class="ti ti-search" aria-hidden="true"></i></div><div class="icon-label">Search</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--green)"><i class="ti ti-arrow-up-right" aria-hidden="true"></i></div><div class="icon-label">Price Up</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--red)"><i class="ti ti-arrow-down-right" aria-hidden="true"></i></div><div class="icon-label">Price Down</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--blue-mid)"><i class="ti ti-wallet" aria-hidden="true"></i></div><div class="icon-label">Portfolio</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--purple)"><i class="ti ti-diamond" aria-hidden="true"></i></div><div class="icon-label">Ultra Rare</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--gold)"><i class="ti ti-bolt" aria-hidden="true"></i></div><div class="icon-label">Pokémon</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--red)"><i class="ti ti-skull" aria-hidden="true"></i></div><div class="icon-label">One Piece</div></div>
+    <div class="icon-box"><div class="icon-sym" style="color:var(--blue-mid)"><i class="ti ti-scan" aria-hidden="true"></i></div><div class="icon-label">Scan Card</div></div>
+  </div>
+  <div style="margin-top:10px;background:var(--blue-pale);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:11px;color:var(--text-mid)">
+    <strong style="color:var(--text-dark)">Sizing:</strong> Navigation = 24pt · Action buttons = 20pt · Inline/labels = 16pt · Use <code style="background:rgba(41,121,255,.1);padding:1px 6px;border-radius:3px">weight: .regular</code> — avoid Bold weight SF Symbols, they feel heavy in the TCG context.
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Button Styles</div></div>
+  <div class="btn-surface">
+    <div class="btn-row">
+      <div class="btn-wrap"><button class="btn-prim">Add to Portfolio</button><div class="btn-lbl">Primary · Blue Fill</div></div>
+      <div class="btn-wrap"><button class="btn-cyn">Set Price Alert</button><div class="btn-lbl">Cyan Fill · Dark text</div></div>
+      <div class="btn-wrap"><button class="btn-out">View Listings</button><div class="btn-lbl">Outline · Blue</div></div>
+      <div class="btn-wrap"><button class="btn-ghost">Filter</button><div class="btn-lbl">Ghost · Ice Blue</div></div>
+      <div class="btn-wrap"><button class="btn-pill">Chase Only</button><div class="btn-lbl">Pill / Capsule</div></div>
+      <div class="btn-wrap"><button class="btn-danger">Remove</button><div class="btn-lbl">Destructive</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:16px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--text-muted);line-height:1.9">
+        <strong style="color:var(--text-dark)">Corner Radius</strong><br>
+        Standard: 8px · Pill/Chip: 100px<br>
+        <strong style="color:var(--text-dark)">Padding</strong><br>
+        H: 20–28px · V: 10–12px
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);line-height:1.9">
+        <strong style="color:var(--text-dark)">Font</strong><br>
+        Exo 2 · 700 · 12–13px · ls +0.08em<br>
+        <strong style="color:var(--text-dark)">States</strong><br>
+        Hover: brightness(1.1) · Active: scale(0.97)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Rarity Tag System</div></div>
+  <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 24px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--text-muted);text-transform:uppercase;margin-bottom:14px">Filter chips &amp; rarity badges — always use pill shape (border-radius: 100px)</div>
+    <div class="tag-row">
+      <span class="tag blue">All Cards</span>
+      <span class="tag cyan">Chase Only</span>
+      <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:#EDE9FF;color:#4B35CC">Ultra Rare</span>
+      <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:#FFF3E0;color:#8B5000">Secret Rare</span>
+      <span class="tag gold">Treasure Rare</span>
+      <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:#FCE8F0;color:#881337">Manga Rare</span>
+      <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:#E6FAF4;color:#005C3B">Common</span>
+      <span style="display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:#E8F4FF;color:#0D3B8F">Rare</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Logo Usage Rules</div></div>
+  <div class="usage-grid">
+    <div class="usage-card ok"><div class="u-icon">✓</div><div><div class="u-title">Correct Use</div><div class="u-body">Blue gradient or solid blue backgrounds. Navy dark mode. White surfaces with blue wordmark.</div></div></div>
+    <div class="usage-card no"><div class="u-icon">✗</div><div><div class="u-title">No Stretching</div><div class="u-body">Never distort, skew, or alter proportions of the wordmark for any reason.</div></div></div>
+    <div class="usage-card ok"><div class="u-icon">✓</div><div><div class="u-title">Approved Tints</div><div class="u-body">Full color, all-white (on dark), and navy+blue (on light) are the only approved colorways.</div></div></div>
+    <div class="usage-card no"><div class="u-icon">✗</div><div><div class="u-title">No Recoloring</div><div class="u-body">Never replace the cyan accent on "Trackr" with another color or gradient.</div></div></div>
+    <div class="usage-card ok"><div class="u-icon">✓</div><div><div class="u-title">Minimum Size</div><div class="u-body">Never smaller than 80px wide on screen or 0.8in in print. Test legibility of "Trackr".</div></div></div>
+    <div class="usage-card no"><div class="u-icon">✗</div><div><div class="u-title">No Outlines/Shadows</div><div class="u-body">Don't add strokes, drop shadows, or emboss effects to the logotype text itself.</div></div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-label"><div class="sec-dot"></div><div class="sec-name">Voice &amp; Tone</div></div>
+  <div class="voice-grid">
+    <div class="voice-card do"><div class="v-tag">✓ Do</div><div class="v-line">"Luffy OP05 TR — up 18% this week. Fair value: $240"</div></div>
+    <div class="voice-card dont"><div class="v-tag">✗ Don't</div><div class="v-line">"The estimated current market price for this card is approximately $240.00 USD."</div></div>
+    <div class="voice-card do"><div class="v-tag">✓ Do</div><div class="v-line">"Chase alert — price dropped below your target. Buy window is open."</div></div>
+    <div class="voice-card dont"><div class="v-tag">✗ Don't</div><div class="v-line">"Please be advised that a price change event has occurred on this card."</div></div>
+  </div>
+  <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-top:12px;display:flex;gap:20px;flex-wrap:wrap">
+    <div style="font-size:11px"><span style="color:var(--blue-mid);font-weight:700">Confident</span> <span style="color:var(--text-muted)">— Data-backed, decisive</span></div>
+    <div style="font-size:11px"><span style="color:var(--blue-mid);font-weight:700">Collector-First</span> <span style="color:var(--text-muted)">— Speak their language</span></div>
+    <div style="font-size:11px"><span style="color:var(--blue-mid);font-weight:700">Sharp</span> <span style="color:var(--text-muted)">— Numbers matter, be exact</span></div>
+    <div style="font-size:11px"><span style="color:var(--blue-mid);font-weight:700">Exciting</span> <span style="color:var(--text-muted)">— Chase cards feel epic</span></div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="f-logo">Chase<span>Trackr</span></div>
+  <div class="f-meta">Brand Guidelines v2.0 · 2026 · Confidential</div>
+</div>
+
+</div>

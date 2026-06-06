@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChaseTrackr — TCG Price Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #2979FF;
+      --blue-h:    #1A6FE8;
+      --blue-deep: #0D3B8F;
+      --blue-pale: #EBF3FF;
+      --blue-pale2:#D6E8FF;
+      --cyan:      #00D4FF;
+      --cyan2:     #29B6F6;
+      --gold:      #F5A623;
+      --gold2:     #FFD045;
+      --navy:      #0A1628;
+      --bg:        #F4F8FF;
+      --surface:   #EBF3FF;
+      --white:     #FFFFFF;
+      --border:    #C5D9F5;
+      --border2:   #D8E8FF;
+      --text:      #0A1628;
+      --text-mid:  #3A5A8A;
+      --muted:     #7A96BB;
+      --green:     #00C48C;
+      --green-bg:  #E6FAF4;
+      --red:       #FF4D6A;
+      --red-bg:    #FFF0F3;
+      --purple:    #7B61FF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ══ NAV ══════════════════════════════════════════════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 68px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 12px rgba(41,121,255,0.08);
+    }
+
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+    .nav-icon {
+      height: 36px; width: 36px;
+      object-fit: cover; border-radius: 9px;
+      display: block;
+      -webkit-mask-image: radial-gradient(circle at center, black 55%, transparent 78%);
+      mask-image: radial-gradient(circle at center, black 55%, transparent 78%);
+    }
+
+    .nav-wordmark {
+      font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900;
+      letter-spacing: 0.01em; color: var(--navy);
+    }
+    .nav-wordmark .cyan { color: var(--cyan2); }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--text-mid); text-decoration: none; transition: color 0.18s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .btn-nav-ghost {
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--text-mid); text-decoration: none; transition: color 0.18s;
+      letter-spacing: 0.03em;
+    }
+    .btn-nav-ghost:hover { color: var(--blue); }
+
+    .btn-nav {
+      background: var(--blue); color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.04em; border: none; border-radius: 8px;
+      padding: 9px 22px; cursor: pointer; text-decoration: none;
+      transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+      box-shadow: 0 2px 12px rgba(41,121,255,0.28);
+    }
+    .btn-nav:hover { background: var(--blue-h); transform: translateY(-1px); box-shadow: 0 4px 18px rgba(41,121,255,0.38); }
+    .btn-nav:active { transform: scale(0.97); }
+
+    /* ══ HERO ═════════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1.1fr;
+      align-items: center; gap: 48px;
+      padding: 90px 48px 80px;
+      background: linear-gradient(135deg, #1050C8 0%, #1A6FE8 35%, #2979FF 65%, #0D3B8F 100%);
+      overflow: hidden;
+    }
+
+    /* hero background hex pattern */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='52' viewBox='0 0 60 52' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L60 17.3 L60 34.7 L30 52 L0 34.7 L0 17.3 Z' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 60px 52px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* watermark on hero */
+    .hero-watermark {
+      position: absolute; top: 50%; right: -80px;
+      transform: translateY(-50%);
+      width: 900px; height: 900px;
+      object-fit: contain;
+      opacity: 0.13;
+      filter: blur(0.5px);
+      pointer-events: none; user-select: none; z-index: 0;
+    }
+
+    .hero-left { position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 100px; padding: 5px 14px; margin-bottom: 22px;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .eyebrow-text {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(255,255,255,0.9);
+    }
+
+    .hero-h1 {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: clamp(44px, 5.5vw, 74px); letter-spacing: -0.02em;
+      line-height: 1.06; margin-bottom: 22px; color: #fff;
+    }
+    .hero-h1 .cyan { color: var(--cyan); }
+    .hero-h1 .gold { color: var(--gold2); }
+
+    .hero-sub {
+      font-size: 18px; font-weight: 400; color: rgba(255,255,255,0.78);
+      max-width: 500px; line-height: 1.7; margin-bottom: 36px;
+    }
+
+    .hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
+
+    .btn-hero-primary {
+      background: #fff; color: var(--blue);
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: none; border-radius: 8px; padding: 14px 30px;
+      cursor: pointer; text-decoration: none; display: inline-block;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+      transition: transform 0.15s, box-shadow 0.18s;
+    }
+    .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.28); }
+    .btn-hero-primary:active { transform: scale(0.97); }
+
+    .btn-hero-outline {
+      background: transparent; color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: 2px solid rgba(255,255,255,0.4); border-radius: 8px;
+      padding: 12px 30px; cursor: pointer; text-decoration: none; display: inline-block;
+      transition: border-color 0.18s, background 0.18s, transform 0.15s;
+    }
+    .btn-hero-outline:hover { border-color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+    .btn-beta {
+      background: linear-gradient(135deg, var(--gold), #FFD045);
+      color: var(--navy);
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: none; border-radius: 8px; padding: 14px 28px;
+      cursor: pointer; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 8px;
+      box-shadow: 0 4px 20px rgba(245,166,35,0.4);
+      transition: filter 0.18s, transform 0.15s, box-shadow 0.18s;
+      white-space: nowrap;
+    }
+    .btn-beta:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,166,35,0.55); }
+    .btn-beta:active { transform: scale(0.97); }
+    .btn-beta-icon { font-size: 16px; line-height: 1; }
+
+    .hero-trust {
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.68);
+    }
+    .trust-num {
+      font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900;
+      color: var(--cyan);
+    }
+    .trust-sep { color: rgba(255,255,255,0.25); font-size: 16px; }
+
+    /* ── hero right: price card UI ── */
+    .hero-right {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .price-card {
+      background: #fff; border-radius: 20px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 20px 60px rgba(10,22,40,0.25), 0 0 0 1px rgba(41,121,255,0.1);
+      position: relative; overflow: hidden;
+    }
+    .price-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(41,121,255,0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .pc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .pc-game-badge {
+      font-family: 'Exo 2', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+    }
+    .badge-op { background: #FFF0F2; color: #C0002B; border: 1px solid #FFBCC6; }
+    .badge-pk { background: #FFF8E0; color: #7A5000; border: 1px solid #FFE08A; }
+    .pc-alert {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--green); background: var(--green-bg);
+      border: 1px solid rgba(0,196,140,0.3); border-radius: 100px; padding: 4px 10px;
+    }
+    .pc-alert-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+    .pc-name {
+      font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900;
+      color: var(--navy); letter-spacing: -0.01em; margin-bottom: 2px;
+    }
+    .pc-set { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 18px; letter-spacing: 0.04em; }
+
+    .pc-price-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 16px; }
+    .pc-price {
+      font-family: 'Nunito', sans-serif; font-size: 52px; font-weight: 900;
+      color: var(--navy); letter-spacing: -0.02em; line-height: 1;
+    }
+    .pc-up {
+      font-family: 'Exo 2', sans-serif; font-size: 16px; font-weight: 700;
+      color: var(--green); background: var(--green-bg);
+      border: 1px solid rgba(0,196,140,0.25); border-radius: 8px;
+      padding: 7px 14px; letter-spacing: 0.04em;
+    }
+    .pc-dn {
+      font-family: 'Exo 2', sans-serif; font-size: 16px; font-weight: 700;
+      color: var(--red); background: var(--red-bg);
+      border: 1px solid rgba(255,77,106,0.25); border-radius: 8px;
+      padding: 7px 14px; letter-spacing: 0.04em;
+    }
+
+    .pc-chart { width: 100%; height: 72px; margin-bottom: 18px; }
+
+    .pc-footer { display: flex; justify-content: space-between; }
+    .pc-stat { text-align: center; }
+    .pc-stat-val {
+      font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800;
+      color: var(--navy); display: block;
+    }
+    .pc-stat-lbl { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .pc-divider { width: 1px; background: var(--border); }
+
+    /* portfolio card */
+    .portfolio-card {
+      background: #fff; border-radius: 18px; padding: 24px 28px;
+      box-shadow: 0 8px 32px rgba(10,22,40,0.12), 0 0 0 1px rgba(41,121,255,0.08);
+    }
+    .port-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .port-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .port-period {
+      font-size: 11px; font-weight: 700; color: var(--blue);
+      background: var(--blue-pale); border: 1px solid var(--border);
+      border-radius: 6px; padding: 3px 10px;
+    }
+    .port-total {
+      font-family: 'Nunito', sans-serif; font-size: 36px; font-weight: 900;
+      color: var(--navy); letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .port-gain { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 18px; }
+
+    .port-rows { display: flex; flex-direction: column; gap: 10px; }
+    .port-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; background: var(--bg); border-radius: 8px;
+    }
+    .port-card-name { font-size: 13px; font-weight: 600; color: var(--text-mid); }
+    .port-card-val { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; color: var(--navy); }
+    .port-card-chg { font-size: 12px; font-weight: 700; }
+    .up { color: var(--green); }
+    .dn { color: var(--red); }
+
+    /* alert toast */
+    .alert-toast {
+      position: absolute; top: -20px; right: 0;
+      background: #fff; border: 1px solid rgba(0,196,140,0.35);
+      border-left: 3px solid var(--green);
+      border-radius: 12px; padding: 12px 16px;
+      display: flex; align-items: flex-start; gap: 10px;
+      width: 256px;
+      box-shadow: 0 8px 28px rgba(10,22,40,0.14);
+      animation: float-toast 4s ease-in-out infinite;
+      z-index: 5;
+    }
+    @keyframes float-toast { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    .toast-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--green-bg); display: flex; align-items: center;
+      justify-content: center; font-size: 14px; flex-shrink: 0;
+    }
+    .toast-title { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+    .toast-body { font-size: 11px; color: var(--text-mid); line-height: 1.4; }
+    .toast-hi { color: var(--green); font-weight: 700; }
+
+    /* ══ TICKER ═══════════════════════════════════════════ */
+    .ticker {
+      background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 0; overflow: hidden; position: relative; z-index: 1;
+    }
+    .ticker::before, .ticker::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 2;
+    }
+    .ticker::before { left: 0; background: linear-gradient(90deg, var(--navy), transparent); }
+    .ticker::after  { right: 0; background: linear-gradient(-90deg, var(--navy), transparent); }
+
+    .ticker-track {
+      display: flex; width: max-content;
+      animation: ticker-scroll 42s linear infinite;
+    }
+    @keyframes ticker-scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    .tick-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 24px; border-right: 1px solid rgba(255,255,255,0.08);
+      white-space: nowrap;
+    }
+    .tick-game {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.14em; padding: 2px 8px; border-radius: 100px;
+    }
+    .tg-op { background: rgba(255,77,106,0.18); color: #FF8099; border: 1px solid rgba(255,77,106,0.25); }
+    .tg-pk { background: rgba(255,193,7,0.18); color: #FFD45A; border: 1px solid rgba(255,193,7,0.25); }
+    .tg-mtg { background: rgba(123,97,255,0.2); color: #A998FF; border: 1px solid rgba(123,97,255,0.3); }
+    .tick-name { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.9); }
+    .tick-set { font-size: 10px; color: rgba(255,255,255,0.4); }
+    .tick-price { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: #fff; }
+    .tick-up { font-size: 11px; font-weight: 700; color: #00D49A; }
+    .tick-dn { font-size: 11px; font-weight: 700; color: #FF6B85; }
+
+    /* ══ SECTIONS SHARED ══════════════════════════════════ */
+    section { position: relative; z-index: 1; overflow: hidden; }
+
+    /* watermark on non-hero sections */
+    section:not(.hero)::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 820px; height: 820px;
+      background: url('Logo background.png') center / contain no-repeat;
+      opacity: 0.07;
+      filter: blur(0.5px);
+      pointer-events: none; user-select: none; z-index: 0;
+    }
+
+    .section-wrap {
+      max-width: 1120px; margin: 0 auto; padding: 88px 48px;
+      position: relative; z-index: 1;
+    }
+
+    .section-label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .sdot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); }
+    .stag { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue); }
+
+    .section-h2 {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: clamp(24px, 3vw, 36px); letter-spacing: -0.01em;
+      color: var(--navy); margin-bottom: 12px; line-height: 1.15;
+    }
+    .section-h2 .blue { color: var(--blue); }
+    .section-h2 .cyan { color: var(--cyan2); }
+    .section-sub { font-size: 15px; color: var(--text-mid); line-height: 1.7; max-width: 500px; }
+
+    /* ══ STATS ════════════════════════════════════════════ */
+    .stats-section { background: var(--white); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stats-inner {
+      max-width: 1120px; margin: 0 auto; padding: 0 48px;
+      display: grid; grid-template-columns: repeat(4,1fr);
+    }
+    .stat-item {
+      padding: 32px 24px; text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Nunito', sans-serif; font-size: 36px; font-weight: 900;
+      color: var(--blue); letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px;
+    }
+    .stat-label { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+    /* ══ TRENDING CARDS (TCGPlayer-style grid) ════════════ */
+    .trending-section { background: var(--white); }
+
+    .trending-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 32px;
+    }
+    .trending-header-left {}
+    .see-all {
+      font-size: 13px; font-weight: 700; color: var(--blue); text-decoration: none;
+      letter-spacing: 0.04em; transition: color 0.15s;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .see-all:hover { color: var(--blue-h); }
+
+    .rarity-filters {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .rarity-chip {
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.04em; border-radius: 100px; padding: 6px 16px;
+      cursor: pointer; border: 1px solid transparent; transition: all 0.15s;
+    }
+    .chip-active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .chip-all { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .chip-chase { background: #FFF8E0; color: #8B5A00; border-color: #FFD580; }
+    .chip-chase:hover { background: #FFE9A0; }
+    .chip-tr { background: #FFF0F2; color: #A0002A; border-color: #FFB0BF; }
+    .chip-tr:hover { background: #FFD8DF; }
+    .chip-sar { background: #EDE9FF; color: #4B35CC; border-color: #C5BAFF; }
+    .chip-sar:hover { background: #DDD6FF; }
+    .chip-ir { background: #E0F9FF; color: #005F7A; border-color: #80DDEF; }
+    .chip-ir:hover { background: #B8F0FF; }
+    .chip-sec { background: var(--blue-pale); color: var(--blue-deep); border-color: var(--border); }
+    .chip-sec:hover { background: var(--blue-pale2); }
+
+    .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    .card-tile {
+      background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+      padding: 0; overflow: hidden; cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    }
+    .card-tile:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(41,121,255,0.13);
+      border-color: var(--blue);
+    }
+
+    .ct-banner {
+      height: 90px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ct-banner-op  { background: linear-gradient(135deg, #1a0610, #4A0018, #8B0032); }
+    .ct-banner-pk  { background: linear-gradient(135deg, #1a1000, #4A3200, #8B6000); }
+    .ct-banner-pk2 { background: linear-gradient(135deg, #0D1A40, #1A3A6B, #2979FF); }
+    .ct-banner-mtg { background: linear-gradient(135deg, #1a0040, #3B1B8F, #7B61FF); }
+    .ct-banner-op2 { background: linear-gradient(135deg, #001A30, #003A6B, #0077CC); }
+    .ct-banner-pk3 { background: linear-gradient(135deg, #001A10, #004428, #00875A); }
+
+    .ct-holo {
+      position: absolute; inset: 0;
+      background: linear-gradient(115deg, transparent 25%, rgba(255,255,255,0.07) 50%, transparent 75%);
+    }
+    .ct-emoji { width: 52px; height: 52px; position: relative; z-index: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5)); }
+    .ct-rarity {
+      position: absolute; top: 8px; right: 10px;
+      font-size: 9px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 100px;
+    }
+    .r-tr { background: rgba(245,166,35,0.9); color: #fff; }
+    .r-sar { background: rgba(123,97,255,0.85); color: #fff; }
+    .r-ir { background: rgba(0,212,255,0.85); color: var(--navy); }
+    .r-sec { background: rgba(255,77,106,0.85); color: #fff; }
+    .r-sr { background: rgba(0,196,140,0.85); color: #fff; }
+
+    .ct-body { padding: 14px 16px; }
+    .ct-game-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+    .ct-game-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .dot-op { background: var(--red); }
+    .dot-pk { background: var(--gold); }
+    .dot-mtg { background: var(--purple); }
+    .ct-set { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .ct-name { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; color: var(--navy); margin-bottom: 10px; line-height: 1.2; }
+
+    .ct-price-row { display: flex; align-items: center; justify-content: space-between; }
+    .ct-price { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900; color: var(--navy); }
+    .ct-chg { font-size: 12px; font-weight: 700; border-radius: 6px; padding: 3px 8px; }
+    .chg-up { color: var(--green); background: var(--green-bg); }
+    .chg-dn { color: var(--red); background: var(--red-bg); }
+
+    .ct-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .ct-vol { font-size: 10px; color: var(--muted); font-weight: 500; }
+    .ct-track-btn {
+      font-family: 'Exo 2', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--blue); color: #fff; border: none;
+      border-radius: 100px; padding: 5px 14px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .ct-track-btn:hover { background: var(--blue-h); }
+
+    /* ══ FEATURES ═════════════════════════════════════════ */
+    .features-section { background: var(--bg); }
+
+    .features-header { text-align: center; margin-bottom: 52px; }
+    .features-header .section-label { justify-content: center; }
+    .features-header .section-sub { margin: 0 auto; text-align: center; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+
+    .feat-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+    }
+    .feat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 36px rgba(41,121,255,0.1); border-color: rgba(41,121,255,0.35); }
+
+    .feat-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .fi-blue { background: var(--blue-pale); border: 1px solid var(--border); }
+    .fi-cyan { background: #E0F9FF; border: 1px solid rgba(0,212,255,0.25); }
+    .fi-gold { background: #FFF8E0; border: 1px solid rgba(245,166,35,0.3); }
+    .fi-green { background: var(--green-bg); border: 1px solid rgba(0,196,140,0.25); }
+    .fi-purple { background: #EDE9FF; border: 1px solid rgba(123,97,255,0.25); }
+    .fi-red { background: var(--red-bg); border: 1px solid rgba(255,77,106,0.25); }
+
+    .feat-title { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .feat-body { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+
+    .feat-pill {
+      display: inline-block; margin-top: 14px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      border-radius: 100px; padding: 4px 12px;
+    }
+    .pill-blue { background: var(--blue-pale); color: var(--blue-deep); border: 1px solid var(--border); }
+    .pill-cyan { background: #E0F9FF; color: #005F7A; border: 1px solid rgba(0,212,255,0.3); }
+    .pill-gold { background: #FFF8E0; color: #8B5A00; border: 1px solid rgba(245,166,35,0.35); }
+    .pill-green { background: var(--green-bg); color: #005C3B; border: 1px solid rgba(0,196,140,0.3); }
+    .pill-purple { background: #EDE9FF; color: #4B35CC; border: 1px solid rgba(123,97,255,0.3); }
+    .pill-red { background: var(--red-bg); color: #A0002A; border: 1px solid rgba(255,77,106,0.3); }
+
+    /* ══ HOW IT WORKS ═════════════════════════════════════ */
+    .how-section { background: var(--white); }
+
+    .steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; margin-top: 52px; position: relative; }
+    .steps-grid::before {
+      content: ''; position: absolute;
+      top: 28px; left: calc(16.66% + 16px); right: calc(16.66% + 16px);
+      height: 2px;
+      background: linear-gradient(90deg, var(--border), var(--blue), var(--border));
+    }
+
+    .step-item { text-align: center; padding: 0 28px; }
+    .step-num-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 900;
+      box-shadow: 0 4px 20px rgba(41,121,255,0.35);
+      position: relative; z-index: 1;
+    }
+    .step-title { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .step-body { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+
+    /* ══ SUPPORTED GAMES ══════════════════════════════════ */
+    .games-section { background: var(--bg); }
+
+    .games-header { text-align: center; margin-bottom: 44px; }
+    .games-header .section-label { justify-content: center; }
+
+    .games-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 14px; }
+
+    .game-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+      padding: 22px 14px; text-align: center; cursor: default;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .game-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(41,121,255,0.1); }
+
+    .game-card.gop  { border-top: 3px solid #FF4D6A; }
+    .game-card.gpk  { border-top: 3px solid #F5A623; }
+    .game-card.gmtg { border-top: 3px solid #7B61FF; }
+    .game-card.gygo { border-top: 3px solid #00D4FF; }
+    .game-card.gdbs { border-top: 3px solid #00C48C; }
+    .game-card.gdigi{ border-top: 3px solid #2979FF; }
+
+    .game-icon { width: 36px; height: 36px; margin: 0 auto 10px; display: block; }
+    .game-name { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; color: var(--navy); margin-bottom: 4px; letter-spacing: 0.01em; }
+    .game-count { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+    .games-more { text-align: center; margin-top: 18px; font-size: 12px; color: var(--muted); font-weight: 500; }
+    .games-more span { color: var(--blue); font-weight: 700; }
+
+    /* ══ CHASE SPOTLIGHT ══════════════════════════════════ */
+    .chase-section { background: var(--white); }
+    .chase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+
+    .chase-cards-visual { position: relative; height: 400px; }
+
+    .chase-card-el {
+      position: absolute; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 20px 50px rgba(10,22,40,0.22);
+    }
+    .cc1 { width: 190px; top: 20px; left: 50px; transform: rotate(-8deg); z-index: 1; }
+    .cc2 { width: 190px; top: 55px; left: 145px; transform: rotate(3deg); z-index: 2; }
+    .cc3 { width: 190px; top: 115px; left: 20px; transform: rotate(-2deg); z-index: 3; }
+
+    .cc-banner {
+      height: 120px; position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cc-shine { position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%); }
+    .cc-card-emoji { width: 52px; height: 52px; position: relative; z-index: 1; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4)); }
+    .cc-rar {
+      position: absolute; bottom: 6px; right: 8px;
+      font-size: 8px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 100px;
+    }
+    .cc-body { padding: 12px 14px; background: #fff; }
+    .cc-cname { font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
+    .cc-cset { font-size: 9px; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+    .cc-price-row { display: flex; align-items: center; justify-content: space-between; }
+    .cc-cprice { font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; color: var(--navy); }
+    .cc-cchg { font-size: 10px; font-weight: 700; border-radius: 5px; padding: 2px 7px; }
+
+    .chase-text .section-label { margin-bottom: 12px; }
+    .chase-list { margin-top: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .chase-item { display: flex; gap: 14px; align-items: flex-start; }
+    .ci-icon {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 16px; margin-top: 2px;
+    }
+    .ci-title { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 3px; }
+    .ci-body { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+    /* ══ TESTIMONIALS ═════════════════════════════════════ */
+    .testi-section { background: var(--bg); }
+    .testi-header { text-align: center; margin-bottom: 44px; }
+    .testi-header .section-label { justify-content: center; }
+
+    .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+    .testi-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 16px;
+      padding: 26px; position: relative;
+    }
+    .testi-stars { display: flex; gap: 3px; margin-bottom: 12px; }
+    .star { font-size: 13px; }
+    .testi-text { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 18px; }
+    .testi-author { display: flex; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .ta-av {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800;
+    }
+    .av-a { background: linear-gradient(135deg, #1A6FE8, #2979FF); color: #fff; }
+    .av-b { background: linear-gradient(135deg, #00875A, #00C48C); color: #fff; }
+    .av-c { background: linear-gradient(135deg, #4B35CC, #7B61FF); color: #fff; }
+    .ta-name { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--navy); }
+    .ta-role { font-size: 11px; color: var(--muted); font-weight: 500; }
+
+    /* ══ CTA ══════════════════════════════════════════════ */
+    .cta-section { background: linear-gradient(135deg, #1050C8 0%, #1A6FE8 40%, #2979FF 70%, #0D3B8F 100%); }
+    .cta-section::before { display: none; }
+
+    .cta-inner { text-align: center; padding: 96px 48px; max-width: 1120px; margin: 0 auto; position: relative; }
+    .cta-inner::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 780px; height: 780px;
+      background: url('Logo background.png') center / contain no-repeat;
+      opacity: 0.12; filter: blur(0.5px);
+      pointer-events: none;
+    }
+
+    .cta-eyebrow { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px; }
+    .cta-eye-text { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
+    .cta-h2 {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: clamp(28px, 4vw, 48px); letter-spacing: -0.01em;
+      color: #fff; margin-bottom: 16px; line-height: 1.1; position: relative;
+    }
+    .cta-h2 .cyan { color: var(--cyan); }
+    .cta-sub { font-size: 17px; color: rgba(255,255,255,0.75); margin-bottom: 40px; position: relative; }
+    .cta-btns { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; position: relative; }
+
+    .btn-cta-primary {
+      background: #fff; color: var(--blue);
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 800;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: none; border-radius: 8px; padding: 16px 36px;
+      cursor: pointer; text-decoration: none; display: inline-block;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+      transition: transform 0.15s, box-shadow 0.18s;
+    }
+    .btn-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.28); }
+
+    .btn-cta-outline {
+      background: transparent; color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: 2px solid rgba(255,255,255,0.4); border-radius: 8px;
+      padding: 14px 36px; cursor: pointer; text-decoration: none; display: inline-block;
+      transition: border-color 0.18s, background 0.18s, transform 0.15s;
+    }
+    .btn-cta-outline:hover { border-color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+    /* ══ FOOTER ═══════════════════════════════════════════ */
+    footer {
+      background: var(--navy); padding: 52px 48px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .footer-icon { height: 36px; width: auto; object-fit: contain; }
+    .footer-wm { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 900; color: #fff; }
+    .footer-wm .cyan { color: var(--cyan2); }
+    .footer-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.7; max-width: 240px; }
+    .footer-col-t { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 16px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.55); text-decoration: none; transition: color 0.18s; font-weight: 500; }
+    .footer-links a:hover { color: #fff; }
+
+    .footer-bottom {
+      max-width: 1120px; margin: 32px auto 0; padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 0.06em; }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-pill {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 100px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
+      text-decoration: none; transition: background 0.18s, color 0.18s, transform 0.15s;
+    }
+    .social-pill:hover { background: rgba(255,255,255,0.12); color: #fff; transform: translateY(-1px); }
+
+    /* ══ RESPONSIVE ═══════════════════════════════════════ */
+    @media (max-width: 960px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 100px 20px 56px; gap: 48px; }
+      .alert-toast { right: 0; top: -16px; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .section-wrap { padding: 64px 20px; }
+      .cards-grid { grid-template-columns: repeat(2,1fr); }
+      .features-grid { grid-template-columns: repeat(2,1fr); }
+      .games-grid { grid-template-columns: repeat(3,1fr); }
+      .chase-grid { grid-template-columns: 1fr; gap: 40px; }
+      .chase-cards-visual { height: 300px; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .cta-inner { padding: 64px 20px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+      footer { padding: 40px 20px; }
+      .steps-grid::before { display: none; }
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .games-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════ -->
+<nav>
+  <a class="nav-logo" href="#">
+    <img class="nav-icon" src="Homescreen App icon.png" alt="ChaseTrackr" />
+    <span class="nav-wordmark">Chase<span class="cyan">Trackr</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#community">Reviews</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="btn-nav-ghost" href="#">Sign In</a>
+    <a class="btn-nav" href="#cta">Get Early Access</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero">
+  <img class="hero-watermark" src="Logo background.png" alt="" aria-hidden="true" />
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="eyebrow-dot"></div>
+      <span class="eyebrow-text">TCG Price Intelligence · Beta Live</span>
+    </div>
+
+    <h1 class="hero-h1">
+      Chase Smarter.<br>
+      Sell <span class="cyan">Higher.</span><br>
+      Never Miss a <span class="gold">Spike.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Real-time price tracking for One Piece, Pokémon, and more.
+      Set alerts, manage your portfolio, and spot the next chase card
+      before the market moves.
+    </p>
+
+    <div class="hero-ctas">
+      <a class="btn-hero-primary" href="app.html">🚀 Launch the App</a>
+      <a class="btn-beta" href="https://testflight.apple.com/join/PLACEHOLDER" target="_blank" rel="noopener">
+        <span class="btn-beta-icon">🍎</span> iOS Beta — TestFlight
+      </a>
+      <a class="btn-hero-outline" href="#how">▶ How It Works</a>
+    </div>
+
+    <div class="hero-trust">
+      <div class="trust-item"><span class="trust-num">14K+</span> Collectors</div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><span class="trust-num">2M+</span> Cards Indexed</div>
+      <div class="trust-sep">·</div>
+      <div class="trust-item"><span class="trust-num">Free</span> To Start</div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="alert-toast">
+      <div class="toast-icon">🔔</div>
+      <div>
+        <div class="toast-title">Price Alert Triggered</div>
+        <div class="toast-body">Luffy OP05 hit your target of <span class="toast-hi">$200</span> — now trading at <span class="toast-hi">$241</span></div>
+      </div>
+    </div>
+
+    <div class="price-card">
+      <div class="pc-top">
+        <span class="pc-game-badge badge-op">One Piece</span>
+        <div class="pc-alert">
+          <div class="pc-alert-dot"></div>
+          Alert Active
+        </div>
+      </div>
+
+      <div class="pc-name">Monkey D. Luffy</div>
+      <div class="pc-set">OP05 · Treasure Rare · #OP05-119</div>
+
+      <div class="pc-price-row">
+        <div class="pc-price">$241.00</div>
+        <div class="pc-up">↑ +18.4%</div>
+      </div>
+
+      <svg class="pc-chart" viewBox="0 0 360 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2979FF" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#2979FF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,58 L25,54 L55,50 L82,46 L108,48 L132,40 L158,36 L184,28 L210,26 L234,30 L258,20 L284,14 L310,8 L360,4 L360,72 L0,72 Z" fill="url(#cg)"/>
+        <path d="M0,58 L25,54 L55,50 L82,46 L108,48 L132,40 L158,36 L184,28 L210,26 L234,30 L258,20 L284,14 L310,8 L360,4" fill="none" stroke="#2979FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="360" cy="4" r="4" fill="#2979FF"/>
+      </svg>
+
+      <div class="pc-footer">
+        <div class="pc-stat">
+          <span class="pc-stat-val">$238</span>
+          <span class="pc-stat-lbl">Fair Value</span>
+        </div>
+        <div class="pc-divider"></div>
+        <div class="pc-stat">
+          <span class="pc-stat-val">$255</span>
+          <span class="pc-stat-lbl">7d High</span>
+        </div>
+        <div class="pc-divider"></div>
+        <div class="pc-stat">
+          <span class="pc-stat-val">342</span>
+          <span class="pc-stat-lbl">Volume</span>
+        </div>
+        <div class="pc-divider"></div>
+        <div class="pc-stat">
+          <span class="pc-stat-val">$196</span>
+          <span class="pc-stat-lbl">7d Low</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card">
+      <div class="port-top">
+        <div class="port-lbl">My Portfolio</div>
+        <div class="port-period">30d View</div>
+      </div>
+      <div class="port-total">$4,820.00</div>
+      <div class="port-gain">↑ +$612.00 · +14.5% this month</div>
+      <div class="port-rows">
+        <div class="port-row">
+          <div class="port-card-name">Luffy OP05 TR</div>
+          <div class="port-card-val">$241</div>
+          <div class="port-card-chg up">+18.4%</div>
+        </div>
+        <div class="port-row">
+          <div class="port-card-name">Charizard ex SAR</div>
+          <div class="port-card-val">$847</div>
+          <div class="port-card-chg up">+9.2%</div>
+        </div>
+        <div class="port-row">
+          <div class="port-card-name">Eevee Illus. Rare</div>
+          <div class="port-card-val">$620</div>
+          <div class="port-card-chg dn">−3.1%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LIVE TICKER ═══════════════════════════════════════ -->
+<div class="ticker">
+  <div class="ticker-track">
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Monkey D. Luffy</span><span class="tick-set">OP05 · TR</span><span class="tick-price">$241</span><span class="tick-up">↑ +18.4%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Charizard ex</span><span class="tick-set">OBF · SAR</span><span class="tick-price">$847</span><span class="tick-up">↑ +9.2%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Eevee</span><span class="tick-set">SV3 · IR</span><span class="tick-price">$620</span><span class="tick-dn">↓ −3.1%</span></div>
+    <div class="tick-item"><span class="tick-game tg-mtg">MTG</span><span class="tick-name">Black Lotus</span><span class="tick-set">Alpha · R</span><span class="tick-price">$12,400</span><span class="tick-up">↑ +2.1%</span></div>
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Nico Robin</span><span class="tick-set">OP06 · SR</span><span class="tick-price">$88</span><span class="tick-up">↑ +31.2%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Pikachu Illus.</span><span class="tick-set">SV01 · IR</span><span class="tick-price">$310</span><span class="tick-dn">↓ −1.4%</span></div>
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Roronoa Zoro</span><span class="tick-set">OP01 · SEC</span><span class="tick-price">$190</span><span class="tick-up">↑ +7.8%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Umbreon VMAX</span><span class="tick-set">EVS · AA</span><span class="tick-price">$420</span><span class="tick-up">↑ +5.5%</span></div>
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Sanji</span><span class="tick-set">OP07 · TR</span><span class="tick-price">$74</span><span class="tick-up">↑ +44.0%</span></div>
+    <div class="tick-item"><span class="tick-game tg-mtg">MTG</span><span class="tick-name">Mox Sapphire</span><span class="tick-set">Alpha · R</span><span class="tick-price">$3,200</span><span class="tick-dn">↓ −0.8%</span></div>
+    <!-- duplicate set -->
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Monkey D. Luffy</span><span class="tick-set">OP05 · TR</span><span class="tick-price">$241</span><span class="tick-up">↑ +18.4%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Charizard ex</span><span class="tick-set">OBF · SAR</span><span class="tick-price">$847</span><span class="tick-up">↑ +9.2%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Eevee</span><span class="tick-set">SV3 · IR</span><span class="tick-price">$620</span><span class="tick-dn">↓ −3.1%</span></div>
+    <div class="tick-item"><span class="tick-game tg-mtg">MTG</span><span class="tick-name">Black Lotus</span><span class="tick-set">Alpha · R</span><span class="tick-price">$12,400</span><span class="tick-up">↑ +2.1%</span></div>
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Nico Robin</span><span class="tick-set">OP06 · SR</span><span class="tick-price">$88</span><span class="tick-up">↑ +31.2%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Pikachu Illus.</span><span class="tick-set">SV01 · IR</span><span class="tick-price">$310</span><span class="tick-dn">↓ −1.4%</span></div>
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Roronoa Zoro</span><span class="tick-set">OP01 · SEC</span><span class="tick-price">$190</span><span class="tick-up">↑ +7.8%</span></div>
+    <div class="tick-item"><span class="tick-game tg-pk">PK</span><span class="tick-name">Umbreon VMAX</span><span class="tick-set">EVS · AA</span><span class="tick-price">$420</span><span class="tick-up">↑ +5.5%</span></div>
+    <div class="tick-item"><span class="tick-game tg-op">OP</span><span class="tick-name">Sanji</span><span class="tick-set">OP07 · TR</span><span class="tick-price">$74</span><span class="tick-up">↑ +44.0%</span></div>
+    <div class="tick-item"><span class="tick-game tg-mtg">MTG</span><span class="tick-name">Mox Sapphire</span><span class="tick-set">Alpha · R</span><span class="tick-price">$3,200</span><span class="tick-dn">↓ −0.8%</span></div>
+  </div>
+</div>
+
+<!-- ══ STATS ═════════════════════════════════════════════ -->
+<div class="stats-section">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-num">2M+</div><div class="stat-label">Cards Indexed</div></div>
+    <div class="stat-item"><div class="stat-num">14K+</div><div class="stat-label">Active Collectors</div></div>
+    <div class="stat-item"><div class="stat-num">$8.2M</div><div class="stat-label">Portfolio Value Tracked</div></div>
+    <div class="stat-item"><div class="stat-num">96%</div><div class="stat-label">Alert Accuracy</div></div>
+  </div>
+</div>
+
+<!-- ══ TRENDING CARDS ════════════════════════════════════ -->
+<section class="trending-section">
+  <div class="section-wrap">
+    <div class="trending-header">
+      <div class="trending-header-left">
+        <div class="section-label"><div class="sdot"></div><div class="stag">Market Right Now</div></div>
+        <h2 class="section-h2">Trending <span class="blue">Chase Cards</span></h2>
+      </div>
+      <a class="see-all" href="#">View All Cards →</a>
+    </div>
+
+    <div class="rarity-filters">
+      <span class="rarity-chip chip-all">All Cards</span>
+      <span class="rarity-chip chip-chase">⭐ Chase Only</span>
+      <span class="rarity-chip chip-tr">Treasure Rare</span>
+      <span class="rarity-chip chip-sar">Special Art Rare</span>
+      <span class="rarity-chip chip-ir">Illustration Rare</span>
+      <span class="rarity-chip chip-sec">Secret Rare</span>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card-tile">
+        <div class="ct-banner ct-banner-op">
+          <div class="ct-holo"></div>
+          <svg class="ct-emoji" viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="16" rx="12" ry="11" fill="white" opacity="0.93"/><circle cx="15" cy="15.5" r="3.5" fill="#1a0510"/><circle cx="25" cy="15.5" r="3.5" fill="#1a0510"/><ellipse cx="20" cy="21" rx="3" ry="2.2" fill="#1a0510" opacity="0.45"/><rect x="14" y="26.5" width="12" height="5" rx="1.5" fill="white" opacity="0.92"/><line x1="17.5" y1="26.5" x2="17.5" y2="31.5" stroke="#1a0510" stroke-width="1.1"/><line x1="20" y1="26.5" x2="20" y2="31.5" stroke="#1a0510" stroke-width="1.1"/><line x1="22.5" y1="26.5" x2="22.5" y2="31.5" stroke="#1a0510" stroke-width="1.1"/></svg>
+          <span class="ct-rarity r-tr">TR</span>
+        </div>
+        <div class="ct-body">
+          <div class="ct-game-row"><div class="ct-game-dot dot-op"></div><span class="ct-set">One Piece · OP05</span></div>
+          <div class="ct-name">Monkey D. Luffy</div>
+          <div class="ct-price-row">
+            <div class="ct-price">$241.00</div>
+            <span class="ct-chg chg-up">↑ +18.4%</span>
+          </div>
+        </div>
+        <div class="ct-footer"><span class="ct-vol">342 sales · 7d</span><button class="ct-track-btn">+ Track</button></div>
+      </div>
+
+      <div class="card-tile">
+        <div class="ct-banner ct-banner-pk">
+          <div class="ct-holo"></div>
+          <svg class="ct-emoji" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" fill="white"/><path d="M3 20 A17 17 0 0 1 37 20 Z" fill="#E31515"/><circle cx="20" cy="20" r="17" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="2"/><line x1="3" y1="20" x2="37" y2="20" stroke="rgba(0,0,0,0.3)" stroke-width="2.5"/><circle cx="20" cy="20" r="6" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="2.2"/><circle cx="20" cy="20" r="2.5" fill="rgba(0,0,0,0.5)"/></svg>
+          <span class="ct-rarity r-sar">SAR</span>
+        </div>
+        <div class="ct-body">
+          <div class="ct-game-row"><div class="ct-game-dot dot-pk"></div><span class="ct-set">Pokémon · OBF</span></div>
+          <div class="ct-name">Charizard ex</div>
+          <div class="ct-price-row">
+            <div class="ct-price">$847.00</div>
+            <span class="ct-chg chg-up">↑ +9.2%</span>
+          </div>
+        </div>
+        <div class="ct-footer"><span class="ct-vol">218 sales · 7d</span><button class="ct-track-btn">+ Track</button></div>
+      </div>
+
+      <div class="card-tile">
+        <div class="ct-banner ct-banner-pk2">
+          <div class="ct-holo"></div>
+          <svg class="ct-emoji" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" fill="white"/><path d="M3 20 A17 17 0 0 1 37 20 Z" fill="#E31515"/><circle cx="20" cy="20" r="17" fill="none" stroke="rgba(0,0,0,0.3)" stroke-width="2"/><line x1="3" y1="20" x2="37" y2="20" stroke="rgba(0,0,0,0.3)" stroke-width="2.5"/><circle cx="20" cy="20" r="6" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="2.2"/><circle cx="20" cy="20" r="2.5" fill="rgba(0,0,0,0.5)"/></svg>
+          <span class="ct-rarity r-ir">IR</span>
+        </div>
+        <div class="ct-body">
+          <div class="ct-game-row"><div class="ct-game-dot dot-pk"></div><span class="ct-set">Pokémon · SV3</span></div>
+          <div class="ct-name">Eevee</div>
+          <div class="ct-price-row">
+            <div class="ct-price">$620.00</div>
+            <span class="ct-chg chg-dn">↓ −3.1%</span>
+          </div>
+        </div>
+        <div class="ct-footer"><span class="ct-vol">154 sales · 7d</span><button class="ct-track-btn">+ Track</button></div>
+      </div>
+
+      <div class="card-tile">
+        <div class="ct-banner ct-banner-op2">
+          <div class="ct-holo"></div>
+          <svg class="ct-emoji" viewBox="0 0 40 40" fill="none"><line x1="9" y1="8" x2="31" y2="32" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><line x1="31" y1="8" x2="9" y2="32" stroke="white" stroke-width="3.5" stroke-linecap="round" opacity="0.9"/><rect x="4" y="17.5" width="11" height="3.5" rx="1.8" fill="rgba(255,255,255,0.75)" transform="rotate(-45 9.5 19.25)"/><rect x="25" y="17.5" width="11" height="3.5" rx="1.8" fill="rgba(255,255,255,0.75)" transform="rotate(45 30.5 19.25)"/></svg>
+          <span class="ct-rarity r-sec">SEC</span>
+        </div>
+        <div class="ct-body">
+          <div class="ct-game-row"><div class="ct-game-dot dot-op"></div><span class="ct-set">One Piece · OP01</span></div>
+          <div class="ct-name">Roronoa Zoro</div>
+          <div class="ct-price-row">
+            <div class="ct-price">$190.00</div>
+            <span class="ct-chg chg-up">↑ +7.8%</span>
+          </div>
+        </div>
+        <div class="ct-footer"><span class="ct-vol">189 sales · 7d</span><button class="ct-track-btn">+ Track</button></div>
+      </div>
+
+      <div class="card-tile">
+        <div class="ct-banner ct-banner-pk3">
+          <div class="ct-holo"></div>
+          <svg class="ct-emoji" viewBox="0 0 40 40" fill="none"><path d="M30 20C30 25.5 25.5 30 20 30C14.5 30 10 25.5 10 20C10 14.5 14.5 10 20 10C21.4 10 22.7 10.3 23.9 10.9C21.3 12.4 19.5 15.2 19.5 18.4C19.5 23.2 23.2 27.1 28 27.4C29.3 25.3 30 22.7 30 20Z" fill="rgba(255,255,255,0.9)"/></svg>
+          <span class="ct-rarity r-sar">AA</span>
+        </div>
+        <div class="ct-body">
+          <div class="ct-game-row"><div class="ct-game-dot dot-pk"></div><span class="ct-set">Pokémon · EVS</span></div>
+          <div class="ct-name">Umbreon VMAX</div>
+          <div class="ct-price-row">
+            <div class="ct-price">$420.00</div>
+            <span class="ct-chg chg-up">↑ +5.5%</span>
+          </div>
+        </div>
+        <div class="ct-footer"><span class="ct-vol">97 sales · 7d</span><button class="ct-track-btn">+ Track</button></div>
+      </div>
+
+      <div class="card-tile">
+        <div class="ct-banner ct-banner-op">
+          <div class="ct-holo"></div>
+          <svg class="ct-emoji" viewBox="0 0 40 40" fill="none"><path d="M20 8 C20 8 14 14 14 22 C14 26.4 17.6 30 22 30 C26.4 30 30 26.4 30 22 C30 16 26 12 26 12 C26 12 24 18 22 18 C20 18 18 14 20 8Z" fill="rgba(255,180,50,0.95)"/><path d="M18 10 C16 16 16 20 16 22 C16 25.3 18.7 28 22 28 C25.3 28 28 25.3 28 22 C28 18 26 14 26 12" fill="none" stroke="rgba(255,220,80,0.5)" stroke-width="1.5"/></svg>
+          <span class="ct-rarity r-tr">TR</span>
+        </div>
+        <div class="ct-body">
+          <div class="ct-game-row"><div class="ct-game-dot dot-op"></div><span class="ct-set">One Piece · OP07</span></div>
+          <div class="ct-name">Sanji</div>
+          <div class="ct-price-row">
+            <div class="ct-price">$74.00</div>
+            <span class="ct-chg chg-up">↑ +44.0%</span>
+          </div>
+        </div>
+        <div class="ct-footer"><span class="ct-vol">411 sales · 7d</span><button class="ct-track-btn">+ Track</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══════════════════════════════════════════ -->
+<section id="features" class="features-section">
+  <div class="section-wrap">
+    <div class="features-header">
+      <div class="section-label"><div class="sdot"></div><div class="stag">Features</div></div>
+      <h2 class="section-h2">Built for the Serious <span class="blue">Card Trader</span></h2>
+      <p class="section-sub">Every tool you need to track, time, and trade your collection at peak value.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon fi-blue">📈</div>
+        <div class="feat-title">Real-Time Price Data</div>
+        <div class="feat-body">Live market prices pulled from TCGPlayer, eBay sold listings, and major marketplaces — updated continuously so you always see true fair value.</div>
+        <span class="feat-pill pill-blue">Live Data</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-cyan">🔔</div>
+        <div class="feat-title">Smart Price Alerts</div>
+        <div class="feat-body">Set a target price on any card. We ping you the moment it hits — whether you're looking to buy the dip or sell into a spike.</div>
+        <span class="feat-pill pill-cyan">Instant Notify</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-blue">💼</div>
+        <div class="feat-title">Portfolio Tracker</div>
+        <div class="feat-body">Add your collection once. See total value, individual card gains and losses, and how your portfolio moves against the market in real time.</div>
+        <span class="feat-pill pill-blue">P&amp;L Dashboard</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-gold">⭐</div>
+        <div class="feat-title">Chase Radar</div>
+        <div class="feat-body">Our proprietary signal spots undervalued chase cards before the community catches on — Treasure Rares, alt arts, Secret Rares, and more.</div>
+        <span class="feat-pill pill-gold">Exclusive Signal</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-green">📊</div>
+        <div class="feat-title">Price History Charts</div>
+        <div class="feat-body">7-day, 30-day, and all-time charts for every card. Identify support levels, seasonal patterns, and post-reprint crash zones.</div>
+        <span class="feat-pill pill-green">7d · 30d · All-Time</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon fi-purple">🔍</div>
+        <div class="feat-title">Card Search & Scan</div>
+        <div class="feat-body">Search any card by name, set, or rarity — or point your camera to scan a card and pull its current price instantly at locals or card shops.</div>
+        <span class="feat-pill pill-purple">Camera Scan</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══════════════════════════════════════ -->
+<section id="how" class="how-section">
+  <div class="section-wrap">
+    <div style="text-align:center">
+      <div class="section-label" style="justify-content:center"><div class="sdot"></div><div class="stag">How It Works</div></div>
+      <h2 class="section-h2">From Locals to <span class="blue">Big Profits</span> in Three Steps</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-item">
+        <div class="step-num-wrap"><div class="step-num">1</div></div>
+        <div class="step-title">Add Your Cards</div>
+        <div class="step-body">Search any card by name, set, or rarity. Add it to your watchlist or portfolio in seconds. Camera scan at your local card shop.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-wrap"><div class="step-num">2</div></div>
+        <div class="step-title">Set Your Targets</div>
+        <div class="step-body">Define your buy-in price or sell target. ChaseTrackr monitors the market 24/7 and fires an alert the moment your price is reached.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num-wrap"><div class="step-num">3</div></div>
+        <div class="step-title">Track &amp; Profit</div>
+        <div class="step-body">Watch your portfolio value grow. Our Chase Radar flags emerging spikes — buy before the hype, sell at the peak.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SUPPORTED GAMES ═══════════════════════════════════ -->
+<section id="games" class="games-section">
+  <div class="section-wrap">
+    <div class="games-header">
+      <div class="section-label" style="justify-content:center"><div class="sdot"></div><div class="stag">Supported Games</div></div>
+      <h2 class="section-h2">One App for Every <span class="blue">TCG You Play</span></h2>
+    </div>
+    <div class="games-grid">
+      <div class="game-card gop">
+        <svg class="game-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="18" cy="15" rx="11" ry="10" fill="#1a0510"/><ellipse cx="18" cy="15" rx="10" ry="9" fill="#fff" opacity="0.93"/>
+          <circle cx="13.5" cy="14.5" r="3" fill="#1a0510"/><circle cx="22.5" cy="14.5" r="3" fill="#1a0510"/>
+          <ellipse cx="18" cy="20" rx="2.5" ry="1.8" fill="#1a0510" opacity="0.45"/>
+          <rect x="13" y="24" width="10" height="4.5" rx="1.4" fill="#fff" opacity="0.92"/>
+          <line x1="16" y1="24" x2="16" y2="28.5" stroke="#1a0510" stroke-width="1"/><line x1="18" y1="24" x2="18" y2="28.5" stroke="#1a0510" stroke-width="1"/><line x1="20" y1="24" x2="20" y2="28.5" stroke="#1a0510" stroke-width="1"/>
+        </svg>
+        <div class="game-name">One Piece</div><div class="game-count">12 sets · 2,400+ cards</div>
+      </div>
+      <div class="game-card gpk">
+        <svg class="game-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="15" fill="white"/>
+          <path d="M3 18 A15 15 0 0 1 33 18 Z" fill="#E31515"/>
+          <circle cx="18" cy="18" r="15" fill="none" stroke="#222" stroke-width="1.8"/>
+          <line x1="3" y1="18" x2="33" y2="18" stroke="#222" stroke-width="2.2"/>
+          <circle cx="18" cy="18" r="5.5" fill="white" stroke="#222" stroke-width="2"/>
+          <circle cx="18" cy="18" r="2.2" fill="#222"/>
+        </svg>
+        <div class="game-name">Pokémon</div><div class="game-count">100+ sets · 14,000+ cards</div>
+      </div>
+      <div class="game-card gmtg">
+        <svg class="game-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 3L21.5 13H32.5L24 19.5L27.5 30L18 23.5L8.5 30L12 19.5L3.5 13H14.5Z" fill="#7B61FF" opacity="0.92"/>
+          <circle cx="18" cy="18" r="5" fill="white" opacity="0.95"/><circle cx="18" cy="18" r="3" fill="#7B61FF"/>
+        </svg>
+        <div class="game-name">Magic: TG</div><div class="game-count">300+ sets · 26,000+ cards</div>
+      </div>
+      <div class="game-card gygo">
+        <svg class="game-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 3L21 12.5H31.5L23 18.5L26 28L18 22L10 28L13 18.5L4.5 12.5H15Z" fill="#F5A623" opacity="0.93"/>
+          <ellipse cx="18" cy="18" rx="5" ry="4" fill="white" opacity="0.9"/>
+          <ellipse cx="18" cy="18" rx="3" ry="2.2" fill="#1a0510"/>
+          <ellipse cx="18" cy="17.2" rx="1.1" ry="0.7" fill="white" opacity="0.6"/>
+        </svg>
+        <div class="game-name">Yu-Gi-Oh!</div><div class="game-count">140+ sets · 11,000+ cards</div>
+      </div>
+      <div class="game-card gdbs">
+        <svg class="game-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="15" fill="#FF7700"/>
+          <circle cx="18" cy="18" r="15" fill="none" stroke="#CC5500" stroke-width="1.2"/>
+          <ellipse cx="10" cy="12" rx="3" ry="4" fill="#FF9933" opacity="0.5"/>
+          <path d="M18 9L19.8 14.5H26L21 18L23 23.5L18 20L13 23.5L15 18L10 14.5H16.2Z" fill="#FFD700"/>
+        </svg>
+        <div class="game-name">Dragon Ball S</div><div class="game-count">22 sets · 1,800+ cards</div>
+      </div>
+      <div class="game-card gdigi">
+        <svg class="game-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="6" width="14" height="24" rx="2" fill="#2979FF" opacity="0.9"/>
+          <path d="M18 6 C18 6 32 8 32 18 C32 28 18 30 18 30" fill="#1A6FE8" opacity="0.9"/>
+          <path d="M9 11 L9 25 L18 25 C24 25 28 22 28 18 C28 14 24 11 18 11 Z" fill="white" opacity="0.92"/>
+          <path d="M13 15 L13 21 L17.5 21 C20.5 21 22.5 19.8 22.5 18 C22.5 16.2 20.5 15 17.5 15 Z" fill="#2979FF" opacity="0.85"/>
+        </svg>
+        <div class="game-name">Digimon</div><div class="game-count">18 sets · 1,200+ cards</div>
+      </div>
+    </div>
+    <div class="games-more">+ Lorcana, Flesh &amp; Blood, Union Arena, and <span>more coming soon</span></div>
+  </div>
+</section>
+
+<!-- ══ CHASE SPOTLIGHT ═══════════════════════════════════ -->
+<section class="chase-section">
+  <div class="section-wrap">
+    <div class="chase-grid">
+      <div class="chase-cards-visual">
+        <div class="chase-card-el cc1">
+          <div class="cc-banner ct-banner-op">
+            <div class="cc-shine"></div>
+            <svg class="cc-card-emoji" viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="16" rx="12" ry="11" fill="white" opacity="0.93"/><circle cx="15" cy="15.5" r="3.5" fill="#1a0510"/><circle cx="25" cy="15.5" r="3.5" fill="#1a0510"/><ellipse cx="20" cy="21" rx="3" ry="2.2" fill="#1a0510" opacity="0.45"/><rect x="14" y="26.5" width="12" height="5" rx="1.5" fill="white" opacity="0.92"/><line x1="17.5" y1="26.5" x2="17.5" y2="31.5" stroke="#1a0510" stroke-width="1.1"/><line x1="20" y1="26.5" x2="20" y2="31.5" stroke="#1a0510" stroke-width="1.1"/><line x1="22.5" y1="26.5" x2="22.5" y2="31.5" stroke="#1a0510" stroke-width="1.1"/></svg>
+            <span class="ct-rarity r-tr">TR</span>
+          </div>
+          <div class="cc-body">
+            <div class="cc-cname">Monkey D. Luffy</div>
+            <div class="cc-cset">OP05 · Treasure Rare</div>
+            <div class="cc-price-row"><div class="cc-cprice">$241</div><span class="cc-cchg chg-up">+18.4%</span></div>
+          </div>
+        </div>
+        <div class="chase-card-el cc2">
+          <div class="cc-banner ct-banner-pk">
+            <div class="cc-shine"></div>
+            <svg class="cc-card-emoji" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" fill="white"/><path d="M3 20 A17 17 0 0 1 37 20 Z" fill="#E31515"/><circle cx="20" cy="20" r="17" fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="2"/><line x1="3" y1="20" x2="37" y2="20" stroke="rgba(0,0,0,0.25)" stroke-width="2.5"/><circle cx="20" cy="20" r="6" fill="white" stroke="rgba(0,0,0,0.25)" stroke-width="2.2"/><circle cx="20" cy="20" r="2.5" fill="rgba(0,0,0,0.5)"/></svg>
+            <span class="ct-rarity r-sar">SAR</span>
+          </div>
+          <div class="cc-body">
+            <div class="cc-cname">Charizard ex</div>
+            <div class="cc-cset">OBF · Special Art Rare</div>
+            <div class="cc-price-row"><div class="cc-cprice">$847</div><span class="cc-cchg chg-up">+9.2%</span></div>
+          </div>
+        </div>
+        <div class="chase-card-el cc3">
+          <div class="cc-banner ct-banner-pk2">
+            <div class="cc-shine"></div>
+            <svg class="cc-card-emoji" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="17" fill="white"/><path d="M3 20 A17 17 0 0 1 37 20 Z" fill="#E31515"/><circle cx="20" cy="20" r="17" fill="none" stroke="rgba(0,0,0,0.25)" stroke-width="2"/><line x1="3" y1="20" x2="37" y2="20" stroke="rgba(0,0,0,0.25)" stroke-width="2.5"/><circle cx="20" cy="20" r="6" fill="white" stroke="rgba(0,0,0,0.25)" stroke-width="2.2"/><circle cx="20" cy="20" r="2.5" fill="rgba(0,0,0,0.5)"/></svg>
+            <span class="ct-rarity r-ir">IR</span>
+          </div>
+          <div class="cc-body">
+            <div class="cc-cname">Eevee</div>
+            <div class="cc-cset">SV3 · Illustration Rare</div>
+            <div class="cc-price-row"><div class="cc-cprice">$620</div><span class="cc-cchg chg-dn">−3.1%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chase-text">
+        <div class="section-label"><div class="sdot"></div><div class="stag">Chase Radar</div></div>
+        <h2 class="section-h2">Find the Cards<br>Worth <span class="blue">Chasing</span></h2>
+        <p class="section-sub">Treasure Rares. Secret Rares. Alt Arts. Chase cards can 10× in weeks. ChaseTrackr's radar surfaces them before the hype hits.</p>
+        <div class="chase-list">
+          <div class="chase-item">
+            <div class="ci-icon fi-gold">⭐</div>
+            <div>
+              <div class="ci-title">Chase Card Detection</div>
+              <div class="ci-body">We index every Secret Rare, Treasure Rare, Full Art, Alt Art, and Special Illustration Rare across all major TCGs.</div>
+            </div>
+          </div>
+          <div class="chase-item">
+            <div class="ci-icon fi-blue">📡</div>
+            <div>
+              <div class="ci-title">Spike Signals</div>
+              <div class="ci-body">Unusual volume or price acceleration? We detect it and push you an alert before the card makes it to social media.</div>
+            </div>
+          </div>
+          <div class="chase-item">
+            <div class="ci-icon fi-green">💰</div>
+            <div>
+              <div class="ci-title">Fair Value Engine</div>
+              <div class="ci-body">Know the true market rate before you buy or sell. Our fair value cuts through inflated listings and lowball offers.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══════════════════════════════════════ -->
+<section id="community" class="testi-section">
+  <div class="section-wrap">
+    <div class="testi-header">
+      <div class="section-label" style="justify-content:center"><div class="sdot"></div><div class="stag">Reviews</div></div>
+      <h2 class="section-h2">What <span class="blue">Collectors</span> Say</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars"><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span></div>
+        <div class="testi-text">"Caught the Luffy OP05 spike 3 days before it exploded. Set an alert at $160, sold at $230. ChaseTrackr paid for itself a hundred times over in one trade."</div>
+        <div class="testi-author"><div class="ta-av av-a">M</div><div><div class="ta-name">Marcus D.</div><div class="ta-role">One Piece · 4 years</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars"><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span></div>
+        <div class="testi-text">"I flip Pokémon at locals every weekend. The camera scan feature is insane — point at a card and instantly know if it's worth buying. My margins are way up."</div>
+        <div class="testi-author"><div class="ta-av av-b">J</div><div><div class="ta-name">Jamie K.</div><div class="ta-role">Pokémon Reseller · 6 years</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars"><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span></div>
+        <div class="testi-text">"My collection was a spreadsheet nightmare. Now I just look at my ChaseTrackr dashboard and know exactly what it's worth, what's trending, what to move."</div>
+        <div class="testi-author"><div class="ta-av av-c">S</div><div><div class="ta-name">Sofia R.</div><div class="ta-role">MTG Collector · 8 years</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ════════════════════════════════════════════════ -->
+<section id="cta" class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-eyebrow"><div class="eyebrow-dot"></div><span class="cta-eye-text">Free to Start · No Credit Card</span></div>
+    <h2 class="cta-h2">Stop Guessing.<br>Start <span class="cyan">Chasing Smart.</span></h2>
+    <p class="cta-sub">Join 14,000+ collectors who never miss a spike, a dip, or a chase card again.</p>
+    <div class="cta-btns">
+      <a class="btn-cta-primary" href="app.html">🚀 Launch the App</a>
+      <a class="btn-beta" href="https://testflight.apple.com/join/PLACEHOLDER" target="_blank" rel="noopener">
+        <span class="btn-beta-icon">🍎</span> iOS Beta — TestFlight
+      </a>
+      <a class="btn-cta-outline" href="app.html">Try the Web App</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <img class="footer-icon" src="Homescreen App icon.png" alt="ChaseTrackr" />
+        <span class="footer-wm">Chase<span class="cyan">Trackr</span></span>
+      </div>
+      <p class="footer-desc">TCG price intelligence for serious collectors and traders. One Piece, Pokémon, Magic, and more.</p>
+    </div>
+    <div>
+      <div class="footer-col-t">Product</div>
+      <ul class="footer-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Price Alerts</a></li>
+        <li><a href="#">Portfolio</a></li>
+        <li><a href="#">Chase Radar</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-t">Games</div>
+      <ul class="footer-links">
+        <li><a href="#">One Piece</a></li>
+        <li><a href="#">Pokémon</a></li>
+        <li><a href="#">Magic: TG</a></li>
+        <li><a href="#">Yu-Gi-Oh!</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-t">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 ChaseTrackr · TCG Price Intelligence · All rights reserved</div>
+    <div class="footer-socials">
+      <a class="social-pill" href="#">𝕏 Twitter</a>
+      <a class="social-pill" href="#">💬 Discord</a>
+      <a class="social-pill" href="#">▶ YouTube</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
