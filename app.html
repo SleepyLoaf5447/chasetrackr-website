@@ -8,6 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="ChaseTrackr"/>
 <meta name="theme-color" content="#2979FF"/>
 <link rel="manifest" href="/manifest.json"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Exo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
 <title>ChaseTrackr</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -25,59 +28,47 @@
   --nav-h:62px;--header-h:56px;
 }
 html,body{height:100%;background:var(--bg);color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}
+  font-family:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;overflow:hidden}
 
-/* ── SHELL ── */
 #app{display:flex;flex-direction:column;height:100%;height:100dvh}
 
 #header{
-  flex-shrink:0;
-  height:calc(var(--header-h) + var(--safe-top));
-  padding-top:var(--safe-top);
-  background:var(--blue);
-  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;height:calc(var(--header-h) + var(--safe-top));padding-top:var(--safe-top);
+  background:var(--blue);display:flex;align-items:center;justify-content:space-between;
   padding-left:16px;padding-right:16px;z-index:10;position:relative;
 }
 .hdr-logo{display:flex;align-items:center;gap:10px}
 .hdr-icon{height:32px;width:32px;border-radius:8px;object-fit:cover;
   -webkit-mask-image:radial-gradient(circle at center,black 55%,transparent 78%);
   mask-image:radial-gradient(circle at center,black 55%,transparent 78%)}
-.hdr-wm{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.01em}
+.hdr-wm{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.01em;font-family:'Exo 2',sans-serif}
 .hdr-wm span{color:var(--cyan)}
 
 #main{flex:1;overflow:hidden;position:relative}
 
 .screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  background:var(--bg);transition:transform .26s cubic-bezier(.4,0,.2,1),opacity .26s;
-  will-change:transform}
+  background:var(--bg);transition:transform .26s cubic-bezier(.4,0,.2,1),opacity .26s;will-change:transform}
 .screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
 .screen.active{transform:translateX(0);opacity:1}
 
 #bottom-nav{
-  flex-shrink:0;
-  height:calc(var(--nav-h) + var(--safe-bottom));
-  padding-bottom:var(--safe-bottom);
-  background:#fff;border-top:1px solid var(--border);
-  display:flex;z-index:10;
+  flex-shrink:0;height:calc(var(--nav-h) + var(--safe-bottom));padding-bottom:var(--safe-bottom);
+  background:#fff;border-top:1px solid var(--border);display:flex;z-index:10;
 }
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2px;border:none;background:none;cursor:pointer;padding:0;color:var(--muted);
-  transition:color .15s;position:relative}
+  gap:2px;border:none;background:none;cursor:pointer;padding:0;color:var(--muted);transition:color .15s}
 .nav-btn.active{color:var(--blue)}
 .nav-btn svg{width:22px;height:22px;stroke-width:1.8}
-.nav-btn span{font-size:10px;font-weight:600;letter-spacing:.03em}
-.nav-badge{position:absolute;top:6px;right:calc(50% - 18px);min-width:16px;height:16px;
-  background:var(--red);color:#fff;font-size:9px;font-weight:800;border-radius:100px;
-  display:flex;align-items:center;justify-content:center;padding:0 4px}
+.nav-btn span{font-size:10px;font-weight:700;letter-spacing:.03em}
 
 /* ── COMMON ── */
 .page-header{padding:16px 16px 4px;display:flex;align-items:center;justify-content:space-between}
-h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
+h2.page-title{font-size:22px;font-weight:900;color:var(--navy);font-family:'Exo 2',sans-serif}
 .page-sub{font-size:13px;color:var(--muted);padding:2px 16px 12px}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
   border:none;border-radius:10px;padding:12px 20px;font-size:13px;font-weight:700;
-  cursor:pointer;transition:filter .15s,transform .15s;letter-spacing:.02em;font-family:inherit}
+  cursor:pointer;transition:filter .15s,transform .15s;letter-spacing:.02em;font-family:'Nunito',inherit}
 .btn:active{transform:scale(.97)}
 .btn-primary{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(41,121,255,.28)}
 .btn-primary:hover{filter:brightness(1.08)}
@@ -95,18 +86,8 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
   -webkit-overflow-scrolling:touch;scrollbar-width:none}
 .chip-row::-webkit-scrollbar{display:none}
 
-.divider{height:1px;background:var(--border);margin:0 16px}
 .sec-label{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
   color:var(--muted);padding:10px 16px 4px}
-
-.badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.08em;
-  text-transform:uppercase;border-radius:100px;padding:3px 8px}
-.b-gold{background:rgba(245,166,35,.15);color:#8B5A00;border:1px solid rgba(245,166,35,.35)}
-.b-purple{background:rgba(123,97,255,.12);color:#4B35CC;border:1px solid rgba(123,97,255,.3)}
-.b-cyan{background:rgba(0,212,255,.12);color:#005F7A;border:1px solid rgba(0,212,255,.3)}
-.b-red{background:var(--red-bg);color:#A0002A;border:1px solid rgba(255,77,106,.25)}
-.b-blue{background:var(--surface);color:var(--blue-deep);border:1px solid var(--border)}
-.b-green{background:var(--green-bg);color:#005C3B;border:1px solid rgba(0,196,140,.25)}
 
 .spinner{width:28px;height:28px;border:2.5px solid var(--border);
   border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
@@ -125,56 +106,42 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
   border:1.5px solid var(--border);border-radius:13px;padding:11px 14px;margin:12px 16px 0;
   transition:border-color .15s;box-shadow:0 1px 4px rgba(41,121,255,.06)}
 .search-bar:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(41,121,255,.12)}
-.search-bar input{flex:1;border:none;outline:none;font-size:15px;color:var(--text);background:none;
-  font-family:inherit}
+.search-bar input{flex:1;border:none;outline:none;font-size:15px;color:var(--text);
+  background:none;font-family:inherit}
 .search-bar input::placeholder{color:var(--muted)}
 .search-ico{color:var(--muted);flex-shrink:0}
-.search-x{background:none;border:none;color:var(--muted);font-size:17px;cursor:pointer;
-  line-height:1;padding:2px}
+.search-x{background:none;border:none;color:var(--muted);font-size:17px;cursor:pointer;line-height:1;padding:2px}
 
-/* card grid — 2 col, taller for real card art */
 .card-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 16px 24px}
-
 .card-tile{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;
   cursor:pointer;transition:transform .15s,box-shadow .15s}
 .card-tile:active{transform:scale(.97)}
 .card-tile:hover{box-shadow:0 6px 24px rgba(41,121,255,.13);border-color:rgba(41,121,255,.3)}
-
-/* art area — shows real card image */
 .tile-art{height:140px;position:relative;overflow:hidden;background:var(--surface)}
 .tile-art img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
-.tile-art-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  font-size:48px}
+.tile-art-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px}
 .tile-rarity{position:absolute;top:6px;right:6px;font-size:8px;font-weight:800;
   letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:100px;
   background:rgba(0,0,0,.55);color:#fff;backdrop-filter:blur(4px)}
 .tile-chase{position:absolute;top:6px;left:6px;font-size:9px}
-
 .tile-body{padding:10px 11px 12px}
 .tile-game-row{display:flex;align-items:center;gap:5px;margin-bottom:4px}
 .game-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .gd-op{background:#FF4D6A}.gd-pk{background:#F5A623}.gd-other{background:var(--blue)}
 .tile-setcode{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-.tile-name{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;
-  line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tile-name{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.25;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .tile-price-row{display:flex;align-items:center;justify-content:space-between}
-.tile-price{font-size:16px;font-weight:900;color:var(--navy)}
-.tile-chg{font-size:10px;font-weight:700;border-radius:5px;padding:2px 7px}
-.up{color:var(--green);background:var(--green-bg)}
-.dn{color:var(--red);background:var(--red-bg)}
+.tile-price{font-size:16px;font-weight:900;color:var(--navy);font-family:'Exo 2',sans-serif}
 
 /* ── CARD DETAIL ── */
-#screen-detail .detail-hero{
-  background:linear-gradient(160deg,#0A2A8A 0%,#1A6FE8 50%,#2979FF 100%);
-  padding:12px 16px 28px;position:relative;overflow:hidden
-}
-#screen-detail .detail-hero::before{content:'';position:absolute;inset:0;
+.detail-hero{background:linear-gradient(160deg,#0A2A8A 0%,#1A6FE8 50%,#2979FF 100%);
+  padding:12px 16px 28px;position:relative;overflow:hidden}
+.detail-hero::before{content:'';position:absolute;inset:0;
   background:url('Logo background.png') center/55% no-repeat;opacity:.08}
-
 .back-btn{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.18);
   border:none;border-radius:100px;padding:7px 16px;color:#fff;font-size:13px;font-weight:600;
   cursor:pointer;margin-bottom:16px;font-family:inherit}
-
 .detail-card-row{display:flex;gap:16px;align-items:flex-start;position:relative;z-index:1}
 .detail-img-wrap{width:110px;flex-shrink:0}
 .detail-img{width:110px;height:154px;object-fit:cover;object-position:top;
@@ -182,113 +149,81 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
 .detail-img-fallback{width:110px;height:154px;border-radius:10px;background:rgba(255,255,255,.12);
   display:flex;align-items:center;justify-content:center;font-size:52px}
 .detail-info{flex:1;color:#fff;min-width:0}
-.detail-name{font-size:20px;font-weight:900;line-height:1.2;margin-bottom:4px}
+.detail-name{font-size:20px;font-weight:900;line-height:1.2;margin-bottom:4px;font-family:'Exo 2',sans-serif}
 .detail-set{font-size:12px;opacity:.75;margin-bottom:10px;letter-spacing:.02em}
 .detail-badges{display:flex;gap:5px;flex-wrap:wrap}
 .detail-badge{font-size:9px;font-weight:800;border-radius:100px;padding:3px 9px;
   background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)}
-
-/* floating price block */
 .price-block{background:#fff;border-radius:18px;margin:0 16px;padding:20px;
-  transform:translateY(-16px);box-shadow:0 8px 32px rgba(41,121,255,.14);
-  border:1px solid var(--border)}
-.pb-price{font-size:44px;font-weight:900;color:var(--navy);letter-spacing:-.03em;line-height:1}
+  transform:translateY(-16px);box-shadow:0 8px 32px rgba(41,121,255,.14);border:1px solid var(--border)}
+.pb-price{font-size:44px;font-weight:900;color:var(--navy);letter-spacing:-.03em;line-height:1;
+  font-family:'Exo 2',sans-serif}
 .pb-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.08em;
   text-transform:uppercase;margin-top:3px;margin-bottom:12px}
 .pb-stats{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;
   padding-top:14px;border-top:1px solid var(--border)}
 .pb-stat{text-align:center}
-.pb-sv{font-size:14px;font-weight:900;color:var(--navy);display:block}
+.pb-sv{font-size:14px;font-weight:900;color:var(--navy);display:block;font-family:'Exo 2',sans-serif}
 .pb-sl{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
 .pb-div{background:var(--border)}
-
-/* chart */
 .chart-section{margin:0 16px 12px;background:#fff;border:1px solid var(--border);
   border-radius:14px;padding:14px 16px}
 .chart-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .chart-title{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .chart-pill{font-size:10px;font-weight:700;color:var(--blue);background:var(--surface);
-  border:1px solid var(--border);border-radius:100px;padding:3px 10px;cursor:pointer}
+  border:1px solid var(--border);border-radius:100px;padding:3px 10px}
 .chart-svg{width:100%;height:72px;display:block}
-
-/* actions */
-.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 12px}
-.detail-btn{border-radius:12px;padding:14px;font-size:13px;font-weight:700;display:flex;
-  align-items:center;justify-content:center;gap:6px;cursor:pointer;border:none;
-  font-family:inherit;transition:filter .15s,transform .15s}
+.detail-actions{padding:0 16px 12px}
+.detail-btn{width:100%;border-radius:12px;padding:15px;font-size:14px;font-weight:700;display:flex;
+  align-items:center;justify-content:center;gap:7px;cursor:pointer;border:none;
+  font-family:'Nunito',inherit;transition:filter .15s,transform .15s}
 .detail-btn:active{transform:scale(.97)}
 .db-blue{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(41,121,255,.3)}
 .db-blue:hover{filter:brightness(1.08)}
-.db-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy)}
+.db-green{background:linear-gradient(135deg,#00C48C,#00E5A0);color:#003D2A;
+  box-shadow:0 2px 12px rgba(0,196,140,.3)}
 
-/* sources */
-.sources-section{padding:0 16px 80px}
-.source-row{background:#fff;border:1px solid var(--border);border-radius:12px;
-  padding:14px 16px;margin-bottom:8px}
-.source-name{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px}
-.source-prices{display:flex;gap:24px}
-.sp-label{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
-.sp-val{font-size:15px;font-weight:900;color:var(--navy)}
-
-/* ── PORTFOLIO ── */
-.port-list{padding:12px 16px 80px}
-.port-item{background:#fff;border:1px solid var(--border);border-radius:14px;
-  padding:16px;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s}
-.port-item:active{transform:scale(.99)}
-.port-item:hover{box-shadow:0 4px 18px rgba(41,121,255,.1)}
-.pi-row{display:flex;align-items:center;justify-content:space-between}
-.pi-name{font-size:15px;font-weight:800;color:var(--navy)}
-.pi-arrow{color:var(--muted);font-size:20px;font-weight:300}
-.pi-desc{font-size:12px;color:var(--muted);margin-top:4px}
-.pi-meta{font-size:11px;color:var(--muted);margin-top:8px}
-
-/* portfolio detail */
-.pd-hero{background:linear-gradient(160deg,#0A2A8A,#1A6FE8,#2979FF);
-  padding:12px 16px 28px;color:#fff}
-.pd-value{font-size:38px;font-weight:900;letter-spacing:-.03em;margin:8px 0 4px}
-.pd-gain{font-size:14px;font-weight:600;opacity:.85}
-
+/* ── PORTFOLIO HERO ── */
+.port-hero{background:linear-gradient(160deg,var(--navy) 0%,#0D3B8F 50%,#1A6FE8 100%);
+  padding:20px 20px 28px;color:#fff;position:relative;overflow:hidden}
+.port-hero::before{content:'';position:absolute;inset:0;
+  background:url('Logo background.png') center/55% no-repeat;opacity:.06}
+.port-hero-z{position:relative;z-index:1}
+.port-hero-label{font-size:11px;font-weight:600;opacity:.6;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:6px}
+.port-hero-value{font-size:42px;font-weight:900;letter-spacing:-.03em;line-height:1;
+  font-family:'Exo 2',sans-serif}
+.port-hero-gain{font-size:13px;font-weight:700;opacity:.85;margin-top:6px}
+.port-refresh-btn{display:inline-flex;align-items:center;gap:6px;margin-top:16px;
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:100px;
+  padding:7px 16px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:background .15s}
+.port-refresh-btn:hover{background:rgba(255,255,255,.26)}
 .pd-stats-bar{background:#fff;display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;
   border-bottom:1px solid var(--border)}
 .pds{padding:12px;text-align:center}
-.pds-val{font-size:16px;font-weight:900;color:var(--navy)}
+.pds-val{font-size:16px;font-weight:900;color:var(--navy);font-family:'Exo 2',sans-serif}
 .pds-lbl{font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .pds-div{background:var(--border)}
-
 .entries-list{padding:0 16px 90px}
-.entry-item{display:flex;align-items:center;gap:12px;padding:12px 0;
-  border-bottom:1px solid var(--border);cursor:pointer}
+.entry-item{display:flex;align-items:center;gap:12px;padding:13px 0;
+  border-bottom:1px solid var(--border)}
 .entry-item:last-child{border-bottom:none}
 .entry-thumb{width:44px;height:62px;border-radius:7px;object-fit:cover;
-  object-position:top;background:var(--surface);flex-shrink:0}
+  object-position:top;background:var(--surface);flex-shrink:0;cursor:pointer}
 .entry-thumb-fallback{width:44px;height:62px;border-radius:7px;background:var(--surface);
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
-.entry-info{flex:1;min-width:0}
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer}
+.entry-info{flex:1;min-width:0;cursor:pointer}
 .entry-name{font-size:13px;font-weight:700;color:var(--navy);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .entry-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.entry-buy{font-size:10px;color:var(--text2);margin-top:3px;font-weight:600}
 .entry-nums{text-align:right;flex-shrink:0}
-.entry-val{font-size:14px;font-weight:900;color:var(--navy)}
+.entry-val{font-size:14px;font-weight:900;color:var(--navy);font-family:'Exo 2',sans-serif}
 .entry-chg{font-size:11px;font-weight:700;display:block;margin-top:2px}
-
-/* ── ALERTS ── */
-.alerts-list{padding:12px 16px 80px}
-.alert-item{display:flex;align-items:center;gap:12px;background:#fff;
-  border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px}
-.alert-thumb{width:38px;height:54px;border-radius:6px;object-fit:cover;
-  object-position:top;background:var(--surface);flex-shrink:0}
-.alert-thumb-fallback{width:38px;height:54px;border-radius:6px;background:var(--surface);
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
-.alert-info{flex:1;min-width:0}
-.alert-name{font-size:13px;font-weight:700;color:var(--navy);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.alert-set{font-size:10px;color:var(--muted);margin:2px 0 6px}
-.alert-type{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700}
-.alert-del{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;
-  padding:4px 6px;border-radius:8px;flex-shrink:0}
-.alert-del:hover{background:var(--red-bg);color:var(--red)}
-.triggered-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);
-  box-shadow:0 0 6px var(--gold);flex-shrink:0}
+.entry-edit{background:none;border:none;color:var(--muted);font-size:17px;cursor:pointer;
+  padding:6px 4px;border-radius:6px;flex-shrink:0;line-height:1}
+.entry-edit:hover{background:var(--surface);color:var(--blue)}
 
 /* ── SHEET ── */
 .overlay{position:fixed;inset:0;background:rgba(10,22,40,.52);z-index:100;
@@ -300,7 +235,8 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
   transform:translateY(100%);transition:transform .26s cubic-bezier(.4,0,.2,1)}
 .overlay.open .sheet{transform:translateY(0)}
 .sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
-.sheet-title{font-size:17px;font-weight:900;color:var(--navy);padding:16px 16px 12px}
+.sheet-title{font-size:17px;font-weight:900;color:var(--navy);padding:16px 16px 12px;
+  font-family:'Exo 2',sans-serif}
 .sheet-body{padding:0 16px}
 .fgroup{margin-bottom:14px}
 .flabel{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;
@@ -309,10 +245,14 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
   padding:11px 14px;font-size:14px;color:var(--text);background:#fff;
   outline:none;font-family:inherit;transition:border-color .15s}
 .finput:focus{border-color:var(--blue)}
+.fprice-wrap{position:relative}
+.fprice-sym{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-weight:700;font-size:14px;pointer-events:none}
+.finput-price{padding-left:28px}
 .fcard{background:var(--surface);border-radius:10px;padding:12px;margin-bottom:14px;
   display:flex;align-items:center;gap:10px}
-.fcard-img{width:36px;height:50px;border-radius:5px;object-fit:cover;object-position:top;
-  background:var(--border)}
+.fcard-img{width:36px;height:50px;border-radius:5px;object-fit:cover;
+  object-position:top;background:var(--border);flex-shrink:0}
 .fcard-name{font-size:13px;font-weight:700;color:var(--navy)}
 .fcard-sub{font-size:11px;color:var(--muted);margin-top:2px}
 .sheet-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px 0}
@@ -328,7 +268,6 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
 <body>
 <div id="app">
 
-  <!-- HEADER -->
   <header id="header">
     <div class="hdr-logo">
       <img class="hdr-icon" src="Homescreen App icon.png" alt=""/>
@@ -336,7 +275,6 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
     </div>
   </header>
 
-  <!-- SCREENS -->
   <div id="main">
 
     <!-- SEARCH -->
@@ -346,23 +284,21 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
         <input id="q" type="search" placeholder="Search cards, sets, numbers…" autocomplete="off" autocorrect="off" spellcheck="false"/>
         <button class="search-x" id="q-clear" style="display:none">✕</button>
       </div>
-
       <div class="chip-row" id="chips-game">
         <span class="chip on" data-v="">All Games</span>
         <span class="chip" data-v="onepiece" style="border-color:#FF4D6A;color:#A0002A">One Piece</span>
-        <span class="chip" data-v="pokemon"  style="border-color:#F5A623;color:#8B5A00">Pokémon</span>
+        <span class="chip" data-v="pokemon" style="border-color:#F5A623;color:#8B5A00">Pokémon</span>
       </div>
-
       <div class="chip-row" id="chips-rarity">
         <span class="chip on" data-v="">All Cards</span>
-        <span class="chip" data-v="chase"          style="border-color:var(--gold);color:#8B5A00">⭐ Chase</span>
-        <span class="chip" data-v="Treasure Rare"  style="border-color:var(--gold);color:#8B5A00">Treasure Rare</span>
-        <span class="chip" data-v="Manga Rare"     style="border-color:#C084FC;color:#4B35CC">Manga Rare</span>
-        <span class="chip" data-v="Special Art Rare" style="border-color:var(--purple);color:#4B35CC">Spec. Art Rare</span>
+        <span class="chip" data-v="chase" style="border-color:var(--gold);color:#8B5A00">⭐ Chase</span>
+        <span class="chip" data-v="Treasure Rare" style="border-color:var(--gold);color:#8B5A00">Treasure Rare</span>
+        <span class="chip" data-v="Manga Rare" style="border-color:#C084FC;color:#4B35CC">Manga Rare</span>
+        <span class="chip" data-v="Special Illustration Rare" style="border-color:var(--purple);color:#4B35CC">Spec. Art Rare</span>
         <span class="chip" data-v="Illustration Rare" style="border-color:var(--cyan);color:#005F7A">Illus. Rare</span>
-        <span class="chip" data-v="Secret Rare"   style="border-color:var(--red);color:#A0002A">Secret Rare</span>
+        <span class="chip" data-v="Secret Rare" style="border-color:var(--red);color:#A0002A">Secret Rare</span>
+        <span class="chip" data-v="Double Rare" style="border-color:var(--blue);color:var(--blue-deep)">Double Rare</span>
       </div>
-
       <div id="search-results"></div>
     </div>
 
@@ -371,24 +307,13 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
       <div id="detail-inner"></div>
     </div>
 
-    <!-- PORTFOLIO LIST -->
+    <!-- PORTFOLIO -->
     <div class="screen hidden" id="s-portfolio">
       <div id="port-inner"></div>
     </div>
 
-    <!-- PORTFOLIO DETAIL -->
-    <div class="screen hidden" id="s-portdetail">
-      <div id="portdetail-inner"></div>
-    </div>
+  </div>
 
-    <!-- ALERTS -->
-    <div class="screen hidden" id="s-alerts">
-      <div id="alerts-inner"></div>
-    </div>
-
-  </div><!-- /main -->
-
-  <!-- BOTTOM NAV -->
   <nav id="bottom-nav">
     <button class="nav-btn active" data-tab="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
@@ -398,10 +323,6 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
       <span>Portfolio</span>
     </button>
-    <button class="nav-btn" data-tab="alerts">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span>Alerts</span>
-    </button>
   </nav>
 </div>
 
@@ -409,20 +330,19 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
 <div class="overlay" id="sh-add">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Add to Portfolio</div>
+    <div class="sheet-title" id="sh-add-title">Add to Portfolio</div>
     <div class="sheet-body">
       <div class="fcard" id="sh-add-card"></div>
-      <div class="fgroup">
-        <label class="flabel">Portfolio</label>
-        <select class="finput" id="sh-add-port"></select>
-      </div>
       <div class="fgroup">
         <label class="flabel">Quantity</label>
         <input class="finput" id="sh-add-qty" type="number" min="1" value="1"/>
       </div>
       <div class="fgroup">
-        <label class="flabel">Purchase Price (optional)</label>
-        <input class="finput" id="sh-add-price" type="number" step="0.01" placeholder="0.00"/>
+        <label class="flabel">Purchase Price (per card)</label>
+        <div class="fprice-wrap">
+          <span class="fprice-sym">$</span>
+          <input class="finput finput-price" id="sh-add-price" type="number" step="0.01" placeholder="0.00"/>
+        </div>
       </div>
       <div class="fgroup">
         <label class="flabel">Condition</label>
@@ -439,51 +359,28 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
   </div>
 </div>
 
-<!-- SET ALERT SHEET -->
-<div class="overlay" id="sh-alert">
+<!-- EDIT PORTFOLIO ITEM SHEET -->
+<div class="overlay" id="sh-edit">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Set Price Alert</div>
+    <div class="sheet-title">Edit Entry</div>
     <div class="sheet-body">
-      <div class="fcard" id="sh-alert-card"></div>
+      <div class="fcard" id="sh-edit-card"></div>
       <div class="fgroup">
-        <label class="flabel">Alert Type</label>
-        <select class="finput" id="sh-alert-type">
-          <option value="price_below">Price drops below…</option>
-          <option value="price_above">Price rises above…</option>
-          <option value="any_sale">Any sale</option>
-        </select>
+        <label class="flabel">Quantity</label>
+        <input class="finput" id="sh-edit-qty" type="number" min="1" value="1"/>
       </div>
-      <div class="fgroup" id="sh-alert-thresh-group">
-        <label class="flabel">Threshold Price ($)</label>
-        <input class="finput" id="sh-alert-thresh" type="number" step="0.01" placeholder="0.00"/>
+      <div class="fgroup">
+        <label class="flabel">Purchase Price (per card)</label>
+        <div class="fprice-wrap">
+          <span class="fprice-sym">$</span>
+          <input class="finput finput-price" id="sh-edit-price" type="number" step="0.01" placeholder="0.00"/>
+        </div>
       </div>
     </div>
     <div class="sheet-actions">
-      <button class="btn btn-ghost" id="sh-alert-cancel">Cancel</button>
-      <button class="btn btn-gold" id="sh-alert-ok">Set Alert</button>
-    </div>
-  </div>
-</div>
-
-<!-- CREATE PORTFOLIO SHEET -->
-<div class="overlay" id="sh-newport">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-title">New Portfolio</div>
-    <div class="sheet-body">
-      <div class="fgroup">
-        <label class="flabel">Name</label>
-        <input class="finput" id="sh-np-name" type="text" placeholder="My Collection"/>
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Description (optional)</label>
-        <input class="finput" id="sh-np-desc" type="text" placeholder="Describe this portfolio…"/>
-      </div>
-    </div>
-    <div class="sheet-actions">
-      <button class="btn btn-ghost" id="sh-np-cancel">Cancel</button>
-      <button class="btn btn-primary" id="sh-np-ok">Create</button>
+      <button class="btn btn-danger" id="sh-edit-del">Remove</button>
+      <button class="btn btn-primary" id="sh-edit-ok">Save</button>
     </div>
   </div>
 </div>
@@ -491,265 +388,240 @@ h2.page-title{font-size:22px;font-weight:900;color:var(--navy)}
 <div id="toast"></div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────
-// All /api/* calls are proxied by serve.mjs → DGX Spark 192.168.1.61:8000
+const BASE = 'https://chasetrackr-backend.onrender.com';
+const PF_KEY = 'ct_portfolio_v1';
 
-// ── API ───────────────────────────────────────────────────────────────
+// ── API ───────────────────────────────────────────────────────────────────────
 const api = {
-  async req(method, path, body) {
-    const opts = { method, headers: {} };
-    if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
-    const r = await fetch(path, opts);
-    if (!r.ok) {
-      const txt = await r.text().catch(() => '');
-      throw new Error(`HTTP ${r.status}: ${txt.slice(0,120)}`);
-    }
+  async get(path) {
+    const r = await fetch(BASE + path);
+    if (!r.ok) { const t = await r.text().catch(()=>''); throw new Error(`HTTP ${r.status}: ${t.slice(0,100)}`); }
     return r.json();
   },
-  get: (p)    => api.req('GET', p),
-  post:(p,b)  => api.req('POST', p, b),
-  del: (p)    => api.req('DELETE', p),
-
-  // Search
   search(q, game, rarity) {
-    const body = { query: q || '', game: game || null, rarity: null, chase_only: false, card_type: null, set: null };
-    if (rarity === 'chase') body.chase_only = true;
-    else if (rarity)        body.rarity = rarity;
-    return api.post('/api/v1/search-card', body);
+    const p = new URLSearchParams();
+    if (q)      p.set('q', q);
+    if (game)   p.set('game', game);
+    if (rarity) p.set('rarity', rarity);
+    return api.get(`/cards/search?${p}`);
   },
-  card:    id => api.get(`/api/v1/card/${id}`),
-  prices:  id => api.get(`/api/v2/card/${id}/prices`),
-  history:(id,d=30)=>api.get(`/api/v1/card/${id}/history?days=${d}`),
-
-  // Portfolio
-  portfolios:  ()     => api.get('/api/v1/portfolios'),
-  portfolio:   id     => api.get(`/api/v1/portfolios/${id}`),
-  newPortfolio:(n,d)  => api.post('/api/v1/portfolios', {name:n, description:d}),
-  delPortfolio:id     => api.del(`/api/v1/portfolios/${id}`),
-  addCard:(pid,body)  => api.post(`/api/v1/portfolios/${pid}/cards`, body),
-  removeCard: eid     => api.del(`/api/v1/portfolios/cards/${eid}`),
-
-  // Alerts
-  alerts:     ()   => api.get('/api/v1/alerts'),
-  newAlert:   body => api.post('/api/v1/alerts', body),
-  delAlert:   id   => api.del(`/api/v1/alerts/${id}`),
+  card:    id      => api.get(`/cards/${id}`),
+  prices:  id      => api.get(`/prices/${id}`),
+  history: (id,d=30) => api.get(`/prices/${id}/history?days=${d}`),
 };
 
-// ── STATE ─────────────────────────────────────────────────────────────
+// ── PORTFOLIO (localStorage) ──────────────────────────────────────────────────
+const pf = {
+  load() { try { return JSON.parse(localStorage.getItem(PF_KEY)||'[]'); } catch { return []; } },
+  save(items) { localStorage.setItem(PF_KEY, JSON.stringify(items)); },
+  add(card, cachedPrice, qty, purchasePrice, condition) {
+    const items = pf.load();
+    items.push({
+      id: Math.random().toString(36).slice(2,10),
+      card_id: card.id, name: card.name, set: card.set,
+      set_code: card.set_code, number: card.number,
+      rarity: card.rarity, game: card.game, image_url: card.image_url,
+      quantity: qty, purchase_price: purchasePrice,
+      condition: condition || 'Near Mint',
+      cached_price: cachedPrice, added_at: Date.now(),
+    });
+    pf.save(items);
+  },
+  remove(id) { pf.save(pf.load().filter(i => i.id !== id)); },
+  update(id, qty, purchasePrice) {
+    const items = pf.load();
+    const item = items.find(i => i.id === id);
+    if (item) { item.quantity = qty; item.purchase_price = purchasePrice; pf.save(items); }
+  },
+  updatePrices(priceMap) {
+    const items = pf.load().map(i => {
+      const p = priceMap[i.card_id];
+      return p ? { ...i, cached_price: p.market_price ?? p.current_price } : i;
+    });
+    pf.save(items);
+    return items;
+  },
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
 const S = {
-  activeTab:   'search',
-  screenStack: ['search'],
-  searchGame:  '',
-  searchRarity:'',
-  searchDebounce: null,
-  activeCard:  null,
-  portfolios:  [],
+  activeTab: 'search', screenStack: ['search'],
+  searchGame: '', searchRarity: '', searchDebounce: null,
+  activeCard: null, activeCardPrices: null, editItemId: null,
 };
 
-// ── HELPERS ───────────────────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const fmt = {
-  price: v => v != null && v !== undefined ? `$${(+v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}` : '—',
-  pct:   v => v != null ? `${+v >= 0 ? '+' : ''}${(+v).toFixed(1)}%` : '—',
+  price: v => (v != null && !isNaN(+v))
+    ? `$${(+v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}` : '—',
+  pct: v => (v != null && !isNaN(+v))
+    ? `${+v>=0?'+':''}${(+v).toFixed(1)}%` : '—',
 };
 
-function detectGame(card) {
-  // Use card_game field if present (portfolio entries)
-  if (card.card_game) return card.card_game;
-  // Use card.id prefix
-  const id = (card.id || card.card_id || '').toLowerCase();
-  if (id.startsWith('op-') || id.startsWith('eb') || id.startsWith('st')) return 'onepiece';
-  // Pokémon ID patterns: base1-4, sm1-1, swsh1-1, sv1-1, xy1-1, etc.
-  return 'pokemon';
-}
-
 function gameStyle(card) {
-  const g = detectGame(card);
-  if (g === 'onepiece') return { dot:'gd-op', bg:'linear-gradient(160deg,#3D0015,#8B0032,#C00040)' };
-  if (g === 'pokemon')  return { dot:'gd-pk', bg:'linear-gradient(160deg,#1a1000,#5A3A00,#8B5A00)' };
-  return { dot:'gd-other', bg:'linear-gradient(160deg,#0A1628,#1A3A6B,#2979FF)' };
-}
-
-function rarityBadgeClass(r) {
-  const lo = (r||'').toLowerCase();
-  if (lo.includes('treasure') || lo.includes('gold')) return 'b-gold';
-  if (lo.includes('manga') || lo.includes('special art') || lo.includes('sar')) return 'b-purple';
-  if (lo.includes('illustration') || lo.includes(' ir')) return 'b-cyan';
-  if (lo.includes('secret')) return 'b-red';
-  return 'b-blue';
-}
-
-function sourceName(s) {
-  return { pokemontcg:'Pokémon TCG API', tcgplayer_op:'TCGPlayer', ebay:'eBay',
-           limitless:'Limitless TCG' }[s] || s;
+  const g = (card.game||'').toLowerCase();
+  const id = (card.id||card.card_id||'').toLowerCase();
+  if (g==='onepiece'||id.startsWith('op-'))
+    return { dot:'gd-op', bg:'linear-gradient(160deg,#3D0015,#8B0032,#C00040)' };
+  return { dot:'gd-pk', bg:'linear-gradient(160deg,#1a1000,#5A3A00,#8B5A00)' };
 }
 
 function toast(msg, ms=2600) {
-  const el = $('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), ms);
+  const el=$('toast'); el.textContent=msg; el.classList.add('show');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'), ms);
 }
-
 function openSheet(id)  { $(id).classList.add('open'); }
 function closeSheet(id) { $(id).classList.remove('open'); }
 document.querySelectorAll('.overlay').forEach(o =>
   o.addEventListener('click', e => { if (e.target===o) o.classList.remove('open'); }));
 
-// ── NAVIGATION ────────────────────────────────────────────────────────
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
 function showScreen(key) {
   document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.classList.add('hidden'); });
   const el = $('s-'+key);
   el.classList.remove('hidden');
   requestAnimationFrame(() => el.classList.add('active'));
 }
-
-function push(key) {
-  S.screenStack.push(key);
-  showScreen(key);
-}
-
+function push(key) { S.screenStack.push(key); showScreen(key); }
 function goBack() {
   if (S.screenStack.length > 1) {
     S.screenStack.pop();
-    showScreen(S.screenStack[S.screenStack.length-1]);
+    const prev = S.screenStack[S.screenStack.length-1];
+    showScreen(prev);
+    if (prev==='portfolio') renderPortfolio();
   }
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
-    S.activeTab = tab;
-    S.screenStack = [tab];
+    S.activeTab = tab; S.screenStack = [tab];
     showScreen(tab);
-    if (tab==='portfolio') loadPortfolios();
-    if (tab==='alerts')    loadAlerts();
+    if (tab==='portfolio') renderPortfolio();
   });
 });
 
-// ── SEARCH ────────────────────────────────────────────────────────────
-const qInput = $('q'), qClear = $('q-clear'), results = $('search-results');
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+const qInput=$('q'), qClear=$('q-clear'), results=$('search-results');
 
 qInput.addEventListener('input', () => {
   qClear.style.display = qInput.value ? 'block' : 'none';
   clearTimeout(S.searchDebounce);
   S.searchDebounce = setTimeout(doSearch, 380);
 });
-qClear.addEventListener('click', () => {
-  qInput.value = ''; qClear.style.display = 'none';
-  renderSearchEmpty();
-});
+qClear.addEventListener('click', () => { qInput.value=''; qClear.style.display='none'; renderSearchEmpty(); });
 
 $('chips-game').addEventListener('click', e => {
   const c = e.target.closest('.chip'); if (!c) return;
   $('chips-game').querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
-  c.classList.add('on');
-  S.searchGame = c.dataset.v;
-  doSearch();
+  c.classList.add('on'); S.searchGame = c.dataset.v; doSearch();
 });
-
 $('chips-rarity').addEventListener('click', e => {
   const c = e.target.closest('.chip'); if (!c) return;
   $('chips-rarity').querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
-  c.classList.add('on');
-  S.searchRarity = c.dataset.v;
-  doSearch();
+  c.classList.add('on'); S.searchRarity = c.dataset.v; doSearch();
 });
 
 async function doSearch() {
   const q = qInput.value.trim();
-  if (!q && !S.searchGame && !S.searchRarity) { renderSearchEmpty(); return; }
+  const rarity = S.searchRarity;
+  if (!q && !S.searchGame && !rarity) { renderSearchEmpty(); return; }
   results.innerHTML = `<div class="loading"><div class="spinner"></div><p>Searching…</p></div>`;
   try {
-    const data = await api.search(q, S.searchGame, S.searchRarity);
-    const cards = data.results || [];
+    const apiRarity = rarity==='chase' ? '' : rarity;
+    const data = await api.search(q, S.searchGame, apiRarity);
+    let cards = Array.isArray(data) ? data : (data.results||data.cards||[]);
+    if (rarity==='chase') cards = cards.filter(c => c.is_chase);
     if (!cards.length) {
-      results.innerHTML = `<div class="empty"><div class="empty-ico">🃏</div><div class="empty-t">No results found</div><div class="empty-s">Try a different name or clear your filters.</div></div>`;
+      results.innerHTML = `<div class="empty"><div class="empty-ico">🃏</div>
+        <div class="empty-t">No results found</div>
+        <div class="empty-s">Try a different name or clear your filters.</div></div>`;
       return;
     }
     results.innerHTML = `<div class="card-grid">${cards.map(cardTileHTML).join('')}</div>`;
     results.querySelectorAll('.card-tile').forEach(el =>
       el.addEventListener('click', () => openCardDetail(el.dataset.id)));
   } catch(e) {
-    results.innerHTML = `<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Cannot reach DGX Spark</div><div class="empty-s">Check that your backend is running at 192.168.1.61:8000<br><br><small style="color:var(--muted)">${e.message}</small></div></div>`;
+    results.innerHTML = `<div class="empty"><div class="empty-ico">⚠️</div>
+      <div class="empty-t">Connection error</div>
+      <div class="empty-s">Could not reach the ChaseTrackr server.<br><br>
+        <small style="color:var(--muted)">${e.message}</small></div></div>`;
   }
 }
 
 function renderSearchEmpty() {
-  results.innerHTML = `
-    <div class="empty" style="padding-top:48px">
-      <div class="empty-ico" style="font-size:64px;opacity:.25">🔍</div>
-      <div class="empty-t">Search ChaseTrackr</div>
-      <div class="empty-s">Type a card name, set code, or collector number to get started.</div>
-    </div>`;
+  results.innerHTML = `<div class="empty" style="padding-top:48px">
+    <div class="empty-ico" style="font-size:64px;opacity:.2">🔍</div>
+    <div class="empty-t">Search ChaseTrackr</div>
+    <div class="empty-s">Type a card name, set code, or collector number to get started.</div>
+  </div>`;
 }
 
 function cardTileHTML(card) {
-  const gs    = gameStyle(card);
-  const price = card.current_price ?? card.market_price;
-  const rarity = card.rarity || '';
-  const imgURL = card.image_url;
+  const gs = gameStyle(card);
+  const price = card.market_price ?? card.current_price;
   return `
     <div class="card-tile" data-id="${card.id}">
       <div class="tile-art" style="background:${gs.bg}">
-        ${imgURL
-          ? `<img src="${imgURL}" alt="${card.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        ${card.image_url
+          ? `<img src="${card.image_url}" alt="${card.name}" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
              <div class="tile-art-fallback" style="display:none;background:${gs.bg}">🃏</div>`
-          : `<div class="tile-art-fallback" style="background:${gs.bg}">🃏</div>`
-        }
-        ${rarity ? `<span class="tile-rarity">${rarity}</span>` : ''}
+          : `<div class="tile-art-fallback" style="background:${gs.bg}">🃏</div>`}
+        ${card.rarity ? `<span class="tile-rarity">${card.rarity}</span>` : ''}
         ${card.is_chase ? `<span class="tile-chase">⭐</span>` : ''}
       </div>
       <div class="tile-body">
         <div class="tile-game-row">
           <div class="game-dot ${gs.dot}"></div>
-          <span class="tile-setcode">${card.set_code || ''}</span>
+          <span class="tile-setcode">${card.set_code||''}</span>
         </div>
         <div class="tile-name">${card.name}</div>
         <div class="tile-price-row">
           <span class="tile-price">${fmt.price(price)}</span>
-          ${card.is_chase ? `<span class="tile-chg" style="background:#FFF8E0;color:#8B5A00;font-size:10px;border-radius:5px;padding:2px 7px">Chase</span>` : ''}
+          ${card.is_chase ? `<span style="background:#FFF8E0;color:#8B5A00;font-size:9px;font-weight:800;border-radius:5px;padding:2px 7px">Chase</span>` : ''}
         </div>
       </div>
     </div>`;
 }
 
-// ── CARD DETAIL ───────────────────────────────────────────────────────
+// ── CARD DETAIL ───────────────────────────────────────────────────────────────
 async function openCardDetail(cardId) {
   push('detail');
-  $('detail-inner').innerHTML = `<div class="loading" style="margin-top:60px"><div class="spinner"></div><p>Loading card…</p></div>`;
+  $('detail-inner').innerHTML = `<div class="loading" style="margin-top:60px"><div class="spinner"></div><p>Loading…</p></div>`;
   try {
-    const [cardRes, pricesRes] = await Promise.allSettled([
-      api.card(cardId),
-      api.prices(cardId),
-    ]);
-    const card   = cardRes.status==='fulfilled'   ? (cardRes.value.card   || cardRes.value) : null;
-    const prices = pricesRes.status==='fulfilled' ? pricesRes.value : null;
+    const [cR, pR] = await Promise.allSettled([api.card(cardId), api.prices(cardId)]);
+    const card   = cR.status==='fulfilled' ? cR.value : null;
+    const prices = pR.status==='fulfilled' ? pR.value : null;
     if (!card) throw new Error('Card not found');
-    S.activeCard = card;
+    S.activeCard = card; S.activeCardPrices = prices;
     renderCardDetail(card, prices);
-    // Load history async after render
     api.history(cardId, 30).then(h => {
       const el = $('chart-area');
       if (el && h?.history?.length > 1) el.innerHTML = buildChart(h.history);
-    }).catch(() => {});
+    }).catch(() => {
+      const el = $('chart-area');
+      if (el) el.innerHTML = `<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">No history data</div>`;
+    });
   } catch(e) {
-    $('detail-inner').innerHTML = `<div style="padding:16px"><button class="back-btn" onclick="goBack()">← Back</button></div><div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Failed to load</div><div class="empty-s">${e.message}</div></div>`;
+    $('detail-inner').innerHTML = `
+      <div style="padding:16px"><button class="back-btn" onclick="goBack()">← Back</button></div>
+      <div class="empty"><div class="empty-ico">⚠️</div>
+        <div class="empty-t">Failed to load</div><div class="empty-s">${e.message}</div></div>`;
   }
 }
 
 function renderCardDetail(card, prices) {
-  const gs  = gameStyle(card);
-  const fv  = prices?.fair_value;
-  const avg = prices?.average_price;
-  const hi  = prices?.highest_price;
-  const lo  = prices?.lowest_price;
-  const displayPrice = fv ?? avg;
-  const sources = (prices?.sources || []).filter(s => s.price_market != null || s.price_current != null);
+  const gs           = gameStyle(card);
+  const currentPrice = prices?.current_price ?? card.current_price;
+  const marketPrice  = prices?.market_price  ?? card.market_price;
+  const displayPrice = marketPrice ?? currentPrice;
+  const pfItems      = pf.load().filter(i => i.card_id === card.id);
+  const inPort       = pfItems.length > 0;
+  const portQty      = pfItems.reduce((s,i)=>s+i.quantity, 0);
 
   $('detail-inner').innerHTML = `
     <div class="detail-hero">
@@ -760,8 +632,7 @@ function renderCardDetail(card, prices) {
             ? `<img class="detail-img" src="${card.image_url}" alt="${card.name}" loading="lazy"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
                <div class="detail-img-fallback" style="display:none">🃏</div>`
-            : `<div class="detail-img-fallback">🃏</div>`
-          }
+            : `<div class="detail-img-fallback">🃏</div>`}
         </div>
         <div class="detail-info">
           <div class="detail-name">${card.name}</div>
@@ -770,7 +641,7 @@ function renderCardDetail(card, prices) {
             <span class="detail-badge">${card.rarity}</span>
             ${card.is_chase ? `<span class="detail-badge" style="background:rgba(245,166,35,.3);border-color:rgba(245,166,35,.5)">⭐ Chase</span>` : ''}
             ${card.variant && card.variant!=='standard' ? `<span class="detail-badge">${card.variant}</span>` : ''}
-            <span class="detail-badge">${card.type}</span>
+            ${card.type ? `<span class="detail-badge">${card.type}</span>` : ''}
           </div>
         </div>
       </div>
@@ -778,13 +649,13 @@ function renderCardDetail(card, prices) {
 
     <div class="price-block">
       <div class="pb-price">${fmt.price(displayPrice)}</div>
-      <div class="pb-label">${fv ? 'Fair Value' : avg ? 'Avg Market Price' : 'Price Data Loading…'}</div>
+      <div class="pb-label">Market Price</div>
       <div class="pb-stats">
-        <div class="pb-stat"><span class="pb-sv">${fmt.price(fv)}</span><span class="pb-sl">Fair Value</span></div>
+        <div class="pb-stat"><span class="pb-sv">${fmt.price(currentPrice)}</span><span class="pb-sl">Current</span></div>
         <div class="pb-div"></div>
-        <div class="pb-stat"><span class="pb-sv" style="color:var(--green)">${fmt.price(hi)}</span><span class="pb-sl">High</span></div>
+        <div class="pb-stat"><span class="pb-sv">${fmt.price(marketPrice)}</span><span class="pb-sl">Market</span></div>
         <div class="pb-div"></div>
-        <div class="pb-stat"><span class="pb-sv" style="color:var(--red)">${fmt.price(lo)}</span><span class="pb-sl">Low</span></div>
+        <div class="pb-stat"><span class="pb-sv" style="font-size:12px">${card.set_code||'—'}</span><span class="pb-sl">Set</span></div>
       </div>
     </div>
 
@@ -799,301 +670,226 @@ function renderCardDetail(card, prices) {
     </div>
 
     <div class="detail-actions">
-      <button class="detail-btn db-blue" id="btn-add-port">＋ Add to Portfolio</button>
-      <button class="detail-btn db-gold" id="btn-set-alert">🔔 Set Alert</button>
+      <button class="detail-btn ${inPort?'db-green':'db-blue'}" id="btn-add-port">
+        ${inPort ? `✓ In Portfolio (${portQty}x)` : '＋ Add to Portfolio'}
+      </button>
     </div>
-
-    ${sources.length ? `
-    <div class="sec-label">Price Sources</div>
-    <div class="sources-section">
-      ${sources.map(s => `
-        <div class="source-row">
-          <div class="source-name">${sourceName(s.source)}</div>
-          <div class="source-prices">
-            ${s.price_market  != null ? `<div><div class="sp-label">Market</div><div class="sp-val">${fmt.price(s.price_market)}</div></div>` : ''}
-            ${s.price_current != null ? `<div><div class="sp-label">Current</div><div class="sp-val">${fmt.price(s.price_current)}</div></div>` : ''}
-          </div>
-        </div>`).join('')}
-    </div>` : '<div style="height:80px"></div>'}
-  `;
+    <div style="height:80px"></div>`;
 
   $('detail-back').addEventListener('click', goBack);
-  $('btn-add-port').addEventListener('click', openAddToPortfolioSheet);
-  $('btn-set-alert').addEventListener('click', openAlertSheet);
+  $('btn-add-port').addEventListener('click', openAddSheet);
 }
 
 function buildChart(history) {
-  const prices = history.map(p => +p.price).filter(p => !isNaN(p));
-  if (prices.length < 2) return '<div style="color:var(--muted);font-size:12px">Not enough data</div>';
-  const mn = Math.min(...prices), mx = Math.max(...prices);
-  const pad = (mx-mn)*0.12||1, lo=mn-pad, range=mx+pad-lo;
-  const W=320, H=72;
-  const pts = prices.map((p,i) => `${(i/(prices.length-1))*W},${H-((p-lo)/range)*H}`).join(' ');
-  const trend = prices[prices.length-1] >= prices[0] ? '#00C48C' : '#FF4D6A';
-  return `
-    <svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="none">
-      <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="${trend}" stop-opacity=".2"/>
-        <stop offset="100%" stop-color="${trend}" stop-opacity="0"/>
-      </linearGradient></defs>
-      <polyline points="${pts} ${W},${H} 0,${H}" fill="url(#cg)"/>
-      <polyline points="${pts}" fill="none" stroke="${trend}" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="${(prices.length-1)/(prices.length-1)*W}" cy="${H-((prices[prices.length-1]-lo)/range)*H}" r="4" fill="${trend}"/>
-    </svg>`;
+  const prices = history.map(p=>+p.price).filter(p=>!isNaN(p));
+  if (prices.length < 2) return '<div style="color:var(--muted);font-size:12px;text-align:center;padding:8px">Not enough data</div>';
+  const mn=Math.min(...prices), mx=Math.max(...prices);
+  const pad=(mx-mn)*.12||1, lo=mn-pad, range=mx+pad-lo;
+  const W=320,H=72;
+  const pts=prices.map((p,i)=>`${(i/(prices.length-1))*W},${H-((p-lo)/range)*H}`).join(' ');
+  const trend=prices[prices.length-1]>=prices[0]?'#00C48C':'#FF4D6A';
+  const lx=(prices.length-1)/(prices.length-1)*W;
+  const ly=H-((prices[prices.length-1]-lo)/range)*H;
+  return `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" preserveAspectRatio="none">
+    <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${trend}" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="${trend}" stop-opacity="0"/>
+    </linearGradient></defs>
+    <polyline points="${pts} ${W},${H} 0,${H}" fill="url(#cg)"/>
+    <polyline points="${pts}" fill="none" stroke="${trend}" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${lx}" cy="${ly}" r="4" fill="${trend}"/>
+  </svg>`;
 }
 
-// ── PORTFOLIO ─────────────────────────────────────────────────────────
-async function loadPortfolios() {
-  $('port-inner').innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading portfolios…</p></div>`;
-  try {
-    const data = await api.portfolios();
-    S.portfolios = data.portfolios || [];
-    renderPortfolioList(S.portfolios);
-  } catch(e) {
-    $('port-inner').innerHTML = `<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Cannot reach DGX Spark</div><div class="empty-s">${e.message}</div></div>`;
+// ── PORTFOLIO ─────────────────────────────────────────────────────────────────
+function renderPortfolio(liveMap=null) {
+  const el=$('port-inner'), items=pf.load();
+
+  if (!items.length) {
+    el.innerHTML = `<div class="page-header"><h2 class="page-title">Portfolio</h2></div>
+      <div class="empty" style="padding-top:40px">
+        <div class="empty-ico" style="font-size:64px;opacity:.2">👜</div>
+        <div class="empty-t">Portfolio is empty</div>
+        <div class="empty-s">Search for a card and tap "Add to Portfolio" to start tracking your collection.</div>
+      </div>`;
+    return;
   }
-}
 
-function renderPortfolioList(list) {
-  const inner = $('port-inner');
-  inner.innerHTML = `
-    <div class="page-header">
-      <h2 class="page-title">My Portfolio</h2>
-      <button class="btn btn-primary btn-sm" id="btn-new-port">＋ New</button>
-    </div>
-    ${!list.length
-      ? `<div class="empty"><div class="empty-ico">👜</div><div class="empty-t">No Portfolios Yet</div><div class="empty-s">Create a portfolio to start tracking your collection.</div><button class="btn btn-primary" style="margin-top:12px" id="btn-new-port2">Create Portfolio</button></div>`
-      : `<div class="port-list">${list.map(portItemHTML).join('')}</div>`
-    }`;
-  inner.querySelectorAll('#btn-new-port,#btn-new-port2').forEach(b => b?.addEventListener('click', openNewPortfolioSheet));
-  inner.querySelectorAll('.port-item').forEach(el =>
-    el.addEventListener('click', () => openPortfolioDetail(+el.dataset.id)));
-}
+  const priceOf = id => liveMap?.[id]?.market_price ?? liveMap?.[id]?.current_price
+    ?? items.find(i=>i.card_id===id)?.cached_price ?? null;
 
-function portItemHTML(p) {
-  return `
-    <div class="port-item" data-id="${p.id}">
-      <div class="pi-row">
-        <span class="pi-name">${p.name}</span>
-        <span class="pi-arrow">›</span>
-      </div>
-      ${p.description ? `<div class="pi-desc">${p.description}</div>` : ''}
-      <div class="pi-meta">Tap to view cards & value</div>
-    </div>`;
-}
-
-async function openPortfolioDetail(id) {
-  push('portdetail');
-  $('portdetail-inner').innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading portfolio…</p></div>`;
-  try {
-    const detail = await api.portfolio(id);
-    renderPortfolioDetail(detail, id);
-  } catch(e) {
-    $('portdetail-inner').innerHTML = `<div style="padding:16px"><button class="back-btn" onclick="goBack()">← Back</button></div><div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Failed to load</div><div class="empty-s">${e.message}</div></div>`;
-  }
-}
-
-function renderPortfolioDetail(d, portId) {
-  // API returns snake_case: total_value, total_gain_loss, total_gain_pct, total_cards, total_quantity, total_cost
-  const tv = d.total_value     ?? 0;
-  const tg = d.total_gain_loss ?? 0;
-  const tp = d.total_gain_pct  ?? 0;
-  const tc = d.total_cards     ?? (d.cards?.length || 0);
-  const tq = d.total_quantity  ?? 0;
-  const tco= d.total_cost      ?? 0;
-  const gainPos = tg >= 0;
-  const cards = d.cards || [];
-
-  $('portdetail-inner').innerHTML = `
-    <div class="pd-hero">
-      <button class="back-btn" id="pd-back">← Portfolio</button>
-      <div style="font-size:14px;opacity:.75;margin-bottom:4px">${d.name}</div>
-      <div class="pd-value">${fmt.price(tv)}</div>
-      <div class="pd-gain" style="color:${gainPos?'#7EFFD0':'#FFB0B0'}">
-        ${gainPos?'↑':'↓'} ${fmt.price(Math.abs(tg))} (${fmt.pct(tp)}) all time
-      </div>
-    </div>
-    <div class="pd-stats-bar">
-      <div class="pds"><div class="pds-val">${tc}</div><div class="pds-lbl">Cards</div></div>
-      <div class="pds-div"></div>
-      <div class="pds"><div class="pds-val">${tq||tc}</div><div class="pds-lbl">Total Qty</div></div>
-      <div class="pds-div"></div>
-      <div class="pds"><div class="pds-val">${fmt.price(tco)}</div><div class="pds-lbl">Cost Basis</div></div>
-    </div>
-    <div class="sec-label">Cards in Portfolio</div>
-    <div class="entries-list">
-      ${cards.length
-        ? cards.map(entryHTML).join('')
-        : `<div class="empty"><div class="empty-ico">🃏</div><div class="empty-t">No cards yet</div><div class="empty-s">Search for a card and tap "Add to Portfolio".</div></div>`
-      }
-    </div>`;
-
-  $('pd-back').addEventListener('click', goBack);
-  $('portdetail-inner').querySelectorAll('.entry-item[data-card]').forEach(el =>
-    el.addEventListener('click', () => openCardDetail(el.dataset.card)));
-}
-
-function entryHTML(e) {
-  const gainPos = (e.gain_loss || 0) >= 0;
-  const img = e.card_image_url;
-  return `
-    <div class="entry-item" data-card="${e.card_id}">
-      ${img
-        ? `<img class="entry-thumb" src="${img}" alt="${e.card_name}" loading="lazy"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-           <div class="entry-thumb-fallback" style="display:none">🃏</div>`
-        : `<div class="entry-thumb-fallback">🃏</div>`
-      }
-      <div class="entry-info">
-        <div class="entry-name">${e.card_name}</div>
-        <div class="entry-sub">${e.card_set} · ${e.card_rarity} · Qty: ${e.quantity}</div>
-      </div>
-      <div class="entry-nums">
-        <div class="entry-val">${fmt.price(e.current_price)}</div>
-        <span class="entry-chg" style="color:${gainPos?'var(--green)':'var(--red)'};font-size:11px;font-weight:700">
-          ${gainPos?'↑':'↓'} ${fmt.pct(e.gain_loss_pct)}
-        </span>
-      </div>
-    </div>`;
-}
-
-// ── ALERTS ────────────────────────────────────────────────────────────
-async function loadAlerts() {
-  $('alerts-inner').innerHTML = `<div class="loading"><div class="spinner"></div><p>Loading alerts…</p></div>`;
-  try {
-    const data = await api.alerts();
-    renderAlerts(data.alerts || []);
-  } catch(e) {
-    $('alerts-inner').innerHTML = `<div class="empty"><div class="empty-ico">⚠️</div><div class="empty-t">Cannot reach backend</div><div class="empty-s">${e.message}</div></div>`;
-  }
-}
-
-function renderAlerts(list) {
-  const typeLabel = { price_above:'↑ Price Above', price_below:'↓ Price Below', any_sale:'Any Sale', new_listing:'New Listing' };
-  const typeColor = { price_above:'color:var(--green)', price_below:'color:var(--red)', any_sale:'color:var(--blue)', new_listing:'color:var(--purple)' };
-
-  $('alerts-inner').innerHTML = `
-    <div class="page-header">
-      <h2 class="page-title">Price Alerts</h2>
-    </div>
-    <p class="page-sub">Tap Set Alert on any card to add a new one.</p>
-    ${!list.length
-      ? `<div class="empty"><div class="empty-ico">🔔</div><div class="empty-t">No Alerts Yet</div><div class="empty-s">Open a card and tap "Set Alert" to get notified when prices change.</div></div>`
-      : `<div class="alerts-list">${list.map(a => `
-          <div class="alert-item">
-            ${a.card_image_url
-              ? `<img class="alert-thumb" src="${a.card_image_url}" alt="${a.card_name}" loading="lazy"
-                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
-                 <div class="alert-thumb-fallback" style="display:none">🃏</div>`
-              : `<div class="alert-thumb-fallback">🃏</div>`
-            }
-            <div class="alert-info">
-              <div class="alert-name">${a.card_name}</div>
-              <div class="alert-set">${a.card_set}</div>
-              <div class="alert-type">
-                <span style="${typeColor[a.alert_type]||''}">${typeLabel[a.alert_type]||a.alert_type}</span>
-                ${a.threshold_price!=null ? `<span style="color:var(--muted)">@ ${fmt.price(a.threshold_price)}</span>` : ''}
-              </div>
-            </div>
-            ${a.last_triggered ? `<div class="triggered-dot" title="Triggered"></div>` : ''}
-            <button class="alert-del" data-id="${a.id}">✕</button>
-          </div>`).join('')}
-        </div>`
-    }`;
-
-  $('alerts-inner').querySelectorAll('.alert-del').forEach(btn => {
-    btn.addEventListener('click', async e => {
-      e.stopPropagation();
-      try {
-        await api.delAlert(+btn.dataset.id);
-        toast('Alert removed');
-        loadAlerts();
-      } catch { toast('Failed to remove alert'); }
-    });
+  let totalValue=0, totalCost=0, hasCost=false;
+  items.forEach(it => {
+    const cp=priceOf(it.card_id);
+    if (cp!=null) totalValue += cp*it.quantity;
+    if (it.purchase_price!=null) { totalCost += it.purchase_price*it.quantity; hasCost=true; }
   });
+  const gain    = hasCost ? totalValue-totalCost : null;
+  const gainPct = hasCost && totalCost>0 ? (gain/totalCost)*100 : null;
+  const gainPos = gain==null||gain>=0;
+  const uniq    = new Set(items.map(i=>i.card_id)).size;
+  const totalQty= items.reduce((s,i)=>s+i.quantity,0);
+
+  el.innerHTML = `
+    <div class="port-hero">
+      <div class="port-hero-z">
+        <div class="port-hero-label">Total Portfolio Value</div>
+        <div class="port-hero-value">${totalValue>0?fmt.price(totalValue):'—'}</div>
+        ${gain!=null
+          ? `<div class="port-hero-gain" style="color:${gainPos?'#7EFFD0':'#FFB0B0'}">
+               ${gainPos?'↑':'↓'} ${fmt.price(Math.abs(gain))} (${fmt.pct(gainPct)}) vs cost basis
+             </div>`
+          : `<div class="port-hero-gain" style="opacity:.5">Add purchase prices to track gains</div>`}
+        <button class="port-refresh-btn" id="btn-refresh">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+          Refresh Prices
+        </button>
+      </div>
+    </div>
+
+    <div class="pd-stats-bar">
+      <div class="pds"><div class="pds-val">${uniq}</div><div class="pds-lbl">Cards</div></div>
+      <div class="pds-div"></div>
+      <div class="pds"><div class="pds-val">${totalQty}</div><div class="pds-lbl">Total Qty</div></div>
+      <div class="pds-div"></div>
+      <div class="pds"><div class="pds-val">${hasCost?fmt.price(totalCost):'—'}</div><div class="pds-lbl">Cost Basis</div></div>
+    </div>
+
+    <div class="sec-label">Your Cards</div>
+    <div class="entries-list">
+      ${items.map(it => {
+        const cp     = priceOf(it.card_id);
+        const value  = cp!=null ? cp*it.quantity : null;
+        const cost   = it.purchase_price!=null ? it.purchase_price*it.quantity : null;
+        const itGain = (value!=null&&cost!=null) ? value-cost : null;
+        const itPct  = (itGain!=null&&cost>0) ? (itGain/cost)*100 : null;
+        const pos    = itGain==null||itGain>=0;
+        return `<div class="entry-item">
+          ${it.image_url
+            ? `<img class="entry-thumb" src="${it.image_url}" alt="${it.name}" loading="lazy"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                 onclick="openCardDetail('${it.card_id}')"/>
+               <div class="entry-thumb-fallback" style="display:none" onclick="openCardDetail('${it.card_id}')">🃏</div>`
+            : `<div class="entry-thumb-fallback" onclick="openCardDetail('${it.card_id}')">🃏</div>`}
+          <div class="entry-info" onclick="openCardDetail('${it.card_id}')">
+            <div class="entry-name">${it.name}</div>
+            <div class="entry-sub">${it.set} · ${it.rarity} · ${it.quantity}x</div>
+            ${it.purchase_price!=null
+              ? `<div class="entry-buy">Bought @ ${fmt.price(it.purchase_price)}/ea</div>`
+              : `<div class="entry-buy" style="opacity:.45">No purchase price set</div>`}
+          </div>
+          <div class="entry-nums">
+            <div class="entry-val">${value!=null?fmt.price(value):'—'}</div>
+            ${itGain!=null
+              ? `<span class="entry-chg" style="color:${pos?'var(--green)':'var(--red)'}">
+                   ${pos?'↑':'↓'} ${fmt.pct(itPct)}
+                 </span>`
+              : (cp!=null?`<span class="entry-chg" style="color:var(--muted)">${fmt.price(cp)} mkt</span>`:'')
+            }
+          </div>
+          <button class="entry-edit" onclick="openEditSheet('${it.id}')">✎</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  $('btn-refresh').addEventListener('click', refreshPrices);
 }
 
-// ── SHEETS ────────────────────────────────────────────────────────────
-// ─ Add to Portfolio ─
-async function openAddToPortfolioSheet() {
-  const card = S.activeCard;
-  if (!card) return;
+async function refreshPrices() {
+  const btn = $('btn-refresh');
+  if (btn) { btn.disabled=true; btn.innerHTML='↻ Updating…'; }
+  const items   = pf.load();
+  const ids     = [...new Set(items.map(i=>i.card_id))];
+  const settled = await Promise.allSettled(ids.map(id=>api.prices(id)));
+  const liveMap = {};
+  settled.forEach((r,i) => { if (r.status==='fulfilled') liveMap[ids[i]]=r.value; });
+  pf.updatePrices(liveMap);
+  renderPortfolio(liveMap);
+  toast('Prices refreshed ✓');
+}
+
+// ── ADD TO PORTFOLIO SHEET ────────────────────────────────────────────────────
+function openAddSheet() {
+  const card = S.activeCard; if (!card) return;
+  const existing = pf.load().find(i=>i.card_id===card.id);
+
   $('sh-add-card').innerHTML = `
-    ${card.image_url ? `<img class="fcard-img" src="${card.image_url}" alt=""/>` : ''}
+    ${card.image_url
+      ? `<img class="fcard-img" src="${card.image_url}" alt="${card.name}" loading="lazy"/>`
+      : `<div class="fcard-img" style="display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--surface)">🃏</div>`}
     <div><div class="fcard-name">${card.name}</div><div class="fcard-sub">${card.set} · ${card.rarity}</div></div>`;
-  // Fill portfolio select
-  try {
-    const d = await api.portfolios();
-    const ports = d.portfolios || [];
-    $('sh-add-port').innerHTML = ports.length
-      ? ports.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')
-      : `<option disabled>No portfolios — create one first</option>`;
-  } catch { $('sh-add-port').innerHTML = `<option disabled>Failed to load portfolios</option>`; }
+
+  $('sh-add-qty').value    = existing?.quantity ?? 1;
+  $('sh-add-price').value  = existing?.purchase_price ?? '';
+  $('sh-add-title').textContent = existing ? 'Update Portfolio Entry' : 'Add to Portfolio';
+  $('sh-add-ok').textContent    = existing ? 'Update' : 'Add Card';
+  $('sh-add').dataset.existingId = existing?.id ?? '';
   openSheet('sh-add');
 }
 
-$('sh-add-cancel').addEventListener('click', () => closeSheet('sh-add'));
-$('sh-add-ok').addEventListener('click', async () => {
-  const card = S.activeCard;
-  const portId = +$('sh-add-port').value;
-  const qty    = +$('sh-add-qty').value || 1;
-  const price  = parseFloat($('sh-add-price').value) || null;
-  const cond   = $('sh-add-cond').value;
-  if (!card || !portId) { toast('Select a portfolio'); return; }
-  try {
-    await api.addCard(portId, { card_id: card.id, quantity: qty, purchase_price: price, condition: cond });
-    closeSheet('sh-add');
-    toast(`${card.name} added ✓`);
-  } catch(e) { toast(`Error: ${e.message}`); }
+$('sh-add-cancel').addEventListener('click', ()=>closeSheet('sh-add'));
+$('sh-add-ok').addEventListener('click', ()=>{
+  const card = S.activeCard; if (!card) return;
+  const qty        = Math.max(1, parseInt($('sh-add-qty').value)||1);
+  const price      = parseFloat($('sh-add-price').value)||null;
+  const cond       = $('sh-add-cond').value;
+  const existingId = $('sh-add').dataset.existingId;
+  const cachedPrice = S.activeCardPrices?.market_price ?? S.activeCardPrices?.current_price
+    ?? card.market_price ?? card.current_price;
+
+  if (existingId) {
+    pf.update(existingId, qty, price);
+    toast(`${card.name} updated ✓`);
+  } else {
+    pf.add(card, cachedPrice, qty, price, cond);
+    toast(`${card.name} added to portfolio ✓`);
+  }
+  closeSheet('sh-add');
+
+  const btn = $('btn-add-port');
+  if (btn) {
+    const items = pf.load().filter(i=>i.card_id===card.id);
+    const q2 = items.reduce((s,i)=>s+i.quantity,0);
+    btn.textContent = `✓ In Portfolio (${q2}x)`;
+    btn.className = 'detail-btn db-green';
+  }
 });
 
-// ─ Set Alert ─
-function openAlertSheet() {
-  const card = S.activeCard;
-  if (!card) return;
-  $('sh-alert-card').innerHTML = `
-    ${card.image_url ? `<img class="fcard-img" src="${card.image_url}" alt=""/>` : ''}
-    <div><div class="fcard-name">${card.name}</div><div class="fcard-sub">${card.set} · ${card.rarity}</div></div>`;
-  openSheet('sh-alert');
+// ── EDIT SHEET ────────────────────────────────────────────────────────────────
+function openEditSheet(itemId) {
+  const item = pf.load().find(i=>i.id===itemId); if (!item) return;
+  S.editItemId = itemId;
+  $('sh-edit-card').innerHTML = `
+    ${item.image_url
+      ? `<img class="fcard-img" src="${item.image_url}" alt="${item.name}" loading="lazy"/>`
+      : `<div class="fcard-img" style="display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--surface)">🃏</div>`}
+    <div><div class="fcard-name">${item.name}</div><div class="fcard-sub">${item.set} · ${item.rarity}</div></div>`;
+  $('sh-edit-qty').value   = item.quantity;
+  $('sh-edit-price').value = item.purchase_price ?? '';
+  openSheet('sh-edit');
 }
 
-$('sh-alert-type').addEventListener('change', () => {
-  $('sh-alert-thresh-group').style.display = $('sh-alert-type').value === 'any_sale' ? 'none' : 'block';
-});
-$('sh-alert-cancel').addEventListener('click', () => closeSheet('sh-alert'));
-$('sh-alert-ok').addEventListener('click', async () => {
-  const card      = S.activeCard;
-  const alertType = $('sh-alert-type').value;
-  const threshold = alertType !== 'any_sale' ? parseFloat($('sh-alert-thresh').value)||null : null;
-  if (!card) return;
-  try {
-    await api.newAlert({ card_id: card.id, alert_type: alertType, threshold_price: threshold });
-    closeSheet('sh-alert');
-    toast('Alert set ✓');
-  } catch(e) { toast(`Error: ${e.message}`); }
+$('sh-edit-del').addEventListener('click', ()=>{
+  if (!S.editItemId) return;
+  const name = pf.load().find(i=>i.id===S.editItemId)?.name ?? 'Card';
+  pf.remove(S.editItemId);
+  closeSheet('sh-edit');
+  toast(`${name} removed`);
+  renderPortfolio();
 });
 
-// ─ New Portfolio ─
-function openNewPortfolioSheet() {
-  $('sh-np-name').value = '';
-  $('sh-np-desc').value = '';
-  openSheet('sh-newport');
-}
-$('sh-np-cancel').addEventListener('click', () => closeSheet('sh-newport'));
-$('sh-np-ok').addEventListener('click', async () => {
-  const name = $('sh-np-name').value.trim();
-  const desc = $('sh-np-desc').value.trim();
-  if (!name) { toast('Enter a portfolio name'); return; }
-  try {
-    await api.newPortfolio(name, desc);
-    closeSheet('sh-newport');
-    toast(`"${name}" created ✓`);
-    loadPortfolios();
-  } catch(e) { toast(`Error: ${e.message}`); }
+$('sh-edit-ok').addEventListener('click', ()=>{
+  if (!S.editItemId) return;
+  const qty   = Math.max(1, parseInt($('sh-edit-qty').value)||1);
+  const price = parseFloat($('sh-edit-price').value)||null;
+  pf.update(S.editItemId, qty, price);
+  closeSheet('sh-edit');
+  toast('Entry updated ✓');
+  renderPortfolio();
 });
 
-// ── INIT ──────────────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────────────────────────
 renderSearchEmpty();
 </script>
 </body>
