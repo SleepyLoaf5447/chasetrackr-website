@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watchlist — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { padding-top: var(--nav-h); background: var(--bg); min-height: 100vh; }
+    [hidden] { display: none !important; }   /* class display:grid/flex must not override the hidden attr */
+    .page { max-width: 1200px; margin: 0 auto; padding: 32px 40px 60px; }
+    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+    .page-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 30px; color: var(--navy); }
+    .page-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+    /* add-card search */
+    .add-wrap { position: relative; width: 340px; max-width: 100%; }
+    .add-input { width: 100%; height: 44px; padding: 0 16px; background: var(--white);
+      border: 1.5px solid var(--border); border-radius: 10px; font-family: 'Exo 2', sans-serif;
+      font-size: 14px; color: var(--text); outline: none; transition: border-color .15s, box-shadow .15s; }
+    .add-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(41,121,255,0.12); }
+    .add-results { position: absolute; top: 48px; left: 0; right: 0; background: var(--white);
+      border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 12px 40px rgba(10,22,40,0.12);
+      overflow: hidden; z-index: 30; display: none; }
+    .add-results.show { display: block; }
+    .add-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; border: none;
+      background: none; width: 100%; text-align: left; transition: background .12s; }
+    .add-row:hover { background: var(--surface); }
+    .add-row img { width: 26px; height: 36px; object-fit: contain; border-radius: 3px; background: var(--surface); }
+    .add-row-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+    .add-row-meta { font-size: 11px; color: var(--muted); }
+    .add-row-price { margin-left: auto; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; color: var(--blue); }
+    .add-hint { padding: 10px 12px; font-size: 12px; color: var(--muted); }
+
+    /* grid + cells (same look as search) */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+    .card-cell { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      display: flex; flex-direction: column; box-shadow: 0 2px 10px rgba(10,22,40,0.05); transition: transform .15s, box-shadow .15s; }
+    .card-cell:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,22,40,0.10); }
+    .cell-img { aspect-ratio: 2/3; background: rgb(5,11,22); display: flex; align-items: center; justify-content: center; position: relative; }
+    .cell-img img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; display: block; }
+    .cell-remove { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 50%;
+      background: rgba(10,22,40,0.55); color: #fff; border: none; cursor: pointer; font-size: 15px; line-height: 1;
+      display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .cell-remove:hover { background: var(--red); }
+    .cell-body { padding: 12px 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+    .cell-set { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .cell-name { font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 15px; color: var(--navy); line-height: 1.25; }
+    .cell-tag { align-self: flex-start; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 100px; }
+    .cell-price { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 18px; color: var(--navy); margin-top: 2px; }
+    .cell-price small { font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted); display: block; }
+
+    /* states */
+    .empty-state { text-align: center; padding: 80px 20px; }
+    .empty-icon { font-size: 46px; opacity: 0.3; margin-bottom: 14px; }
+    .empty-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: var(--muted); max-width: 360px; margin: 0 auto 20px; line-height: 1.6; }
+    .empty-cta { display: inline-block; background: var(--blue); color: #fff; text-decoration: none; font-family: 'Exo 2', sans-serif;
+      font-weight: 700; font-size: 13px; letter-spacing: 0.06em; padding: 12px 22px; border-radius: 10px; }
+    .state-msg { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+    .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+    .skel-cell { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .skel-box { aspect-ratio: 2/3; background: linear-gradient(90deg, var(--surface) 25%, #E1ECFB 37%, var(--surface) 63%);
+      background-size: 400% 100%; animation: sh 1.4s ease-in-out infinite; }
+    @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+    @media (max-width: 640px) { .page { padding: 24px 18px 48px; } .page-head { flex-direction: column; } .add-wrap { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <main class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">Watchlist</h1>
+        <div class="page-sub" id="wl-count">Cards you're tracking</div>
+      </div>
+      <div class="add-wrap">
+        <input class="add-input" id="add-search" type="search" placeholder="Add a card — name, set, or number…" autocomplete="off" />
+        <div class="add-results" id="add-results"></div>
+      </div>
+    </div>
+
+    <div class="skeleton-grid" id="wl-loading">
+      <div class="skel-cell"><div class="skel-box"></div></div>
+      <div class="skel-cell"><div class="skel-box"></div></div>
+      <div class="skel-cell"><div class="skel-box"></div></div>
+      <div class="skel-cell"><div class="skel-box"></div></div>
+    </div>
+    <div class="state-msg" id="wl-error" hidden>⚠ Couldn't reach the server. It may be waking up — refresh in a moment.</div>
+    <div class="empty-state" id="wl-empty" hidden>
+      <div class="empty-icon">☆</div>
+      <div class="empty-title">Start tracking cards</div>
+      <div class="empty-sub">Add chase cards you want to watch and we'll keep their fair value in front of you.</div>
+      <a class="empty-cta" href="search.html">Browse cards</a>
+    </div>
+    <div class="card-grid" id="wl-grid" hidden></div>
+  </main>
+
+  <script src="data/cards.js"></script>
+  <script src="js/cards-api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+  (function () {
+    // Auth required
+    if (!CT.auth.isLoggedIn()) { location.replace('signin.html'); return; }
+
+    const B = CT.BACKEND;
+    const rs = CT.rarityStyle;
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n) => (n == null ? '—' : '$' + Number(n).toLocaleString('en-US', {
+      minimumFractionDigits: Number.isInteger(Number(n)) ? 0 : 2, maximumFractionDigits: 2 }));
+
+    function show(el) { ['wl-loading','wl-error','wl-empty','wl-grid'].forEach(id => $(id).hidden = (id !== el)); }
+
+    function cellHTML(item) {
+      const c = CT.mapOwnedCard(item);
+      const st = rs(c.rarity);
+      return `<div class="card-cell">
+        <div class="cell-img">
+          <img ${CT.imgAttrs(c, true)} />
+          <button class="cell-remove" title="Remove" data-remove="${c.id}">×</button>
+        </div>
+        <div class="cell-body">
+          <div class="cell-set">${c.setCode} · #${c.number}</div>
+          <div class="cell-name">${c.name}</div>
+          <span class="cell-tag" style="background:${st.bg};color:${st.color};">${(c.rarity||'').toUpperCase()}</span>
+          <div class="cell-price">${fmt(c.marketPrice)}<small>Fair value</small></div>
+        </div>
+      </div>`;
+    }
+
+    async function load() {
+      show('wl-loading');
+      try {
+        const res = await CT.auth.authFetch('/api/v1/watchlist');
+        if (res.status === 401) { location.replace('signin.html'); return; }
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const items = (await res.json()).watchlist || [];
+        if (!items.length) { $('wl-count').textContent = 'Cards you’re tracking'; show('wl-empty'); return; }
+        $('wl-grid').innerHTML = items.map(cellHTML).join('');
+        $('wl-count').textContent = `${items.length} card${items.length === 1 ? '' : 's'} tracked`;
+        show('wl-grid');
+      } catch (e) {
+        console.warn('[watchlist] load failed:', e.message);
+        show('wl-error');
+      }
+    }
+
+    // remove (event delegation)
+    $('wl-grid').addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-remove]');
+      if (!btn) return;
+      btn.disabled = true;
+      const res = await CT.auth.authFetch('/api/v1/watchlist/' + encodeURIComponent(btn.dataset.remove), { method: 'DELETE' });
+      if (res.status === 401) { location.replace('signin.html'); return; }
+      load();
+    });
+
+    // add-card search
+    let t = null;
+    const results = $('add-results');
+    $('add-search').addEventListener('input', function () {
+      clearTimeout(t);
+      const q = this.value.trim();
+      if (!q) { results.classList.remove('show'); return; }
+      t = setTimeout(async () => {
+        try {
+          const r = await fetch(`${B}/api/v1/search-card`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: q, limit: 6 }),
+          });
+          const cards = ((await r.json()).results || []).map(CT.mapCard);
+          results.innerHTML = cards.length ? cards.map(c => `
+            <button class="add-row" data-add="${c.id}">
+              <img ${CT.imgAttrs(c)} />
+              <span><span class="add-row-name">${c.name}</span><br><span class="add-row-meta">${c.setCode} · #${c.number}</span></span>
+              <span class="add-row-price">${fmt(c.marketPrice)}</span>
+            </button>`).join('') : '<div class="add-hint">No matches.</div>';
+          results.classList.add('show');
+        } catch { results.innerHTML = '<div class="add-hint">Search unavailable.</div>'; results.classList.add('show'); }
+      }, 300);
+    });
+    results.addEventListener('click', async (e) => {
+      const row = e.target.closest('[data-add]');
+      if (!row) return;
+      results.classList.remove('show'); $('add-search').value = '';
+      const res = await CT.auth.authFetch('/api/v1/watchlist', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ card_id: row.dataset.add }),
+      });
+      if (res.status === 401) { location.replace('signin.html'); return; }
+      if (res.status === 403) { alert('Verify your email first to save cards.'); return; }
+      load();
+    });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.add-wrap')) results.classList.remove('show'); });
+
+    load();
+  })();
+  </script>
+</body>
+</html>

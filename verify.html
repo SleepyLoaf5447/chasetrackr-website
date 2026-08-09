@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Email — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); padding:24px; }
+    .auth-card { width:100%; max-width:440px; background:var(--white); border:1px solid var(--border);
+      border-radius:16px; padding:40px 36px; text-align:center; box-shadow:0 8px 40px rgba(41,121,255,0.08); }
+    .auth-logo { display:inline-flex; align-items:center; gap:10px; text-decoration:none; margin-bottom:28px; }
+    .auth-logo img { height:34px; width:34px; border-radius:8px; }
+    .auth-logo span { font-family:'Nunito',sans-serif; font-weight:900; font-size:20px; color:var(--navy); }
+    .auth-logo .cyan { color:var(--cyan); }
+    .status-icon { width:72px; height:72px; border-radius:50%; margin:0 auto 20px;
+      display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800; }
+    .status-icon.pending { background:var(--surface); }
+    .status-icon.ok  { background:rgba(0,196,140,0.12); color:var(--green); }
+    .status-icon.err { background:rgba(255,77,106,0.1); color:var(--red); }
+    .spinner { width:34px; height:34px; border:3px solid var(--border); border-top-color:var(--blue);
+      border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .status-title { font-family:'Nunito',sans-serif; font-weight:900; font-size:24px; color:var(--navy); margin-bottom:8px; }
+    .status-sub { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:24px; }
+    .auth-actions { display:flex; flex-direction:column; gap:10px; }
+    .btn-primary { display:block; height:48px; line-height:48px; background:var(--blue); color:#fff;
+      border-radius:10px; text-decoration:none; font-family:'Exo 2',sans-serif; font-weight:800;
+      font-size:13px; letter-spacing:0.08em; text-transform:uppercase; box-shadow:0 4px 20px rgba(41,121,255,0.28);
+      transition:background .15s, transform .12s; }
+    .btn-primary:hover { background:var(--blue-h); transform:translateY(-1px); }
+    .btn-ghost { display:block; height:40px; line-height:40px; color:var(--blue); text-decoration:none;
+      font-family:'Exo 2',sans-serif; font-weight:700; font-size:13px; }
+    .btn-ghost:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <a class="auth-logo" href="index.html">
+      <img src="brand_assets/Homescreen App icon.png" alt="" />
+      <span>Chase<span class="cyan">Trackr</span></span>
+    </a>
+    <div class="status-icon pending" id="status-icon"><div class="spinner"></div></div>
+    <h1 class="status-title" id="status-title">Verifying your email…</h1>
+    <p class="status-sub" id="status-sub">One moment while we confirm your link.</p>
+    <div class="auth-actions" id="actions"></div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    const token = new URLSearchParams(location.search).get('token');
+    const icon  = document.getElementById('status-icon');
+    const title = document.getElementById('status-title');
+    const sub   = document.getElementById('status-sub');
+    const actions = document.getElementById('actions');
+
+    function setState(kind, t, s, actionsHtml) {
+      icon.className = 'status-icon ' + (kind === 'ok' ? 'ok' : 'err');
+      icon.innerHTML = kind === 'ok' ? '✓' : '✕';
+      title.textContent = t;
+      sub.textContent = s;
+      actions.innerHTML = actionsHtml || '';
+    }
+
+    (async function () {
+      if (!token) {
+        setState('err', 'Invalid verification link',
+          'This link is missing its token. Open the link directly from your verification email.',
+          '<a class="btn-primary" href="signin.html">Go to sign in</a>');
+        return;
+      }
+      try {
+        const res = await CT.auth.verifyEmail(token);
+        setState('ok', 'Email verified',
+          `${res.email || 'Your email'} is confirmed — portfolios and price alerts are now unlocked.`,
+          '<a class="btn-primary" href="signin.html">Sign in</a><a class="btn-ghost" href="index.html">Back to home</a>');
+      } catch (err) {
+        setState('err', 'Link expired or invalid',
+          'This verification link is invalid or has already been used. Sign in and we can send you a fresh one.',
+          '<a class="btn-primary" href="signin.html">Sign in to resend</a><a class="btn-ghost" href="index.html">Back to home</a>');
+      }
+    })();
+  </script>
+</body>
+</html>

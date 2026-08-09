@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reset Password — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); padding:24px; }
+    .auth-card { width:100%; max-width:440px; background:var(--white); border:1px solid var(--border);
+      border-radius:16px; padding:40px 36px; box-shadow:0 8px 40px rgba(41,121,255,0.08); }
+    .auth-logo { display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; margin-bottom:24px; }
+    .auth-logo img { height:34px; width:34px; border-radius:8px; }
+    .auth-logo span { font-family:'Nunito',sans-serif; font-weight:900; font-size:20px; color:var(--navy); }
+    .auth-logo .cyan { color:var(--cyan); }
+    .status-title { font-family:'Nunito',sans-serif; font-weight:900; font-size:23px; color:var(--navy); margin-bottom:6px; text-align:center; }
+    .status-sub { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:22px; text-align:center; }
+    .status-icon { width:72px; height:72px; border-radius:50%; margin:0 auto 18px;
+      display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800; }
+    .status-icon.ok  { background:rgba(0,196,140,0.12); color:var(--green); }
+    .status-icon.err { background:rgba(255,77,106,0.1); color:var(--red); }
+    label { display:block; font-size:12px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+      color:var(--text-mid); margin-bottom:7px; }
+    .rfield { display:block; width:100%; height:46px; padding:0 16px; background:var(--surface);
+      border:1.5px solid var(--border); border-radius:10px; font-family:'Exo 2',sans-serif; font-size:14px;
+      color:var(--text); outline:none; margin-bottom:14px; transition:border-color .18s, box-shadow .18s, background .18s; }
+    .rfield:focus { border-color:var(--blue); background:var(--white); box-shadow:0 0 0 3px rgba(41,121,255,0.12); }
+    .field-error { font-size:11px; font-weight:600; color:var(--red); margin:-10px 0 12px; display:none; }
+    .field-error.show { display:block; }
+    .btn-primary { display:block; width:100%; height:50px; background:var(--blue); color:#fff; border:none;
+      border-radius:10px; font-family:'Exo 2',sans-serif; font-weight:800; font-size:13px; letter-spacing:0.08em;
+      text-transform:uppercase; cursor:pointer; text-decoration:none; text-align:center; line-height:50px;
+      box-shadow:0 4px 20px rgba(41,121,255,0.28); transition:background .15s, transform .12s; }
+    .btn-primary:hover { background:var(--blue-h); transform:translateY(-1px); }
+    .btn-primary.loading { opacity:0.8; pointer-events:none; }
+    .form-error-banner { display:none; align-items:center; gap:10px; background:rgba(255,77,106,0.08);
+      border:1px solid rgba(255,77,106,0.2); border-radius:8px; padding:11px 14px; margin-bottom:16px;
+      font-size:13px; font-weight:600; color:var(--red); }
+    .form-error-banner.show { display:flex; }
+    .auth-actions { text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <a class="auth-logo" href="index.html"><img src="brand_assets/Homescreen App icon.png" alt="" /><span>Chase<span class="cyan">Trackr</span></span></a>
+
+    <!-- Form state -->
+    <div id="reset-form-wrap">
+      <h1 class="status-title">Set a new password</h1>
+      <p class="status-sub">Choose a new password for your ChaseTrackr account.</p>
+      <div class="form-error-banner" id="reset-error"><span id="reset-error-text"></span></div>
+      <form id="reset-form" novalidate>
+        <label for="reset-pw">New password</label>
+        <input class="rfield" type="password" id="reset-pw" autocomplete="new-password" placeholder="8+ characters" required />
+        <div class="field-error" id="reset-pw-error">Password must be at least 8 characters.</div>
+        <label for="reset-pw2">Confirm password</label>
+        <input class="rfield" type="password" id="reset-pw2" autocomplete="new-password" placeholder="Re-enter password" required />
+        <div class="field-error" id="reset-pw2-error">Passwords don’t match.</div>
+        <button class="btn-primary" type="submit" id="reset-submit">Reset password</button>
+      </form>
+    </div>
+
+    <!-- Result state -->
+    <div id="reset-result" style="display:none;">
+      <div class="status-icon" id="reset-icon"></div>
+      <h1 class="status-title" id="reset-title"></h1>
+      <p class="status-sub" id="reset-sub"></p>
+      <div class="auth-actions" id="reset-actions"></div>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    const token  = new URLSearchParams(location.search).get('token');
+    const wrap   = document.getElementById('reset-form-wrap');
+    const result = document.getElementById('reset-result');
+
+    function showResult(kind, title, sub, actionsHtml) {
+      wrap.style.display = 'none';
+      const icon = document.getElementById('reset-icon');
+      icon.className = 'status-icon ' + (kind === 'ok' ? 'ok' : 'err');
+      icon.textContent = kind === 'ok' ? '✓' : '✕';
+      document.getElementById('reset-title').textContent = title;
+      document.getElementById('reset-sub').textContent = sub;
+      document.getElementById('reset-actions').innerHTML = actionsHtml || '';
+      result.style.display = 'block';
+    }
+
+    if (!token) {
+      showResult('err', 'Invalid reset link',
+        'This link is missing its token. Open the link directly from your password-reset email.',
+        '<a class="btn-primary" href="signin.html">Back to sign in</a>');
+    }
+
+    document.getElementById('reset-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const pw  = document.getElementById('reset-pw').value;
+      const pw2 = document.getElementById('reset-pw2').value;
+      const e1 = document.getElementById('reset-pw-error');
+      const e2 = document.getElementById('reset-pw2-error');
+      const banner = document.getElementById('reset-error');
+      e1.classList.remove('show'); e2.classList.remove('show'); banner.classList.remove('show');
+
+      let ok = true;
+      if (!pw || pw.length < 8) { e1.classList.add('show'); ok = false; }
+      if (pw !== pw2)           { e2.classList.add('show'); ok = false; }
+      if (!ok) return;
+
+      const btn = document.getElementById('reset-submit');
+      btn.classList.add('loading'); btn.textContent = 'Resetting…';
+      try {
+        await CT.auth.resetPassword(token, pw);
+        showResult('ok', 'Password reset',
+          'Your password has been updated and any other sessions were signed out. Sign in with your new password.',
+          '<a class="btn-primary" href="signin.html">Sign in</a>');
+      } catch (err) {
+        btn.classList.remove('loading'); btn.textContent = 'Reset password';
+        if (err.status === 400) {
+          showResult('err', 'Link expired or invalid',
+            'This reset link is invalid or has already been used. Request a fresh one from the sign-in page.',
+            '<a class="btn-primary" href="signin.html">Back to sign in</a>');
+        } else {
+          document.getElementById('reset-error-text').textContent =
+            err.status === 429 ? 'Too many attempts — please wait a minute.' : 'Something went wrong. Please try again.';
+          banner.classList.add('show');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

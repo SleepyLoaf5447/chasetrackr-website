@@ -73,6 +73,10 @@ function proxyAPI(req, res) {
 async function serveFile(req, res) {
   let pathname = decodeURIComponent(req.url.split('?')[0]);
   if (pathname === '/') pathname = '/index.html';
+  // Clean URLs: /verify -> /verify.html, /reset -> /reset.html (matches the
+  // email links and Render static hosting). Anything with an extension is left
+  // as-is (assets, .html, etc.).
+  if (!extname(pathname)) pathname += '.html';
 
   const filePath    = join(__dirname, pathname);
   const ext         = extname(filePath).toLowerCase();

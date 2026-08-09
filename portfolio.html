@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Portfolio — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { padding-top: var(--nav-h); background: var(--bg); min-height: 100vh; }
+    [hidden] { display: none !important; }   /* class display:grid/flex must not override the hidden attr */
+    .page { max-width: 1200px; margin: 0 auto; padding: 32px 40px 60px; }
+    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 22px; flex-wrap: wrap; }
+    .page-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 30px; color: var(--navy); }
+    .page-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+    /* add-card search (same as watchlist) */
+    .add-wrap { position: relative; width: 340px; max-width: 100%; }
+    .add-input { width: 100%; height: 44px; padding: 0 16px; background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: 'Exo 2', sans-serif; font-size: 14px; color: var(--text); outline: none; }
+    .add-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(41,121,255,0.12); }
+    .add-results { position: absolute; top: 48px; left: 0; right: 0; background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; box-shadow: 0 12px 40px rgba(10,22,40,0.12); overflow: hidden; z-index: 30; display: none; }
+    .add-results.show { display: block; }
+    .add-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+    .add-row:hover { background: var(--surface); }
+    .add-row img { width: 26px; height: 36px; object-fit: contain; border-radius: 3px; background: var(--surface); }
+    .add-row-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+    .add-row-meta { font-size: 11px; color: var(--muted); }
+    .add-hint { padding: 10px 12px; font-size: 12px; color: var(--muted); }
+
+    /* add form (after picking a card) */
+    .add-form { display: none; align-items: flex-end; gap: 12px; flex-wrap: wrap; background: var(--white);
+      border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 22px; }
+    .add-form.show { display: flex; }
+    .add-form .sel { display: flex; align-items: center; gap: 10px; }
+    .add-form .sel img { width: 32px; height: 44px; object-fit: contain; border-radius: 4px; background: var(--surface); }
+    .add-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 5px; }
+    .add-field input, .add-field select { height: 40px; padding: 0 12px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Exo 2', sans-serif; font-size: 14px; background: var(--surface); outline: none; }
+    .add-field input { width: 110px; }
+    .btn { background: var(--blue); color: #fff; border: none; border-radius: 9px; height: 40px; padding: 0 18px;
+      font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.05em; cursor: pointer; }
+    .btn:hover { background: var(--blue-h); }
+    .btn-ghost { background: none; color: var(--muted); }
+
+    /* totals */
+    .totals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+    .tot-cell { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+    .tot-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .tot-value { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 24px; color: var(--navy); }
+    .up { color: var(--green); } .down { color: var(--red); }
+
+    /* holdings table */
+    .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    th { text-align: right; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+      padding: 14px 16px; border-bottom: 1px solid var(--border); }
+    th.l, td.l { text-align: left; }
+    td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text); text-align: right; }
+    tr:last-child td { border-bottom: none; }
+    .cardcell { display: flex; align-items: center; gap: 12px; }
+    .cardcell img { width: 34px; height: 47px; object-fit: contain; border-radius: 4px; background: rgb(5,11,22); }
+    .cardcell-name { font-weight: 700; color: var(--navy); }
+    .cardcell-meta { font-size: 11px; color: var(--muted); }
+    .num { font-family: 'Nunito', sans-serif; font-weight: 800; }
+    .rm { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; }
+    .rm:hover { color: var(--red); }
+
+    /* states */
+    .empty-state { text-align: center; padding: 80px 20px; }
+    .empty-icon { font-size: 46px; opacity: 0.3; margin-bottom: 14px; }
+    .empty-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: var(--muted); max-width: 380px; margin: 0 auto 20px; line-height: 1.6; }
+    .state-msg { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+    .skel { height: 120px; border-radius: 12px; background: linear-gradient(90deg, var(--surface) 25%, #E1ECFB 37%, var(--surface) 63%);
+      background-size: 400% 100%; animation: sh 1.4s ease-in-out infinite; margin-bottom: 14px; }
+    @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+    @media (max-width: 760px) { .page { padding: 24px 18px 48px; } .totals { grid-template-columns: repeat(2,1fr); } .add-wrap { width: 100%; } }
+  </style>
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <main class="page">
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">My Portfolio</h1>
+        <div class="page-sub" id="pf-sub">Your holdings, valued live</div>
+      </div>
+      <div class="add-wrap" id="add-wrap" hidden>
+        <input class="add-input" id="add-search" type="search" placeholder="Add a holding — search a card…" autocomplete="off" />
+        <div class="add-results" id="add-results"></div>
+      </div>
+    </div>
+
+    <!-- add form (after picking) -->
+    <div class="add-form" id="add-form">
+      <div class="sel" id="add-sel"></div>
+      <div class="add-field"><label>Qty</label><input id="af-qty" type="number" min="1" value="1"></div>
+      <div class="add-field"><label>Purchase price</label><input id="af-price" type="number" min="0" step="0.01" placeholder="0.00"></div>
+      <div class="add-field"><label>Condition</label>
+        <select id="af-cond"><option>Near Mint</option><option>Lightly Played</option><option>Moderately Played</option><option>Heavily Played</option><option>Damaged</option></select>
+      </div>
+      <button class="btn" id="af-add">Add to portfolio</button>
+      <button class="btn btn-ghost" id="af-cancel">Cancel</button>
+    </div>
+
+    <div id="pf-loading"><div class="skel"></div><div class="skel"></div></div>
+    <div class="state-msg" id="pf-error" hidden>⚠ Couldn't reach the server. It may be waking up — refresh in a moment.</div>
+
+    <!-- no portfolio yet -->
+    <div class="empty-state" id="pf-nocreate" hidden>
+      <div class="empty-icon">💼</div>
+      <div class="empty-title">Start your portfolio</div>
+      <div class="empty-sub">Create a portfolio to track what you own — cost, live value, and gain/loss per card.</div>
+      <button class="btn" id="pf-create">Create portfolio</button>
+    </div>
+
+    <!-- portfolio exists but empty -->
+    <div class="empty-state" id="pf-empty" hidden>
+      <div class="empty-icon">🃏</div>
+      <div class="empty-title">No holdings yet</div>
+      <div class="empty-sub">Search a card above to add your first holding.</div>
+    </div>
+
+    <!-- populated -->
+    <div id="pf-body" hidden>
+      <div class="totals" id="pf-totals"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th class="l">Card</th><th>Qty</th><th>Buy price</th><th class="l">Condition</th>
+            <th>Current</th><th>Cost</th><th>Value</th><th>Gain / Loss</th><th></th>
+          </tr></thead>
+          <tbody id="pf-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="data/cards.js"></script>
+  <script src="js/cards-api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+  (function () {
+    if (!CT.auth.isLoggedIn()) { location.replace('signin.html'); return; }
+    const B = CT.BACKEND;
+    const $ = (id) => document.getElementById(id);
+    const fmt  = (n) => { if (n == null) return '—'; const sg = n < 0 ? '-' : ''; return sg + '$' + Math.abs(Number(n)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+    const fpct = (n) => (n == null ? '' : (n >= 0 ? '+' : '') + Number(n).toFixed(2) + '%');
+    const cls  = (n) => (n >= 0 ? 'up' : 'down');
+
+    let PID = null;
+    function show(el) { ['pf-loading','pf-error','pf-nocreate','pf-empty','pf-body'].forEach(id => $(id).hidden = (id !== el)); }
+
+    // Totals mirror the backend field names EXACTLY.
+    function renderTotals(d) {
+      $('pf-totals').innerHTML = `
+        <div class="tot-cell"><div class="tot-label">Total cost</div><div class="tot-value">${fmt(d.total_cost)}</div></div>
+        <div class="tot-cell"><div class="tot-label">Total value</div><div class="tot-value">${fmt(d.total_value)}</div></div>
+        <div class="tot-cell"><div class="tot-label">Total gain / loss</div><div class="tot-value ${cls(d.total_gain_loss)}">${fmt(d.total_gain_loss)}</div></div>
+        <div class="tot-cell"><div class="tot-label">Return</div><div class="tot-value ${cls(d.total_gain_pct)}">${fpct(d.total_gain_pct)}</div></div>`;
+    }
+
+    function rowHTML(card) {
+      const c = CT.mapOwnedCard(card);   // card_* → CT shape via shared adapter (image + name cleanup)
+      return `<tr>
+        <td class="l"><a class="cardcell" href="card.html?id=${encodeURIComponent(card.card_id)}" style="text-decoration:none;">
+          <img ${CT.imgAttrs(c)} />
+          <span><span class="cardcell-name">${c.name}</span><br><span class="cardcell-meta">${c.setCode} · #${c.number}</span></span>
+        </a></td>
+        <td class="num">${card.quantity}</td>
+        <td>${fmt(card.purchase_price)}</td>
+        <td class="l">${card.condition || '—'}</td>
+        <td class="num">${fmt(card.current_price)}</td>
+        <td>${fmt(card.total_cost)}</td>
+        <td class="num">${fmt(card.total_value)}</td>
+        <td class="num ${cls(card.gain_loss)}">${fmt(card.gain_loss)} <span style="font-size:11px;">(${fpct(card.gain_loss_pct)})</span></td>
+        <td><button class="rm" title="Remove" data-remove="${card.entry_id}">×</button></td>
+      </tr>`;
+    }
+
+    async function load() {
+      show('pf-loading');
+      try {
+        const listRes = await CT.auth.authFetch('/api/v1/portfolios');
+        if (listRes.status === 401) { location.replace('signin.html'); return; }
+        if (!listRes.ok) throw new Error('HTTP ' + listRes.status);
+        const portfolios = (await listRes.json()).portfolios || [];
+        if (!portfolios.length) { $('add-wrap').hidden = true; show('pf-nocreate'); return; }
+
+        PID = portfolios[0].id;
+        const res = await CT.auth.authFetch('/api/v1/portfolios/' + PID);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const d = await res.json();
+        $('add-wrap').hidden = false;
+        $('pf-sub').textContent = d.name + ` · ${d.total_cards} card${d.total_cards === 1 ? '' : 's'}`;
+        if (!d.cards.length) { show('pf-empty'); return; }
+        renderTotals(d);
+        $('pf-rows').innerHTML = d.cards.map(rowHTML).join('');
+        show('pf-body');
+      } catch (e) {
+        console.warn('[portfolio] load failed:', e.message);
+        show('pf-error');
+      }
+    }
+
+    // create portfolio (verified-gated on the backend)
+    $('pf-create').addEventListener('click', async function () {
+      this.disabled = true;
+      const res = await CT.auth.authFetch('/api/v1/portfolios', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'My Collection' }),
+      });
+      if (res.status === 401) { location.replace('signin.html'); return; }
+      if (res.status === 403) { this.disabled = false; alert('Verify your email first to create a portfolio.'); return; }
+      load();
+    });
+
+    // remove holding
+    document.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-remove]');
+      if (!btn) return;
+      btn.disabled = true;
+      const res = await CT.auth.authFetch('/api/v1/portfolios/cards/' + btn.dataset.remove, { method: 'DELETE' });
+      if (res.status === 401) { location.replace('signin.html'); return; }
+      load();
+    });
+
+    // add-card search + inline add form
+    let t = null, picked = null;
+    const results = $('add-results');
+    $('add-search').addEventListener('input', function () {
+      clearTimeout(t);
+      const q = this.value.trim();
+      if (!q) { results.classList.remove('show'); return; }
+      t = setTimeout(async () => {
+        try {
+          const r = await fetch(`${B}/api/v1/search-card`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: q, limit: 6 }) });
+          const cards = ((await r.json()).results || []).map(CT.mapCard);
+          results.innerHTML = cards.length ? cards.map(c => `
+            <button class="add-row" data-add="${c.id}" data-name="${c.name}" data-set="${c.setCode}" data-num="${c.number}" data-game="${c.game}" data-var="${c.variant}" data-rar="${c.rarity}" data-price="${c.marketPrice ?? ''}">
+              <img ${CT.imgAttrs(c)} /><span><span class="add-row-name">${c.name}</span><br><span class="add-row-meta">${c.setCode} · #${c.number}</span></span>
+            </button>`).join('') : '<div class="add-hint">No matches.</div>';
+          results.classList.add('show');
+        } catch { results.innerHTML = '<div class="add-hint">Search unavailable.</div>'; results.classList.add('show'); }
+      }, 300);
+    });
+    results.addEventListener('click', (e) => {
+      const row = e.target.closest('[data-add]');
+      if (!row) return;
+      picked = row.dataset;
+      const c = CT.mapOwnedCard({ card_id: picked.add, card_name: picked.name, set_code: picked.set, card_number: picked.num, card_game: picked.game, variant: picked.var, card_rarity: picked.rar });
+      $('add-sel').innerHTML = `<img ${CT.imgAttrs(c)} /><span><span class="add-row-name">${c.name}</span><br><span class="add-row-meta">${c.setCode} · #${c.number}</span></span>`;
+      results.classList.remove('show'); $('add-search').value = '';
+      $('add-form').classList.add('show');
+    });
+    $('af-cancel').addEventListener('click', () => { $('add-form').classList.remove('show'); picked = null; });
+    $('af-add').addEventListener('click', async function () {
+      if (!picked || !PID) return;
+      this.disabled = true;
+      const res = await CT.auth.authFetch('/api/v1/portfolios/' + PID + '/cards', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          card_id: picked.add,
+          quantity: parseInt($('af-qty').value) || 1,
+          purchase_price: parseFloat($('af-price').value) || null,
+          condition: $('af-cond').value,
+        }),
+      });
+      this.disabled = false;
+      if (res.status === 401) { location.replace('signin.html'); return; }
+      $('add-form').classList.remove('show'); picked = null;
+      load();
+    });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.add-wrap')) results.classList.remove('show'); });
+
+    load();
+  })();
+  </script>
+</body>
+</html>

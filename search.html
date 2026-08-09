@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse Cards — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { padding-top: var(--nav-h); }
+
+    /* ── SEARCH HEADER ────────────────────────────────────── */
+    .search-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 48px 0;
+      box-shadow: 0 1px 12px rgba(41,121,255,0.05);
+    }
+    .sh-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 16px; gap: 20px; flex-wrap: wrap;
+    }
+    .sh-title {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 26px; color: var(--navy); line-height: 1.2;
+    }
+    .sh-count { font-size: 13px; color: var(--muted); margin-top: 3px; }
+    .sh-count strong { color: var(--text-mid); font-weight: 700; }
+
+    .sh-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .sort-select {
+      height: 40px; padding: 0 34px 0 12px;
+      background: var(--surface) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%237A96BB' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") no-repeat right 10px center;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--text-mid); cursor: pointer; appearance: none; outline: none;
+      transition: border-color 0.15s;
+    }
+    .sort-select:focus { border-color: var(--blue); }
+
+    .toggle-filters-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px; padding: 0 14px;
+      background: none; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      color: var(--text-mid); cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .toggle-filters-btn:hover { background: var(--surface); color: var(--blue); border-color: var(--blue); }
+    .filter-badge {
+      background: var(--blue); color: #fff;
+      font-size: 10px; font-weight: 800; border-radius: 100px;
+      width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .save-search-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 40px; padding: 0 14px;
+      background: none; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      color: var(--text-mid); cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .save-search-btn:hover { background: var(--surface); border-color: var(--blue); color: var(--blue); }
+
+    /* game tabs */
+    .game-tabs { display: flex; }
+    .game-tab {
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--muted); background: none; border: none;
+      padding: 13px 18px; cursor: pointer; position: relative;
+      transition: color 0.15s;
+    }
+    .game-tab::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2.5px;
+      background: var(--blue); transform: scaleX(0); transition: transform 0.18s;
+      border-radius: 2px 2px 0 0;
+    }
+    .game-tab:hover { color: var(--text-mid); }
+    .game-tab.active { color: var(--blue); }
+    .game-tab.active::after { transform: scaleX(1); }
+    .game-tab-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800;
+      background: var(--surface); color: var(--muted);
+      border-radius: 100px; padding: 2px 7px; margin-left: 5px;
+    }
+    .game-tab.active .game-tab-count { background: rgba(41,121,255,0.12); color: var(--blue); }
+
+    /* ── BODY LAYOUT ─────────────────────────────────────── */
+    .browse-body {
+      max-width: 1440px; margin: 0 auto;
+      display: flex; padding: 0 48px; min-height: calc(100vh - var(--nav-h));
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────────────── */
+    .sidebar {
+      width: 252px; flex-shrink: 0;
+      padding: 24px 20px 24px 0;
+      border-right: 1px solid var(--border);
+      position: sticky; top: var(--nav-h);
+      height: calc(100vh - var(--nav-h)); overflow-y: auto;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .sidebar-section { margin-bottom: 24px; }
+    .sidebar-section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; cursor: pointer; user-select: none;
+    }
+    .sidebar-section-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .sidebar-chevron { color: var(--muted); font-size: 10px; transition: transform 0.15s; }
+    .sidebar-section.collapsed .sidebar-chevron { transform: rotate(-90deg); }
+    .sidebar-section.collapsed .sidebar-body { display: none; }
+
+    .filter-option {
+      display: flex; align-items: center; gap: 9px;
+      padding: 6px 8px; cursor: pointer; border-radius: 6px;
+      transition: background 0.1s;
+    }
+    .filter-option:hover { background: var(--surface); }
+    .filter-check {
+      width: 16px; height: 16px; border-radius: 4px;
+      border: 1.5px solid var(--border); background: var(--white);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .filter-option.checked .filter-check { background: var(--blue); border-color: var(--blue); }
+    .filter-option.checked .filter-check::after { content: '✓'; font-size: 9px; color: #fff; font-weight: 900; }
+    .filter-label { font-size: 13px; font-weight: 500; color: var(--text-mid); flex: 1; }
+    .filter-count { font-size: 11px; font-weight: 600; color: var(--muted); }
+
+    .chase-toggle {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 12px; border-radius: 8px;
+      background: var(--surface); border: 1.5px solid var(--border); cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .chase-toggle.on { border-color: var(--gold); background: rgba(245,166,35,0.06); }
+    .chase-toggle-label { font-size: 13px; font-weight: 700; color: var(--text); }
+    .chase-toggle-sub { font-size: 11px; color: var(--muted); }
+    .toggle-knob {
+      width: 36px; height: 20px; border-radius: 100px;
+      background: var(--border); position: relative; flex-shrink: 0;
+      transition: background 0.18s;
+    }
+    .toggle-knob::after {
+      content: ''; position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; border-radius: 50%; background: #fff;
+      transition: transform 0.18s; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    .chase-toggle.on .toggle-knob { background: var(--gold); }
+    .chase-toggle.on .toggle-knob::after { transform: translateX(16px); }
+
+    .price-range-display { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .range-inputs { display: flex; align-items: center; gap: 6px; }
+    .range-input {
+      flex: 1; height: 34px; padding: 0 10px;
+      border: 1.5px solid var(--border); border-radius: 7px;
+      background: var(--white); font-family: 'Exo 2', sans-serif;
+      font-size: 13px; font-weight: 600; color: var(--text); outline: none;
+      transition: border-color 0.15s;
+    }
+    .range-input:focus { border-color: var(--blue); }
+    .range-sep { color: var(--muted); font-size: 11px; }
+
+    .graded-option {
+      display: flex; align-items: center; gap: 9px; padding: 6px 0; cursor: pointer;
+    }
+    .graded-radio {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid var(--border); background: var(--white);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.12s;
+    }
+    .graded-option.selected .graded-radio { border-color: var(--blue); }
+    .graded-option.selected .graded-radio::after {
+      content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--blue);
+    }
+    .graded-label { font-size: 13px; font-weight: 500; color: var(--text-mid); }
+
+    .clear-filters {
+      width: 100%; height: 34px;
+      background: none; border: 1.5px solid var(--border); border-radius: 7px;
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700;
+      color: var(--muted); cursor: pointer;
+      transition: color 0.12s, border-color 0.12s, background 0.12s;
+    }
+    .clear-filters:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
+
+    /* ── RESULTS ─────────────────────────────────────────── */
+    .results-area { flex: 1; padding: 24px 0 24px 28px; min-width: 0; }
+
+    .active-filters { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 16px; min-height: 28px; }
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 700;
+      background: rgba(41,121,255,0.1); color: var(--blue);
+      border: 1px solid rgba(41,121,255,0.2); border-radius: 100px; padding: 4px 10px;
+      cursor: pointer; transition: background 0.12s;
+    }
+    .filter-chip:hover { background: rgba(41,121,255,0.18); }
+    .filter-chip .remove { font-size: 13px; margin-left: 2px; }
+
+    .saved-searches { display: flex; align-items: center; gap: 7px; margin-bottom: 20px; flex-wrap: wrap; }
+    .saved-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .saved-pill {
+      font-size: 12px; font-weight: 600; color: var(--text-mid);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 100px;
+      padding: 4px 12px; cursor: pointer; text-decoration: none;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .saved-pill:hover { background: var(--white); border-color: var(--blue); color: var(--blue); }
+
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 36px; }
+
+    .no-results { text-align: center; padding: 80px 20px; grid-column: 1/-1; }
+    .no-results-title { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+    .no-results-sub { font-size: 14px; color: var(--muted); }
+
+    /* pagination */
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 40px; }
+    .page-btn {
+      min-width: 34px; height: 34px; border-radius: 7px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      color: var(--text-mid); background: var(--white); border: 1.5px solid var(--border);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      padding: 0 10px; transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .page-btn:hover { background: var(--surface); border-color: var(--blue); color: var(--blue); }
+    .page-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* related searches */
+    .related-searches { border-top: 1px solid var(--border); padding-top: 28px; margin-bottom: 48px; }
+    .rs-title { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .rs-pills { display: flex; flex-wrap: wrap; gap: 7px; }
+    .rs-pill {
+      font-size: 13px; font-weight: 600; color: var(--text-mid);
+      background: var(--white); border: 1.5px solid var(--border); border-radius: 100px;
+      padding: 6px 14px; text-decoration: none; cursor: pointer;
+      transition: background 0.12s, border-color 0.12s, color 0.12s;
+    }
+    .rs-pill:hover { background: var(--surface); border-color: var(--blue); color: var(--blue); }
+
+    /* ── SKELETON LOADER ────────────────────────────────── */
+    .skeleton-cell {
+      background: var(--white); border-radius: 12px;
+      border: 1.5px solid var(--border); overflow: hidden;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% center; }
+      100% { background-position: -200% center; }
+    }
+    .skel {
+      background: linear-gradient(90deg, var(--surface) 25%, rgba(197,217,245,0.6) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+    }
+    .skel-img  { height: 200px; border-radius: 0; }
+    .skel-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .skel-line { height: 12px; }
+    .skel-line.short { width: 40%; }
+    .skel-line.long  { width: 80%; }
+    .skel-line.med   { width: 60%; }
+    .skel-footer { height: 32px; margin-top: 4px; }
+
+    /* ── FALLBACK BANNER ─────────────────────────────────── */
+    .fallback-banner {
+      background: rgba(245,166,35,0.08); border: 1px solid rgba(245,166,35,0.3);
+      color: #7A5200; border-radius: 8px; padding: 10px 16px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 600;
+      margin-bottom: 14px; display: none;
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .search-header { padding: 20px 20px 0; }
+      .browse-body { padding: 0 20px; flex-direction: column; }
+      .sidebar {
+        width: 100%; border-right: none; position: static; height: auto;
+        padding: 16px 0; border-bottom: 1px solid var(--border); display: none;
+      }
+      .sidebar.open { display: block; }
+      .results-area { padding: 20px 0; }
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<!-- ══ SEARCH HEADER ════════════════════════════════════════ -->
+<div class="search-header">
+  <div class="sh-top">
+    <div>
+      <div class="sh-title" id="page-title">Chase Cards</div>
+      <div class="sh-count">Showing <strong id="result-count">12</strong> results</div>
+    </div>
+    <div class="sh-controls">
+      <select class="sort-select" id="sort-select" onchange="handleSort(this.value)">
+        <option value="price-desc">Price: High → Low</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="change-desc">Rising First</option>
+        <option value="change-asc">Falling First</option>
+        <option value="name-asc">Name A–Z</option>
+      </select>
+      <button class="toggle-filters-btn" onclick="toggleSidebar()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M1 3h12M3 7h8M5 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Filters
+        <span class="filter-badge" id="filter-badge" style="display:none;">0</span>
+      </button>
+      <button class="save-search-btn" onclick="handleSaveSearch()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <path d="M6.5 1L8 4.5H12L9 7L10 11L6.5 8.5L3 11L4 7L1 4.5H5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" fill="none"/>
+        </svg>
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div class="game-tabs">
+    <button class="game-tab active" onclick="setGame('all',this)">
+      All Cards <span class="game-tab-count" id="tab-all">12</span>
+    </button>
+    <button class="game-tab" onclick="setGame('ONE PIECE',this)">
+      One Piece <span class="game-tab-count" id="tab-op">7</span>
+    </button>
+    <button class="game-tab" onclick="setGame('POKÉMON',this)">
+      Pokémon <span class="game-tab-count" id="tab-pk">5</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ BROWSE BODY ══════════════════════════════════════════ -->
+<div class="browse-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section" style="margin-bottom:18px;">
+      <div class="chase-toggle" id="chase-toggle" onclick="toggleChase()">
+        <div>
+          <div class="chase-toggle-label">⭐ Chase Only</div>
+          <div class="chase-toggle-sub">Chase-grade cards only</div>
+        </div>
+        <div class="toggle-knob"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section" id="sec-rarity">
+      <div class="sidebar-section-head" onclick="toggleSection('sec-rarity')">
+        <span class="sidebar-section-title">Rarity</span>
+        <span class="sidebar-chevron">▾</span>
+      </div>
+      <div class="sidebar-body" id="rarity-filters"><!-- JS --></div>
+    </div>
+
+    <div class="sidebar-section" id="sec-set">
+      <div class="sidebar-section-head" onclick="toggleSection('sec-set')">
+        <span class="sidebar-section-title">Set</span>
+        <span class="sidebar-chevron">▾</span>
+      </div>
+      <div class="sidebar-body" id="set-filters"><!-- JS --></div>
+    </div>
+
+    <div class="sidebar-section" id="sec-price">
+      <div class="sidebar-section-head" onclick="toggleSection('sec-price')">
+        <span class="sidebar-section-title">Price Range</span>
+        <span class="sidebar-chevron">▾</span>
+      </div>
+      <div class="sidebar-body">
+        <div class="price-range-display" id="price-display">$0 – Any</div>
+        <div class="range-inputs">
+          <input class="range-input" type="number" id="min-price" placeholder="Min" oninput="updatePriceRange()" />
+          <span class="range-sep">–</span>
+          <input class="range-input" type="number" id="max-price" placeholder="Max" oninput="updatePriceRange()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section" id="sec-graded">
+      <div class="sidebar-section-head" onclick="toggleSection('sec-graded')">
+        <span class="sidebar-section-title">Condition</span>
+        <span class="sidebar-chevron">▾</span>
+      </div>
+      <div class="sidebar-body">
+        <div class="graded-option selected" onclick="setGraded('all',this)">
+          <div class="graded-radio"></div><span class="graded-label">All Conditions</span>
+        </div>
+        <div class="graded-option" onclick="setGraded('raw',this)">
+          <div class="graded-radio"></div><span class="graded-label">Raw Only</span>
+        </div>
+        <div class="graded-option" onclick="setGraded('graded',this)">
+          <div class="graded-radio"></div><span class="graded-label">Graded Only</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
+  </aside>
+
+  <!-- RESULTS -->
+  <div class="results-area">
+    <div class="active-filters" id="active-filters"></div>
+    <div class="fallback-banner" id="fallback-banner">⚠ Backend unreachable — showing cached data. Results may be incomplete.</div>
+
+    <div class="saved-searches">
+      <span class="saved-label">Saved</span>
+      <a class="saved-pill" href="#" onclick="event.preventDefault();applySearch('Luffy Chase')">Luffy Chase</a>
+      <a class="saved-pill" href="#" onclick="event.preventDefault();applySearch('Pokémon SIR')">Pokémon SIR</a>
+      <a class="saved-pill" href="#" onclick="event.preventDefault();applySearch('OP05')">OP05 Chase</a>
+    </div>
+
+    <div class="card-grid" id="card-grid"></div>
+
+    <!-- Pagination hidden: API caps at 50 results, no offset/limit yet.
+         To add: backend needs offset+limit params + total in response; frontend tracks page. -->
+    <div class="pagination" style="display:none;" aria-hidden="true">
+      <button class="page-btn" disabled>← Prev</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">Next →</button>
+    </div>
+
+    <div class="related-searches">
+      <div class="rs-title">Related Searches</div>
+      <div class="rs-pills">
+        <a class="rs-pill" href="#" onclick="event.preventDefault();applySearch('Luffy Alternate Art')">Luffy Alternate Art</a>
+        <a class="rs-pill" href="#" onclick="event.preventDefault();applySearch('Zoro Secret Rare')">Zoro Secret Rare</a>
+        <a class="rs-pill" href="#" onclick="event.preventDefault();applySearch('Charizard SIR')">Charizard SIR</a>
+        <a class="rs-pill" href="#" onclick="event.preventDefault();applySearch('Umbreon VMAX')">Umbreon VMAX</a>
+        <a class="rs-pill" href="#" onclick="event.preventDefault();applySearch('OP05 Manga Rare')">OP05 Manga Rare</a>
+        <a class="rs-pill" href="#" onclick="event.preventDefault();applySearch('Pokémon Gold')">Pokémon Gold Rare</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ FOOTER ═══════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <img class="footer-icon" src="brand_assets/Homescreen App icon.png" alt="ChaseTrackr" />
+        <span class="footer-wm">Chase<span class="cyan">Trackr</span></span>
+      </div>
+      <p class="footer-desc">TCG price intelligence for serious collectors and traders.</p>
+    </div>
+    <div>
+      <div class="footer-col-t">Product</div>
+      <ul class="footer-links">
+        <li><a href="#">Price Alerts</a></li>
+        <li><a href="#">Portfolio</a></li>
+        <li><a href="#">Chase Radar</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-t">Games</div>
+      <ul class="footer-links">
+        <li><a href="#">One Piece</a></li>
+        <li><a href="#">Pokémon</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-t">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 ChaseTrackr · All rights reserved</div>
+    <div class="footer-socials">
+      <a class="social-pill" href="#">𝕏 Twitter</a>
+      <a class="social-pill" href="#">💬 Discord</a>
+    </div>
+  </div>
+</footer>
+
+<script src="data/cards.js"></script>
+<script src="js/cards-api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/nav.js"></script>
+<script>
+const BACKEND        = window.CT.BACKEND;
+const FALLBACK_CARDS = (window.CT.CARDS || []);
+const rs             = window.CT.rarityStyle;
+
+// State
+const state = {
+  query: '', game: 'all', chaseOnly: false,
+  rarities: new Set(), sets: new Set(),
+  sort: 'price-desc', minPrice: null, maxPrice: null,
+};
+
+let liveResults   = null;   // null=not yet fetched; [] or [...]= fetched
+let usingFallback = false;
+let _fetchCtrl    = null;
+let _debounce     = null;
+
+// ── Backend → CT card shape ──
+// Shared adapter in js/cards-api.js — single source so the game-normalize,
+// SETCODE- prefix strip, and name cleanup fixes apply to every surface.
+const mapCard = window.CT.mapCard;
+
+// ── Skeleton loader ────────────────────────────────────────
+function showSkeleton(n) {
+  document.getElementById('card-grid').innerHTML = Array(n).fill(`
+    <div class="skeleton-cell">
+      <div class="skel skel-img"></div>
+      <div class="skel-body">
+        <div class="skel skel-line short"></div>
+        <div class="skel skel-line long"></div>
+        <div class="skel skel-line med"></div>
+        <div class="skel skel-footer"></div>
+      </div>
+    </div>`).join('');
+  document.getElementById('result-count').textContent = '…';
+}
+
+function showPrompt() {
+  document.getElementById('card-grid').innerHTML = `<div class="no-results">
+    <div style="font-size:48px;opacity:0.25;margin-bottom:12px;">🔍</div>
+    <div class="no-results-title">Search the catalog</div>
+    <div class="no-results-sub">Type a card name, set code, or rarity to get started</div>
+  </div>`;
+  document.getElementById('result-count').textContent = '0';
+}
+
+// ── API fetch ───────────────────────────────────────────────
+// POST /api/v1/search-card — supports chase_only, game, card_type natively
+let _lastTotal = null;   // total row count from last response (for future pagination)
+
+async function fetchLive(offset) {
+  if (_fetchCtrl) _fetchCtrl.abort();
+  _fetchCtrl = new AbortController();
+  const body = { query: state.query || '', offset: offset || 0, limit: PAGE_SIZE };
+  if (state.game !== 'all')        body.game       = state.game;
+  if (state.chaseOnly)             body.chase_only = true;
+  if (state.rarities.size === 1)   body.rarity     = [...state.rarities][0];
+  const res = await fetch(`${BACKEND}/api/v1/search-card`, {
+    method: 'POST',
+    signal: _fetchCtrl.signal,
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  _lastTotal = data.total ?? null;
+  return (data.results || []).map(mapCard);
+}
+
+const PAGE_SIZE = 20;
+
+// ── Fetch + render cycle ────────────────────────────────────
+function triggerSearch(immediate) {
+  clearTimeout(_debounce);
+  _debounce = setTimeout(_doSearch, immediate ? 0 : 350);
+}
+
+async function _doSearch() {
+  const hasQuery   = !!state.query;
+  const hasFilters = state.chaseOnly || state.rarities.size > 0 || state.sets.size > 0
+                     || state.game !== 'all' || state.minPrice != null || state.maxPrice != null;
+
+  if (!hasQuery && !hasFilters) {
+    liveResults = null; usingFallback = false; _lastTotal = null;
+    showPrompt();
+    updateTabCounts(null);
+    buildSidebarFromCards(FALLBACK_CARDS);
+    renderActiveFilters();
+    return;
+  }
+
+  showSkeleton(6);
+  document.getElementById('sort-select').disabled = true;
+
+  try {
+    // POST /api/v1/search-card handles query, game, chase_only, rarity natively
+    liveResults   = await fetchLive(0);
+    usingFallback = false;
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    console.warn('[search] API unavailable, using fallback:', err.message);
+    const q = state.query.toLowerCase();
+    liveResults = FALLBACK_CARDS.filter(c => !q ||
+      [c.name, c.setCode, c.rarity, c.set].some(f => (f||'').toLowerCase().includes(q)));
+    usingFallback = true;
+    _lastTotal = liveResults.length;
+  } finally {
+    document.getElementById('sort-select').disabled = false;
+  }
+
+  render();
+}
+
+// ── Tab counts (derived from current result set) ───────────
+function updateTabCounts(cards) {
+  const src = cards || FALLBACK_CARDS;
+  document.getElementById('tab-all').textContent = src.length;
+  document.getElementById('tab-op').textContent  = src.filter(c => c.game === 'ONE PIECE').length;
+  document.getElementById('tab-pk').textContent  = src.filter(c => c.game === 'POKÉMON').length;
+}
+
+// ── Sidebar: counts from the live result set, not the static file ──
+function buildSidebarFromCards(cards) {
+  const rarityMap = {}, setMap = {};
+  cards.forEach(c => {
+    if (c.rarity)  rarityMap[c.rarity] = (rarityMap[c.rarity] || 0) + 1;
+    if (c.setCode) {
+      setMap[c.setCode] = setMap[c.setCode] || { name: c.set || c.setCode, count: 0 };
+      setMap[c.setCode].count++;
+    }
+  });
+
+  const rarityEl = document.getElementById('rarity-filters');
+  rarityEl.innerHTML = '';
+  Object.entries(rarityMap).sort((a,b)=>b[1]-a[1]).forEach(([r,n]) => {
+    rarityEl.innerHTML += `
+      <div class="filter-option${state.rarities.has(r)?' checked':''}" onclick="toggleFilter(this,'rarity','${r}')">
+        <div class="filter-check"></div>
+        <span class="filter-label">${r}</span>
+        <span class="filter-count">${n}</span>
+      </div>`;
+  });
+  if (!rarityEl.children.length)
+    rarityEl.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:6px 8px">Search to see facets</div>';
+
+  const setEl = document.getElementById('set-filters');
+  setEl.innerHTML = '';
+  Object.entries(setMap).sort((a,b)=>b[1].count-a[1].count).forEach(([code,info]) => {
+    setEl.innerHTML += `
+      <div class="filter-option${state.sets.has(code)?' checked':''}" onclick="toggleFilter(this,'set','${code}')">
+        <div class="filter-check"></div>
+        <span class="filter-label">${code} — ${info.name}</span>
+        <span class="filter-count">${info.count}</span>
+      </div>`;
+  });
+  if (!setEl.children.length)
+    setEl.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:6px 8px">Search to see facets</div>';
+}
+
+// Init sidebar from static fallback; updated after each live fetch
+buildSidebarFromCards(FALLBACK_CARDS);
+updateTabCounts(null);
+
+// ── URL params on load ─────────────────────────────────────
+(function handleQueryParam() {
+  const p = new URLSearchParams(location.search);
+  if (p.get('q'))              state.query = p.get('q');
+  if (p.get('filter')==='chase') { state.chaseOnly=true; document.getElementById('chase-toggle').classList.add('on'); }
+  if (p.get('rarity'))         state.rarities.add(p.get('rarity'));
+  if (p.get('game'))           state.game = decodeURIComponent(p.get('game'));
+  if (p.get('sort'))           state.sort = p.get('sort');
+})();
+
+function getFiltered() {
+  // Use live API results when available; fall back to static file
+  let cards = liveResults !== null ? [...liveResults] : [...FALLBACK_CARDS];
+
+  // Text search is already applied server-side when liveResults !== null;
+  // apply client-side only when using the fallback
+  if (liveResults === null && state.query) {
+    const q = state.query.toLowerCase();
+    cards = cards.filter(c =>
+      (c.name    ||'').toLowerCase().includes(q) ||
+      (c.setCode ||'').toLowerCase().includes(q) ||
+      (c.rarity  ||'').toLowerCase().includes(q) ||
+      (c.set     ||'').toLowerCase().includes(q)
+    );
+  }
+
+  // Client-side filters (game not in backend response; chase_only not a route param)
+  if (state.game !== 'all') cards = cards.filter(c => c.game === state.game);
+  if (state.chaseOnly)      cards = cards.filter(c => c.isChase);
+  if (state.rarities.size)  cards = cards.filter(c => state.rarities.has(c.rarity));
+  if (state.sets.size)      cards = cards.filter(c => state.sets.has(c.setCode));
+  if (state.minPrice !== null) cards = cards.filter(c => (c.currentPrice??0) >= state.minPrice);
+  if (state.maxPrice !== null) cards = cards.filter(c => (c.currentPrice??0) <= state.maxPrice);
+
+  const sorts = {
+    'price-desc': (a,b) => (b.currentPrice??0) - (a.currentPrice??0),
+    'price-asc':  (a,b) => (a.currentPrice??0) - (b.currentPrice??0),
+    'change-desc':(a,b) => (b.change7d??0) - (a.change7d??0),
+    'change-asc': (a,b) => (a.change7d??0) - (b.change7d??0),
+    'name-asc':   (a,b) => (a.name||'').localeCompare(b.name||''),
+  };
+  cards.sort(sorts[state.sort] || sorts['price-desc']);
+  return cards;
+}
+
+function render() {
+  const cards = getFiltered();
+  const grid  = document.getElementById('card-grid');
+  const fb    = document.getElementById('fallback-banner');
+  grid.innerHTML = '';
+  document.getElementById('result-count').textContent = cards.length;
+
+  // Show/hide fallback warning
+  fb.style.display = usingFallback ? 'block' : 'none';
+
+  // Update tabs and sidebar from the current result set
+  if (liveResults !== null) {
+    updateTabCounts(liveResults);
+    buildSidebarFromCards(liveResults);
+  }
+
+  if (!cards.length) {
+    grid.innerHTML = `<div class="no-results">
+      <div style="font-size:48px;opacity:0.3;margin-bottom:12px;">🃏</div>
+      <div class="no-results-title">No cards found</div>
+      <div class="no-results-sub">Try adjusting your filters or search</div>
+    </div>`;
+    return;
+  }
+
+  cards.forEach(c => {
+    const s   = rs(c.rarity);
+    const price = c.currentPrice != null ? `$${c.currentPrice.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2})}` : '—';
+    // 7d change: backend doesn't return it; show only when available
+    const changeHTML = c.change7d != null
+      ? `<div class="cc-change ${c.change7d>=0?'up':'down'}">${c.change7d>=0?'▲':'▼'} ${Math.abs(c.change7d)}% 7D</div>`
+      : '';
+    const el = document.createElement('a');
+    el.className = 'card-cell';
+    el.href = 'card.html?id=' + c.id;
+    el.innerHTML = `
+      <div class="card-cell-img">
+        <img ${window.CT.imgAttrs(c)} />
+        <button class="heart-btn" onclick="event.preventDefault()" aria-label="Add to watchlist">♡</button>
+        ${c.isChase ? '<span class="chase-badge">⭐ Chase</span>' : ''}
+      </div>
+      <div class="card-cell-body">
+        <div class="cc-overline">${c.setCode} · #${c.number}</div>
+        <div class="cc-name">${c.name}</div>
+        <div class="cc-sub">${c.set}</div>
+        <span class="cc-tag" style="background:${s.bg};color:${s.color};">${(c.rarity||'').toUpperCase()}</span>
+        <div class="cc-footer">
+          <div>
+            <div class="cc-price">${price}</div>
+            ${changeHTML}
+          </div>
+          <button class="btn-track" onclick="event.preventDefault()">+ Track</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(el);
+  });
+}
+
+function renderActiveFilters() {
+  const af = document.getElementById('active-filters');
+  af.innerHTML = '';
+  let count = 0;
+
+  function chip(label, onRemove) {
+    count++;
+    const id = 'fc_' + (count + '_' + label).replace(/[^a-z0-9]/gi,'_');
+    setTimeout(() => document.getElementById(id)?.addEventListener('click', () => { onRemove(); triggerSearch(true); renderActiveFilters(); }), 0);
+    return `<span class="filter-chip" id="${id}">${label}<span class="remove">×</span></span>`;
+  }
+
+  if (state.chaseOnly) af.innerHTML += chip('Chase Only', () => { state.chaseOnly=false; document.getElementById('chase-toggle').classList.remove('on'); });
+  if (state.query) af.innerHTML += chip(`"${state.query}"`, () => { state.query=''; });
+  state.rarities.forEach(r => af.innerHTML += chip(r, () => { state.rarities.delete(r); document.querySelectorAll('.filter-option').forEach(el=>{ if(el.dataset.value===r) el.classList.remove('checked'); }); }));
+  state.sets.forEach(s => af.innerHTML += chip(s, () => { state.sets.delete(s); }));
+  if (state.minPrice||state.maxPrice) af.innerHTML += chip(`$${state.minPrice||'0'}–$${state.maxPrice||'∞'}`, () => { state.minPrice=state.maxPrice=null; document.getElementById('min-price').value=''; document.getElementById('max-price').value=''; });
+
+  const badge = document.getElementById('filter-badge');
+  badge.style.display = count>0 ? 'inline-flex' : 'none';
+  badge.textContent = count;
+}
+
+function rerender() { render(); renderActiveFilters(); }
+
+function setGame(g, btn) {
+  state.game = g;
+  document.querySelectorAll('.game-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const titles = {all:'Chase Cards','ONE PIECE':'One Piece Cards','POKÉMON':'Pokémon Cards'};
+  document.getElementById('page-title').textContent = titles[g]||'Chase Cards';
+  rerender();
+}
+function handleSort(v) { state.sort=v; rerender(); }
+function toggleChase() {
+  state.chaseOnly=!state.chaseOnly;
+  document.getElementById('chase-toggle').classList.toggle('on',state.chaseOnly);
+  triggerSearch(true);
+}
+function toggleFilter(el,type,value) {
+  el.classList.toggle('checked');
+  el.dataset.value = value;
+  if(type==='rarity'){ state.rarities.has(value)?state.rarities.delete(value):state.rarities.add(value); }
+  if(type==='set'){ state.sets.has(value)?state.sets.delete(value):state.sets.add(value); }
+  rerender();   // filter-only: client-side refilter, no new fetch
+}
+function toggleSection(id) { document.getElementById(id).classList.toggle('collapsed'); }
+function updatePriceRange() {
+  const mn=document.getElementById('min-price').value, mx=document.getElementById('max-price').value;
+  state.minPrice=mn?parseFloat(mn):null; state.maxPrice=mx?parseFloat(mx):null;
+  document.getElementById('price-display').textContent=`$${mn||'0'} – ${mx?'$'+mx:'Any'}`;
+  rerender();
+}
+function setGraded(v,el) { document.querySelectorAll('.graded-option').forEach(o=>o.classList.remove('selected')); el.classList.add('selected'); }
+function clearAllFilters() {
+  state.chaseOnly=false; state.rarities=new Set(); state.sets=new Set(); state.minPrice=state.maxPrice=null;
+  document.getElementById('chase-toggle').classList.remove('on');
+  document.querySelectorAll('.filter-option').forEach(o=>o.classList.remove('checked'));
+  document.getElementById('min-price').value=''; document.getElementById('max-price').value='';
+  document.getElementById('price-display').textContent='$0 – Any';
+  triggerSearch(true);
+}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function applySearch(q) { state.query=q; triggerSearch(true); }
+function handleSaveSearch() { window.location.href='signin.html'; }
+
+// Handle nav search events from js/nav.js
+document.addEventListener('ct:search', e => { state.query=e.detail.q; triggerSearch(true); });
+
+// Init — trigger search if we have URL params, else show prompt
+(function init() {
+  if (state.query || state.chaseOnly || state.rarities.size || state.sets.size) {
+    triggerSearch(true);
+  } else {
+    showPrompt();
+    renderActiveFilters();
+  }
+})();
+</script>
+</body>
+</html>

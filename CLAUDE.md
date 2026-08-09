@@ -1,51 +1,77 @@
-# CLAUDE.md - Frontend Website Rules
+# CLAUDE.md — ChaseTrackr Website
+
 ## Always Do First
-- **Invoke the "frontend-design" skill** before writing any frontend code, every sessi
-## Reference Images
-⁃	If a reference image is provided: match layout, spacing, typography, and color exact
-⁃	If no reference image: design from scratch with high craft (see guardrails below).
-⁃	Screenshot your output, compare against reference, fix mismatches, re-screenshot. Do
+- Invoke the `frontend-design` skill before writing any frontend code, every session.
+- Invoke the `chasetrackr-web` skill (`.claude/skills/chasetrackr-web/SKILL.md`).
+- Read `brand_assets/chasetrackr_brand_guidelines_v2.html` — it is authoritative.
+
+## What This Product Is
+ChaseTrackr is a TCG **price-intelligence and portfolio** web app for One Piece
+and Pokémon collectors, focused on high-value "chase" cards.
+
+**It is NOT a marketplace.** Never add buying, selling, bidding, offers, carts,
+checkout, vaulting, or auctions. The reference site (alt.xyz) has these — we copy
+its layout, not its commerce.
+
+## Reference Material
+- `reference/ALT_WEBPAGE.pdf` — home / featured layout
+- `reference/ALT_CARD_WEBPAGE.pdf` — card detail layout
+- `reference/LUFFY___Browse___Alt.pdf` — search / browse layout
+- `reference/` also holds app screenshots. Match the app for identity, alt for structure.
+
+Match layout, spacing, and information density from the PDFs. Override all of
+alt's colors and fonts with ChaseTrackr's. Never copy alt's copy, images, or fonts.
+
+## Brand Tokens
+```
+--blue #2979FF   --cyan #00D4FF   --gold #F5A623   --navy #0A1628
+--bg #F4F8FF     --surface #EBF3FF --white #FFFFFF  --border #C5D9F5
+--text-mid #3A5A8A --muted #7A96BB
+--green #00C48C (up)  --red #FF4D6A (down)  --purple #7B61FF (ultra rare)
+```
+Light theme. Only the top bar and hero band are navy.
+
+## Typography
+- **Nunito** 800/900 — logotype, hero headings, displayed prices.
+- **Exo 2** 400–800 — body, buttons, labels, data, nav.
+- Self-host from `brand_assets/` via `@font-face`. No Google Fonts CDN.
+- Never use one font for both roles.
+
 ## Local Server
-⁃	**Always serve on localhost** - never screenshot a "file:///" URL.
-⁃	Start the dev server: "node servemjs" (serves the project root at "http://localhost
-⁃	"serve.mjs" lives in the project root. Start it in the background before taking any
-⁃	If the server is already running, do not start a second instance.
-# Screenshot Workflow
-⁃	Puppeteer is installed at C:/Users/nateh/AppData/Local/Temp/puppeteer-test/*. Chrom
-⁃	**Always screenshot from localhost:** node screenshot.mjs http://localhost: 3000*
-⁃	Screenshots are saved automatically to /temporary screenshots/screenshot-N.png' (a
-⁃	Optional label suffix: "node screenshot.mjs http://localhost:3000 label' → saves as
-⁃	"screenshot.mjs" lives in the project root. Use it as-is.
-⁃	After screenshotting, read the PNG from "temporary screenshots/" with the Read tool
-⁃	When comparing, be specific: "heading is 32px but reference shows ~24px", "card gap
-⁃	Check: spacing/padding, font size/weight/line-height, colors (exact hex), alignment,
-## Output Defaults
-⁃	Single "index.html' file, all styles inline, unless user says otherwise
-Tailwind CSS via CDN: "‹script src-"https://cdn.tailwindcss.com">/script>*
+- Always serve on localhost — never screenshot a `file:///` URL.
+- Start: `node serve.mjs` (serves project root). PORT: [CONFIRM]
+- `serve.mjs` lives in the project root. If it's already running, don't start a second instance.
+
+## Screenshot Workflow
+- Always screenshot from `http://localhost:[PORT]`.
+- After screenshotting, read the PNG back and compare against the matching
+  reference PDF.
+- Be specific when comparing: "heading is 32px, reference reads ~48px",
+  "card gap is 12px, reference ~24px".
+- Check: spacing/padding, font size/weight/line-height, exact hex colors,
+  alignment, border radius, shadow depth.
+- Minimum two passes per page. Never stop after one.
 
 ## Output Defaults
-⁃	Single "index.html" file, all styles inline, unless user says otherwise
-⁃	Tailwind CSS via CDN: *<script src="https://cdn.tailwindcss.com">/script>*
-⁃	Placeholder images: ^https://placehold.co/WIDTHxHEIGHT*
-⁃	Mobile-first responsive
-## Brand Assets
-⁃	Always check the "brand_assets/" folder before designing. It may contain logos, colo
-⁃	If assets exist there, use them. Do not use placeholders where real assets are avail
-⁃	If a logo is present, use it. If a color palette is defined, use those exact values
+- Mobile-first responsive.
+- Keep all placeholder card data in one `data/cards.js` export, marked
+  `TODO: replace with GET /api/v1/search-card`.
+- Backend (for later): `https://chasetrackr-backend.onrender.com`
+
 ## Anti-Generic Guardrails
-⁃	**Colors:** Never use default Tailwind palette (indigo-500, blue-600, etc.). Pick a
-⁃	**Shadows: ** Never use flat " shadow-md". Use layered, color-tinted shadows with low
-⁃	**Typography:** Never use the same font for headings and body. Pair a display/serif
-⁃	**Gradients:** Layer multiple radial gradients. Add grain/texture via SVG noise filt
-⁃	**Animations:** Only animate "transform" and "opacity". Never "transition-all'. Use
-⁃	**Interactive states:** Every clickable element needs hover, focus-visible, and acti
-⁃	**Images:** Add a gradient overlay (bg-gradient-to-t from-black/60°) and a color tr
-⁃	**Spacing:** Use intentional, consistent spacing tokens - not random Tailwind steps.
-⁃	**Depth: ** Surfaces should have a layering system (base → elevated → floating), not
-## Hard Rules
-⁃	Do not add sections, features, or content not in the reference
-⁃	Do not "improve" a reference design - match it
-⁃	Do not stop after one screenshot pass
-⁃	Do not use transition-all"
-Do not use default Tailwind blue/indigo as primary color
+- **Colors:** never the default Tailwind palette. Use the brand tokens.
+- **Shadows:** layered, color-tinted, low opacity. Never flat `shadow-md`.
+- **Typography:** pair the two fonts — never one for everything.
+- **Gradients:** layer multiple; add grain/texture via SVG noise filter.
+- **Animations:** only `transform` and `opacity`. Never `transition-all`.
+- **Interactive states:** hover + focus-visible + active on every clickable element.
+- **Spacing:** consistent tokens, not random steps.
+- **Depth:** a real layering system (base → elevated → floating), not flat.
 
+## Hard Rules
+- No marketplace features — ever.
+- Don't invent credibility stats. Mark any placeholder numbers with a TODO.
+- Don't add sections or features not in the reference or the app.
+- Don't "improve" the reference layout — match its structure.
+- Don't stop after one screenshot pass.
+- Auth is UI-only for now. Stub handlers with a TODO.

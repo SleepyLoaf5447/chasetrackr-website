@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card Detail — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { padding-top: var(--nav-h); }
+
+    /* ── BACK BAR + STATS ────────────────────────────────── */
+    .back-bar {
+      padding: 16px 48px;
+      display: flex; align-items: center; gap: 20px;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+    }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+      color: var(--text-mid); text-decoration: none;
+      transition: color 0.18s, transform 0.15s;
+    }
+    .back-btn:hover { color: var(--blue); transform: translateX(-2px); }
+    .back-btn svg { flex-shrink: 0; }
+    .back-sep { color: var(--border); font-size: 18px; }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+    .breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--blue); }
+    .breadcrumb .sep { color: var(--border); }
+    .breadcrumb .current { color: var(--text); }
+    .breadcrumb a.current { color: var(--navy); }
+    .breadcrumb a.current[href="#"] { pointer-events: none; cursor: default; }
+
+    .stats-bar {
+      margin-left: auto;
+      display: flex; align-items: center; gap: 24px;
+    }
+    .stat-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--muted); text-transform: uppercase;
+    }
+    .stat-item svg { opacity: 0.6; }
+    .stat-num { color: var(--text-mid); font-weight: 700; }
+    .share-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--blue); border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 7px 16px; background: none; cursor: pointer;
+      transition: background 0.18s, border-color 0.18s, transform 0.15s;
+    }
+    .share-btn:hover { background: var(--surface); border-color: var(--blue); transform: translateY(-1px); }
+    .share-btn:active { transform: scale(0.97); }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────── */
+    .detail-wrap {
+      max-width: 1280px; margin: 0 auto;
+      padding: 40px 48px 80px;
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* ── LEFT COLUMN ─────────────────────────────────────── */
+    .card-media { position: sticky; top: 88px; }
+
+    .card-img-wrap {
+      position: relative; border-radius: 16px; overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(41,121,255,0.12),
+        0 12px 48px rgba(41,121,255,0.18),
+        0 2px 8px rgba(0,0,0,0.1);
+      background: var(--surface);
+    }
+    .card-img-wrap img {
+      display: block; width: 100%;
+      aspect-ratio: 5/7; object-fit: cover;
+    }
+    .card-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,22,40,0.4) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    .card-game-badge {
+      position: absolute; top: 16px; left: 16px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      background: rgba(10,22,40,0.72); color: var(--cyan);
+      border: 1px solid rgba(0,212,255,0.3); border-radius: 100px;
+      padding: 4px 10px; backdrop-filter: blur(8px);
+    }
+
+    .thumbs {
+      display: flex; gap: 10px; margin-top: 12px; overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .thumb {
+      flex-shrink: 0; width: 72px; height: 100px; border-radius: 8px;
+      overflow: hidden; cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.18s, transform 0.15s;
+      box-shadow: 0 2px 8px rgba(41,121,255,0.1);
+    }
+    .thumb:hover, .thumb.active { border-color: var(--blue); transform: translateY(-2px); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .card-meta-pills {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;
+    }
+    .meta-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      border-radius: 100px; padding: 4px 10px;
+      background: var(--surface); color: var(--text-mid);
+      border: 1px solid var(--border);
+    }
+
+    /* ── RIGHT COLUMN ────────────────────────────────────── */
+    .card-info {}
+
+    .card-overline {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .card-h1 {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 44px);
+      letter-spacing: -0.02em; line-height: 1.1;
+      color: var(--navy); margin-bottom: 6px;
+    }
+    .card-sub {
+      font-size: 14px; font-weight: 500; color: var(--muted); margin-bottom: 24px;
+    }
+    .card-sub strong { color: var(--text-mid); font-weight: 700; }
+
+    /* rarity tag */
+    .rarity-tag {
+      display: inline-block; border-radius: 100px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 4px 12px; margin-bottom: 24px;
+    }
+
+    /* stat pair box */
+    .stat-box {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--border);
+      margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(41,121,255,0.07);
+    }
+    .stat-box-cell {
+      background: var(--white); padding: 18px 20px;
+    }
+    .stat-box-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .stat-box-value {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 28px; letter-spacing: -0.01em; color: var(--navy);
+      line-height: 1;
+    }
+    .stat-box-sub {
+      font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 4px;
+    }
+    .change-chip {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+      border-radius: 100px; padding: 3px 8px; margin-top: 6px;
+    }
+    .change-chip.up { background: var(--green-bg); color: var(--green); }
+    .change-chip.down { background: var(--red-bg); color: var(--red); }
+
+    /* confidence */
+    .confidence-wrap {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .conf-bars {
+      display: flex; align-items: flex-end; gap: 2px; height: 20px;
+    }
+    .conf-bar {
+      width: 4px; border-radius: 2px;
+      background: var(--border);
+      transition: background 0.2s;
+    }
+    .conf-bar.active { background: var(--blue); }
+    .conf-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* description */
+    .desc-section { margin-bottom: 28px; }
+    .desc-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .desc-body {
+      font-size: 14px; font-weight: 400; color: var(--text-mid); line-height: 1.7;
+    }
+    .show-more {
+      background: none; border: none; cursor: pointer;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      color: var(--blue); letter-spacing: 0.04em; margin-top: 6px;
+      transition: opacity 0.15s;
+    }
+    .show-more:hover { opacity: 0.7; }
+
+    /* fair value headline */
+    .fv-headline {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--border);
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(41,121,255,0.07);
+    }
+    .fv-cell {
+      background: var(--navy); padding: 20px 24px;
+    }
+    .fv-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 8px;
+    }
+    .fv-value {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 36px; letter-spacing: -0.02em; color: #fff;
+      line-height: 1;
+    }
+    .fv-sub {
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.5); margin-top: 6px;
+    }
+    .fv-conf-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.5); margin-bottom: 8px;
+    }
+    .fv-conf-value {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 24px; color: var(--cyan);
+    }
+
+    /* CTAs */
+    .cta-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+
+    .btn-alert {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--blue); color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: none; border-radius: 8px; padding: 16px 28px;
+      cursor: pointer; width: 100%;
+      box-shadow: 0 4px 20px rgba(41,121,255,0.32);
+      transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+    }
+    .btn-alert:hover { background: var(--blue-h); transform: translateY(-2px); box-shadow: 0 6px 28px rgba(41,121,255,0.4); }
+    .btn-alert:active { transform: scale(0.97); }
+    .btn-alert:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+
+    .btn-portfolio {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: transparent; color: var(--blue);
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: 2px solid var(--blue); border-radius: 8px; padding: 14px 28px;
+      cursor: pointer; width: 100%;
+      transition: background 0.18s, transform 0.15s;
+    }
+    .btn-portfolio:hover { background: rgba(41,121,255,0.06); transform: translateY(-1px); }
+    .btn-portfolio:active { transform: scale(0.97); }
+    .btn-portfolio:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+
+    /* price by source */
+    .section-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .section-updated {
+      font-size: 11px; font-weight: 600; color: var(--muted);
+    }
+
+    .source-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--border);
+      margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(41,121,255,0.07);
+    }
+    .source-cell {
+      background: var(--white); padding: 16px 18px;
+    }
+    .source-name {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .source-price {
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: 22px; color: var(--navy); line-height: 1;
+    }
+    .source-date {
+      font-size: 11px; font-weight: 500; color: var(--muted); margin-top: 4px;
+    }
+
+    /* price history chart */
+    .chart-card {
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(41,121,255,0.08);
+    }
+    .chart-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 0;
+    }
+    .chart-title-wrap {}
+    .chart-change {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 20px; color: var(--green);
+    }
+    .chart-period {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-left: 4px;
+    }
+    .chart-tabs {
+      display: flex; gap: 2px;
+      background: var(--surface); border-radius: 8px; padding: 3px;
+    }
+    .chart-tab {
+      font-family: 'Exo 2', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted); background: none; border: none;
+      border-radius: 6px; padding: 5px 12px; cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+    }
+    .chart-tab.active {
+      background: var(--white); color: var(--blue);
+      box-shadow: 0 1px 4px rgba(41,121,255,0.12);
+    }
+    .chart-tab:hover:not(.active) { color: var(--text-mid); }
+
+    .chart-svg-wrap {
+      padding: 0 0 0; height: 220px; position: relative;
+    }
+    .chart-svg-wrap svg { width: 100%; height: 100%; }
+    .chart-tooltip {
+      position: absolute;
+      background: var(--navy); color: #fff;
+      border-radius: 6px; padding: 6px 10px;
+      font-size: 12px; font-weight: 700;
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.12s;
+      white-space: nowrap;
+    }
+
+    /* ── RELATED SECTION ─────────────────────────────────── */
+    .related-section {
+      max-width: 1280px; margin: 0 auto;
+      padding: 0 48px 80px;
+    }
+    .related-title {
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: 22px; color: var(--navy);
+      margin-bottom: 20px;
+    }
+    .related-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+    .card-cell {
+      background: var(--white); border-radius: 12px;
+      border: 1px solid var(--border); overflow: hidden;
+      transition: transform 0.18s, box-shadow 0.18s;
+      cursor: pointer; text-decoration: none; display: block; color: inherit;
+      box-shadow: 0 2px 12px rgba(41,121,255,0.06);
+    }
+    .card-cell:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(41,121,255,0.14), 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .card-cell-img {
+      position: relative; aspect-ratio: 5/7; overflow: hidden;
+      background: var(--surface);
+    }
+    .card-cell-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .heart-btn {
+      position: absolute; top: 10px; right: 10px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: transform 0.15s, background 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .heart-btn:hover { transform: scale(1.1); background: #fff; }
+    .card-cell-body { padding: 14px; }
+    .cc-set {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 4px;
+    }
+    .cc-name { font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.3; margin-bottom: 2px; }
+    .cc-num { font-size: 11px; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
+    .cc-tag { display: inline-block; border-radius: 100px; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; margin-bottom: 10px; }
+    .cc-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cc-price {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 18px; color: var(--navy);
+    }
+    .cc-change { font-size: 11px; font-weight: 700; }
+    .cc-change.up { color: var(--green); }
+    .cc-change.down { color: var(--red); }
+    .btn-track {
+      background: var(--blue); color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: none; border-radius: 6px; padding: 7px 12px;
+      cursor: pointer; transition: background 0.18s, transform 0.15s;
+    }
+    .btn-track:hover { background: var(--blue-h); transform: translateY(-1px); }
+    .btn-track:active { transform: scale(0.97); }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,0.7);
+      padding: 60px 48px 32px;
+    }
+    .footer-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-brand {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    }
+    .footer-icon { height: 32px; width: 32px; border-radius: 8px; }
+    .footer-wm { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 18px; color: #fff; }
+    .footer-wm .cyan { color: var(--cyan); }
+    .footer-desc { font-size: 13px; line-height: 1.7; color: rgba(255,255,255,0.5); max-width: 260px; }
+    .footer-col-t { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.6); text-decoration: none;
+      transition: color 0.15s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-pill {
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);
+      text-decoration: none; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 100px; padding: 5px 14px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .social-pill:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .back-bar { padding: 12px 20px; }
+      .stats-bar { display: none; }
+      .detail-wrap {
+        grid-template-columns: 1fr;
+        padding: 24px 20px 60px;
+        gap: 32px;
+      }
+      .card-media { position: static; }
+      .related-section { padding: 0 20px 60px; }
+      .related-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { padding: 40px 20px 24px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+    }
+
+    /* ── Loading skeleton / error / empty states ─────────────── */
+    .card-status { max-width: 1200px; margin: 0 auto; padding: 32px 48px 8px; }
+    /* [hidden] must win over the display rules below (esp. .card-error flex) */
+    .card-status[hidden] { display: none !important; }
+    .skel-shimmer {
+      background: linear-gradient(90deg, var(--surface) 25%, #E1ECFB 37%, var(--surface) 63%);
+      background-size: 400% 100%;
+      animation: cardShimmer 1.4s ease-in-out infinite;
+      border-radius: 8px;
+    }
+    .skel-l { height: 14px; margin-bottom: 14px; }
+    @keyframes cardShimmer { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+    @media (prefers-reduced-motion: reduce) { .skel-shimmer { animation: none; } }
+
+    .card-error {
+      text-align: center; padding: 80px 48px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .card-error-icon { font-size: 40px; color: var(--gold); }
+    .card-error-title {
+      font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 24px; color: var(--navy);
+    }
+    .card-error-detail {
+      font-family: 'Exo 2', sans-serif; font-size: 14px; color: var(--muted); max-width: 460px;
+    }
+    .card-error-back {
+      margin-top: 8px; color: var(--blue); font-family: 'Exo 2', sans-serif;
+      font-weight: 700; font-size: 13px; text-decoration: none;
+    }
+    .card-error-back:hover { text-decoration: underline; }
+
+    .source-empty, .chart-empty {
+      font-family: 'Exo 2', sans-serif; font-size: 13px; color: var(--muted);
+      padding: 18px; background: var(--surface); border: 1px dashed var(--border);
+      border-radius: 10px; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════ -->
+<div id="site-nav"></div>
+
+<!-- ══ BACK BAR ═════════════════════════════════════════════ -->
+<div class="back-bar">
+  <a class="back-btn" href="search.html">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back
+  </a>
+  <span class="back-sep">›</span>
+  <div class="breadcrumb">
+    <a href="search.html">Browse</a>
+    <span class="sep">›</span>
+    <span id="breadcrumb-game">One Piece</span>
+    <span class="sep">›</span>
+    <a class="current" id="breadcrumb-name" href="#">Monkey D. Luffy</a>
+  </div>
+  <div class="stats-bar">
+    <!-- View/watch counts removed — no backend for them (no invented stats). -->
+    <button class="share-btn" onclick="handleShare()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <circle cx="11" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="3" cy="7" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="11" cy="11.5" r="1.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M4.5 6L9.5 3.5M4.5 8L9.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Share
+    </button>
+  </div>
+</div>
+
+<!-- ══ LOADING SKELETON ═════════════════════════════════════ -->
+<div id="card-skeleton" class="card-status">
+  <div class="detail-wrap">
+    <div class="card-media">
+      <div class="card-img-wrap skel-shimmer" style="aspect-ratio:2/3;border-radius:14px;"></div>
+    </div>
+    <div class="card-info">
+      <div class="skel-shimmer skel-l" style="width:40%"></div>
+      <div class="skel-shimmer skel-l" style="width:72%;height:34px"></div>
+      <div class="skel-shimmer skel-l" style="width:28%;height:22px"></div>
+      <div class="skel-shimmer skel-l" style="width:100%;height:78px"></div>
+      <div class="skel-shimmer skel-l" style="width:100%;height:120px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ERROR STATE ══════════════════════════════════════════ -->
+<div id="card-error" class="card-status card-error" hidden>
+  <div class="card-error-icon" aria-hidden="true">⚠</div>
+  <div class="card-error-title" id="card-error-title">Card not found</div>
+  <div class="card-error-detail" id="card-error-detail"></div>
+  <a class="card-error-back" href="search.html">← Back to search</a>
+</div>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════ -->
+<div class="detail-wrap" id="detail-main" style="display:none;">
+
+  <!-- LEFT: image + thumbs -->
+  <div class="card-media">
+    <div class="card-img-wrap">
+      <img id="main-img" src="" alt="Monkey D. Luffy OP05-119" />
+      <div class="card-img-overlay"></div>
+      <span class="card-game-badge" id="game-badge">ONE PIECE</span>
+    </div>
+
+    <div class="thumbs" id="thumbs">
+      <div class="thumb active">
+        <img id="thumb-0" src="" alt="Alt Art" />
+      </div>
+      <div class="thumb">
+        <img id="thumb-1" src="" alt="Manga Art" />
+      </div>
+      <div class="thumb">
+        <img id="thumb-2" src="" alt="Special Card" />
+      </div>
+    </div>
+
+    <div class="card-meta-pills">
+      <span class="meta-pill" id="pill-number">OP05-119</span>
+      <span class="meta-pill" id="pill-variant">Manga Art</span>
+    </div>
+  </div>
+
+  <!-- RIGHT: info -->
+  <div class="card-info">
+    <div class="card-overline" id="card-overline">One Piece · Awakening of the New Era</div>
+    <h1 class="card-h1" id="card-name">Monkey D. Luffy</h1>
+    <div class="card-sub" id="card-sub"><strong>OP05-119</strong> · Manga Art Variant</div>
+    <span class="rarity-tag" id="rarity-tag" style="background:#FCE8F0;color:#881337;">MANGA RARE</span>
+
+    <!-- Market price only — 7-day change removed (no price history yet) -->
+    <div class="stat-box" style="grid-template-columns:1fr;">
+      <div class="stat-box-cell">
+        <div class="stat-box-label">Market Price</div>
+        <div class="stat-box-value" id="market-price">—</div>
+        <div class="stat-box-sub">Catalogue value</div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="desc-section">
+      <div class="desc-title">About This Card</div>
+      <div class="desc-body" id="desc-body">
+        The Monkey D. Luffy OP05-119 Manga Rare is one of the most sought-after cards in the One Piece TCG.
+        Featuring distinctive black-and-white manga panel artwork, this card is a centerpiece of any serious collector's portfolio.
+        <!-- TODO: pull from backend card description endpoint -->
+      </div>
+      <button class="show-more" onclick="toggleDesc(this)">Show more ▾</button>
+    </div>
+
+    <!-- Fair Value + Confidence -->
+    <div class="section-head" style="margin-bottom:10px;">
+      <span class="section-title">Price Intelligence</span>
+    </div>
+    <div class="fv-headline">
+      <div class="fv-cell">
+        <div class="fv-label">Fair Value</div>
+        <div class="fv-value" id="fair-value">$240</div>
+        <div class="fv-sub">Updated 2 hours ago</div>
+      </div>
+      <div class="fv-cell" style="border-left:1px solid rgba(255,255,255,0.08);">
+        <div class="fv-conf-label">Confidence</div>
+        <div class="fv-conf-value" id="confidence">HIGH</div>
+        <div class="confidence-wrap" style="margin-top:8px;">
+          <div class="conf-bars">
+            <div class="conf-bar active" style="height:8px;"></div>
+            <div class="conf-bar active" style="height:12px;"></div>
+            <div class="conf-bar active" style="height:16px;"></div>
+            <div class="conf-bar" style="height:20px;"></div>
+          </div>
+          <span class="conf-label">3 sources</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-stack">
+      <button class="btn-alert" onclick="handleSetAlert()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1a5 5 0 0 1 5 5v3l1.5 1.5v.5H1.5V10.5L3 9V6a5 5 0 0 1 5-5Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M6.5 13.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Set Price Alert
+      </button>
+      <button class="btn-portfolio" onclick="handleAddPortfolio()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="1.5" y="4.5" width="13" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5.5 4.5V3a2.5 2.5 0 0 1 5 0v1.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 8v4M6 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Add to Portfolio
+      </button>
+    </div>
+
+    <!-- Price by Source -->
+    <div class="section-head">
+      <span class="section-title">Price by Source</span>
+      <span class="section-updated">Last updated 2 hrs ago</span>
+    </div>
+    <div class="source-grid" id="source-grid">
+      <div class="source-cell">
+        <div class="source-name">TCGPlayer</div>
+        <div class="source-price">$238</div>
+        <div class="source-date">Jul 13 · 10:00 PM</div>
+      </div>
+      <div class="source-cell">
+        <div class="source-name">eBay (avg)</div>
+        <div class="source-price">$245</div>
+        <div class="source-date">Jul 13 · 8:00 PM</div>
+      </div>
+      <div class="source-cell">
+        <div class="source-name">PriceCharting</div>
+        <div class="source-price">$228</div>
+        <div class="source-date">Jul 13 · 6:00 PM</div>
+      </div>
+    </div>
+
+    <!-- Price History Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title-wrap">
+          <span class="chart-change" id="chart-change">▲ 25.47%</span>
+          <span class="chart-period" id="chart-period">· 90 DAYS</span>
+        </div>
+        <div class="chart-tabs">
+          <button class="chart-tab" onclick="setRange(7,this)">7D</button>
+          <button class="chart-tab" onclick="setRange(30,this)">30D</button>
+          <button class="chart-tab active" onclick="setRange(90,this)">90D</button>
+          <button class="chart-tab" onclick="setRange(365,this)">ALL</button>
+        </div>
+      </div>
+      <div class="chart-svg-wrap" id="chart-wrap">
+        <div class="chart-tooltip" id="chart-tooltip"></div>
+        <svg id="price-chart" viewBox="0 0 800 220" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+  </div><!-- /card-info -->
+</div><!-- /detail-wrap -->
+
+<!-- ══ RELATED ════════════════════════════════════════════════ -->
+<div class="related-section" style="display:none;">
+  <div class="related-title">Related Chase Cards</div>
+  <div class="related-grid" id="related-grid">
+    <!-- JS populated -->
+  </div>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <img class="footer-icon" src="brand_assets/Homescreen App icon.png" alt="ChaseTrackr" />
+        <span class="footer-wm">Chase<span class="cyan">Trackr</span></span>
+      </div>
+      <p class="footer-desc">TCG price intelligence for serious collectors and traders.</p>
+    </div>
+    <div>
+      <div class="footer-col-t">Product</div>
+      <ul class="footer-links">
+        <li><a href="#">Price Alerts</a></li>
+        <li><a href="#">Portfolio</a></li>
+        <li><a href="#">Chase Radar</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-t">Games</div>
+      <ul class="footer-links">
+        <li><a href="#">One Piece</a></li>
+        <li><a href="#">Pokémon</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-t">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 ChaseTrackr · All rights reserved</div>
+    <div class="footer-socials">
+      <a class="social-pill" href="#">𝕏 Twitter</a>
+      <a class="social-pill" href="#">💬 Discord</a>
+    </div>
+  </div>
+</footer>
+
+<script src="data/cards.js"></script>
+<script src="js/cards-api.js"></script>
+<script>
+// card.html — wired to the live backend.
+//   meta:   GET /cards/{id}
+//   prices: GET /api/v2/card/{id}/prices   (fair_value, confidence, sources)
+// Shared adapter: CT.mapCard / CT.cleanName / CT.cardImage. data/cards.js is an
+// OFFLINE fallback only. No fabricated prices, deltas, or credibility stats.
+const BACKEND = window.CT.BACKEND;
+const rs = window.CT.rarityStyle;
+const $  = (id) => document.getElementById(id);
+
+const _params = new URLSearchParams(location.search);
+const CARD_ID = _params.get('id');
+
+const fmtPrice = (n) => (n == null ? '—'
+  : '$' + Number(n).toLocaleString('en-US', {
+      minimumFractionDigits: Number.isInteger(Number(n)) ? 0 : 2,
+      maximumFractionDigits: 2 }));
+
+const CONF_BARS = { none: 0, low: 1, medium: 2, high: 4 };
+
+let FEATURED = null;   // mapped current card, for share + related
+
+// ── State: loading / error / ready ────────────────────────
+function setState(state) {
+  $('card-skeleton').hidden = state !== 'loading';
+  $('card-error').hidden    = state !== 'error';
+  const show = (state === 'ready') ? '' : 'none';
+  $('detail-main').style.display = show;
+  document.querySelector('.related-section').style.display = show;
+}
+function showError(title, detail) {
+  $('card-error-title').textContent = title;
+  $('card-error-detail').textContent = detail || '';
+  setState('error');
+}
+
+// ── Load ──────────────────────────────────────────────────
+async function loadCard() {
+  if (!CARD_ID) {
+    showError('No card specified', 'This link is missing a card id (?id=…). Open a card from search or the home page.');
+    return;
+  }
+  setState('loading');
+  let meta, prices = null;
+  try {
+    const [mRes, pRes] = await Promise.all([
+      fetch(`${BACKEND}/cards/${encodeURIComponent(CARD_ID)}`),
+      fetch(`${BACKEND}/api/v2/card/${encodeURIComponent(CARD_ID)}/prices`),
+    ]);
+    if (mRes.status === 404) {
+      showError('Card not found', `No card matches “${CARD_ID}”.`);
+      return;
+    }
+    if (!mRes.ok) throw new Error(`meta HTTP ${mRes.status}`);
+    meta   = await mRes.json();
+    prices = pRes.ok ? await pRes.json() : null;
+  } catch (err) {
+    console.warn('[card] backend unreachable:', err.message);
+    const fb = (window.CT.CARDS || []).find((c) => c.id === CARD_ID);
+    if (fb) { render(fb, null, true); return; }   // offline fallback (cards.js)
+    showError('Couldn’t load this card', 'The backend is unreachable. Please try again shortly.');
+    return;
+  }
+  render(window.CT.mapCard(meta), prices, false);
+}
+
+// ── Render ────────────────────────────────────────────────
+function render(card, prices, isFallback) {
+  FEATURED = card;
+  const gameLabel = card.game === 'ONE PIECE' ? 'One Piece'
+                  : card.game === 'POKÉMON'   ? 'Pokémon'
+                  : (card.game || '');
+  const numLabel = `${card.setCode}-${card.number}`;
+
+  document.title = `${card.name} ${numLabel} · ChaseTrackr`;
+  $('breadcrumb-game').textContent = gameLabel;
+  $('breadcrumb-name').textContent = card.name;
+  $('card-overline').textContent =
+    `${gameLabel}${card.set ? ' · ' + card.set : ''}${isFallback ? ' · cached' : ''}`;
+  $('card-name').textContent = card.name;
+  $('card-sub').innerHTML =
+    `<strong>${numLabel}</strong>${card.variant && card.variant !== 'Standard' ? ' · ' + card.variant + ' Variant' : ''}`;
+
+  const rStyle = rs(card.rarity);
+  const rTag = $('rarity-tag');
+  rTag.textContent = (card.rarity || '').toUpperCase();
+  rTag.style.background = rStyle.bg;
+  rTag.style.color = rStyle.color;
+
+  $('game-badge').textContent   = card.game;
+  $('pill-number').textContent  = numLabel;
+  $('pill-variant').textContent = card.variant;
+
+  // Image via the shared CT.cardImage. Single image — no fabricated variant thumbs.
+  const mainImg = $('main-img');
+  mainImg.alt = `${card.name} ${numLabel}`;
+  mainImg.dataset.rarity  = card.rarity;
+  mainImg.dataset.setcode = card.setCode;
+  mainImg.dataset.number  = card.number;
+  mainImg.onerror = () => window.CT.imgFallback(mainImg);
+  mainImg.src = window.CT.cardImage(card);
+  $('thumbs').style.display = 'none';
+
+  // Market price ← catalogue market_price ("—" if null)
+  $('market-price').textContent = fmtPrice(card.marketPrice);
+
+  // Fair value + confidence + sources ← prices endpoint
+  const fv   = prices ? prices.fair_value : null;
+  const conf = prices ? (prices.confidence || 'none') : 'none';
+  const srcs = (prices && Array.isArray(prices.sources)) ? prices.sources : [];
+
+  $('fair-value').textContent = fmtPrice(fv);
+  $('confidence').textContent = (conf === 'none') ? '—' : conf.toUpperCase();
+
+  const activeBars = CONF_BARS[conf] ?? 0;
+  document.querySelectorAll('.conf-bar').forEach((b, i) => b.classList.toggle('active', i < activeBars));
+  const confLabel = document.querySelector('.conf-label');
+  if (confLabel) confLabel.textContent = srcs.length ? `${srcs.length} source${srcs.length === 1 ? '' : 's'}` : 'no sources';
+
+  // Price by source
+  const grid = $('source-grid');
+  if (srcs.length) {
+    grid.innerHTML = srcs.map((s) => {
+      const isCat = s.source === 'catalogue';
+      const name  = isCat ? 'Catalogue' : (s.source || 'Source');
+      const price = fmtPrice(s.price_market != null ? s.price_market : s.price_current);
+      let sub = 'Stored value';
+      if (!isCat && s.fetched_at) {
+        const d = new Date(s.fetched_at);
+        sub = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ' +
+              d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      }
+      // Per-source confidence badge: high / ambiguous / estimate / catalogue.
+      const cf = s.confidence || (isCat ? 'catalogue' : null);
+      const cfColor = cf === 'high'      ? 'var(--green)'
+                    : cf === 'ambiguous' ? 'var(--gold)'
+                    : 'var(--muted)';
+      const cfBadge = cf
+        ? `<div style="font-family:'Exo 2',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-top:4px;color:${cfColor}">${cf}</div>`
+        : '';
+      return `<div class="source-cell">
+          <div class="source-name">${name}</div>
+          <div class="source-price">${price}</div>
+          <div class="source-date">${sub}</div>
+          ${cfBadge}
+        </div>`;
+    }).join('');
+  } else {
+    grid.innerHTML = `<div class="source-empty">No price sources yet.</div>`;
+  }
+
+  // Description — factual, derived from real fields only (no invented numbers)
+  $('desc-body').innerHTML =
+    `${card.name} (${numLabel}) is a ${card.rarity} ${gameLabel} card` +
+    `${card.variant && card.variant !== 'Standard' ? ` in the ${card.variant} variant` : ''}` +
+    `${card.set ? ` from ${card.set}` : ''}.`;
+  const showMore = document.querySelector('.show-more');
+  if (showMore) showMore.style.display = 'none';
+
+  hideFabricatedModules();
+  loadRelated(card.id);
+  setState('ready');
+}
+
+// Hide modules with no real data yet: fabricated chart, timestamps, view counts.
+function hideFabricatedModules() {
+  const chart = document.querySelector('.chart-card');
+  if (chart) chart.innerHTML =
+    `<div class="chart-empty">Price history will appear once daily snapshots accumulate.</div>`;
+  ['views-count', 'watch-count'].forEach((id) => {
+    const el = $(id);
+    if (el && el.closest('.stat-item')) el.closest('.stat-item').style.display = 'none';
+  });
+  const fvSub  = document.querySelector('.fv-sub');          if (fvSub)  fvSub.style.display = 'none';
+  const secUpd = document.querySelector('.section-updated'); if (secUpd) secUpd.style.display = 'none';
+}
+
+// Related — live blended top value, excluding the current card. No 7d chip.
+async function loadRelated(currentId) {
+  const grid = $('related-grid');
+  const section = document.querySelector('.related-section');
+  try {
+    const cards = (await window.CT.fetchTopValued(6)).filter((c) => c.id !== currentId).slice(0, 4);
+    if (!cards.length) { section.style.display = 'none'; return; }
+    grid.innerHTML = cards.map((c) => {
+      const s = rs(c.rarity);
+      return `<a class="card-cell" href="card.html?id=${encodeURIComponent(c.id)}">
+        <div class="card-cell-img">
+          <img ${window.CT.imgAttrs(c)} />
+          <button class="heart-btn" onclick="event.preventDefault()">♡</button>
+        </div>
+        <div class="card-cell-body">
+          <div class="cc-set">${c.setCode} · #${c.number}</div>
+          <div class="cc-name">${c.name}</div>
+          <span class="cc-tag" style="background:${s.bg};color:${s.color};">${(c.rarity || '').toUpperCase()}</span>
+          <div class="cc-footer">
+            <div><div class="cc-price">${fmtPrice(c.marketPrice)}</div></div>
+            <button class="btn-track">+ Track</button>
+          </div>
+        </div>
+      </a>`;
+    }).join('');
+  } catch (err) {
+    section.style.display = 'none';
+  }
+}
+
+// ── Handlers ──────────────────────────────────────────────
+function handleShare() {
+  const url = location.href;
+  if (navigator.share) { navigator.share({ title: document.title, url }); }
+  else if (navigator.clipboard) { navigator.clipboard.writeText(url).then(() => alert('Link copied!')); }
+}
+function handleSetAlert()     { window.location.href = 'signin.html'; }   // TODO: real alert flow
+function handleAddPortfolio() { window.location.href = 'signin.html'; }   // TODO: real portfolio flow
+function toggleDesc() {}   // description is a single factual paragraph now
+
+loadCard();
+</script>
+<script src="js/auth.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

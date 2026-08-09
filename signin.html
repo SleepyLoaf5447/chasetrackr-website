@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body {
+      padding-top: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── LEFT PANEL (brand/hero) ─────────────────────────── */
+    .left-panel {
+      background: linear-gradient(160deg, #0A1628 0%, #1050C8 45%, #2979FF 100%);
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 56px;
+      position: relative; overflow: hidden;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='52' viewBox='0 0 60 52' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0 L60 17.3 L60 34.7 L30 52 L0 34.7 L0 17.3 Z' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 60px 52px;
+      pointer-events: none; z-index: 0;
+    }
+    .left-logo {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+    .left-logo-icon {
+      height: 40px; width: 40px; border-radius: 10px; object-fit: cover;
+      -webkit-mask-image: radial-gradient(circle at center, black 55%, transparent 78%);
+      mask-image: radial-gradient(circle at center, black 55%, transparent 78%);
+    }
+    .left-logo-word {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 22px; color: #fff; letter-spacing: 0.01em;
+    }
+    .left-logo-word .cyan { color: var(--cyan); }
+
+    .left-hero { position: relative; z-index: 1; }
+    .left-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px; padding: 5px 14px; margin-bottom: 24px;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .eyebrow-text {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .left-headline {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: clamp(30px, 3.5vw, 46px);
+      line-height: 1.1; letter-spacing: -0.02em; color: #fff;
+      margin-bottom: 16px;
+    }
+    .left-headline .gold { color: var(--gold); }
+    .left-sub {
+      font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.7);
+      line-height: 1.7; max-width: 400px; margin-bottom: 36px;
+    }
+
+    /* feature list */
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .feature-item {
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .feature-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 14px;
+    }
+    .feature-text {}
+    .feature-title {
+      font-size: 13px; font-weight: 700; color: #fff; line-height: 1.3;
+    }
+    .feature-desc {
+      font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.55); line-height: 1.5;
+    }
+
+    /* testimonial */
+    .left-footer { position: relative; z-index: 1; }
+    .testimonial {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 18px 20px;
+    }
+    .testimonial-text {
+      font-size: 14px; font-weight: 500; font-style: italic;
+      color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 12px;
+    }
+    .testimonial-author {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .testimonial-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .testimonial-name {
+      font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9);
+    }
+    .testimonial-handle {
+      font-size: 11px; color: rgba(255,255,255,0.45);
+    }
+
+    /* ── RIGHT PANEL (form) ──────────────────────────────── */
+    .right-panel {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 56px;
+      background: var(--white);
+    }
+
+    .form-card {
+      width: 100%; max-width: 420px;
+    }
+
+    .form-toggle {
+      display: flex; gap: 0; background: var(--surface);
+      border: 1.5px solid var(--border); border-radius: 10px; padding: 4px;
+      margin-bottom: 32px;
+    }
+    .form-toggle-btn {
+      flex: 1; height: 38px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted); background: none; border: none;
+      border-radius: 7px; cursor: pointer;
+      transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+    }
+    .form-toggle-btn.active {
+      background: var(--white); color: var(--blue);
+      box-shadow: 0 1px 6px rgba(41,121,255,0.14);
+    }
+    .form-toggle-btn:hover:not(.active) { color: var(--text-mid); }
+
+    .form-title {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 26px; color: var(--navy);
+      margin-bottom: 6px; letter-spacing: -0.01em;
+    }
+    .form-sub {
+      font-size: 14px; font-weight: 400; color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .form-sub a { color: var(--blue); text-decoration: none; font-weight: 600; }
+    .form-sub a:hover { text-decoration: underline; }
+
+    /* social buttons */
+    .social-btns {
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
+    }
+    .social-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      height: 46px; width: 100%; border-radius: 10px;
+      font-family: 'Exo 2', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.04em; cursor: pointer; border: none;
+      transition: opacity 0.18s, transform 0.15s, box-shadow 0.18s;
+    }
+    .social-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .social-btn:active { transform: scale(0.97); }
+    .social-btn:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+    .social-btn-apple {
+      background: #000; color: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.16);
+    }
+    .social-btn-google {
+      background: #fff; color: #3C4043;
+      border: 1.5px solid #E0E0E0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .social-icon { flex-shrink: 0; }
+
+    /* divider */
+    .or-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px;
+    }
+    .or-line { flex: 1; height: 1px; background: var(--border); }
+    .or-text {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* form fields */
+    .field-group { margin-bottom: 16px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-label {
+      display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--text-mid); margin-bottom: 7px;
+    }
+    .field-wrap { position: relative; }
+    .field-input {
+      display: block; width: 100%; height: 46px;
+      padding: 0 16px;
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px;
+      font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 500;
+      color: var(--text); outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .field-input:focus {
+      border-color: var(--blue); background: var(--white);
+      box-shadow: 0 0 0 3px rgba(41,121,255,0.12);
+    }
+    .field-input.error {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(255,77,106,0.1);
+    }
+    .field-input::placeholder { color: var(--muted); }
+    .field-error {
+      font-size: 11px; font-weight: 600; color: var(--red);
+      margin-top: 5px; display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* password toggle */
+    .pw-toggle {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--muted);
+      padding: 0; display: flex; align-items: center;
+      transition: color 0.15s;
+    }
+    .pw-toggle:hover { color: var(--text-mid); }
+
+    /* forgot */
+    .forgot-row {
+      display: flex; justify-content: flex-end; margin-bottom: 20px;
+    }
+    .forgot-link {
+      font-size: 12px; font-weight: 600; color: var(--blue);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: opacity 0.15s;
+    }
+    .forgot-link:hover { opacity: 0.7; }
+
+    /* terms for signup */
+    .terms-row {
+      display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px;
+    }
+    .terms-check {
+      width: 18px; height: 18px; border-radius: 5px;
+      border: 1.5px solid var(--border); background: var(--white);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+      margin-top: 1px;
+    }
+    .terms-check.checked { background: var(--blue); border-color: var(--blue); }
+    .terms-check.checked::after { content: '✓'; font-size: 11px; color: #fff; font-weight: 800; }
+    .terms-text { font-size: 12px; font-weight: 400; color: var(--muted); line-height: 1.5; }
+    .terms-text a { color: var(--blue); text-decoration: none; font-weight: 600; }
+    .terms-text a:hover { text-decoration: underline; }
+
+    /* submit button */
+    .btn-submit {
+      display: block; width: 100%; height: 50px;
+      background: var(--blue); color: #fff;
+      font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 800;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      border: none; border-radius: 10px; cursor: pointer; position: relative;
+      box-shadow: 0 4px 20px rgba(41,121,255,0.32);
+      transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+      overflow: hidden;
+    }
+    .btn-submit:hover { background: var(--blue-h); transform: translateY(-2px); box-shadow: 0 6px 28px rgba(41,121,255,0.4); }
+    .btn-submit:active { transform: scale(0.97); }
+    .btn-submit:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+    .btn-submit.loading { pointer-events: none; opacity: 0.8; }
+    .btn-submit.loading::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 1.2s infinite;
+    }
+    @keyframes shimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+
+    /* success state */
+    .success-wrap {
+      text-align: center; padding: 32px 0;
+      display: none;
+    }
+    .success-wrap.show { display: block; }
+    .success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: rgba(0,196,140,0.12); color: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 16px;
+    }
+    .success-title {
+      font-family: 'Nunito', sans-serif; font-weight: 900;
+      font-size: 22px; color: var(--navy); margin-bottom: 8px;
+    }
+    .success-sub { font-size: 14px; color: var(--muted); }
+
+    /* form error banner */
+    .form-error-banner {
+      display: none; align-items: center; gap: 10px;
+      background: rgba(255,77,106,0.08); border: 1px solid rgba(255,77,106,0.2);
+      border-radius: 8px; padding: 12px 14px; margin-bottom: 18px;
+      font-size: 13px; font-weight: 600; color: var(--red);
+    }
+    .form-error-banner.show { display: flex; }
+
+    /* mobile back */
+    .mobile-back {
+      display: none; position: fixed; top: 0; left: 0; right: 0;
+      height: 56px; background: var(--white); border-bottom: 1px solid var(--border);
+      align-items: center; padding: 0 20px; z-index: 100;
+    }
+    .mobile-back a {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 700; color: var(--text-mid); text-decoration: none;
+      transition: color 0.15s;
+    }
+    .mobile-back a:hover { color: var(--blue); }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 768px) {
+      body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+      .left-panel { padding: 32px 24px; display: none; }
+      .right-panel { padding: 80px 24px 48px; justify-content: flex-start; }
+      .mobile-back { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Mobile back link ───────────────────────────────────── -->
+<div class="mobile-back">
+  <a href="index.html">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    ChaseTrackr
+  </a>
+</div>
+
+<!-- ── LEFT PANEL ─────────────────────────────────────────── -->
+<div class="left-panel">
+  <a class="left-logo" href="index.html">
+    <img class="left-logo-icon" src="brand_assets/Homescreen App icon.png" alt="ChaseTrackr" />
+    <span class="left-logo-word">Chase<span class="cyan">Trackr</span></span>
+  </a>
+
+  <div class="left-hero">
+    <div class="left-eyebrow">
+      <div class="eyebrow-dot"></div>
+      <span class="eyebrow-text">Live Price Intelligence</span>
+    </div>
+    <h1 class="left-headline">
+      Track every <span class="gold">chase card</span><br />
+      before it moons.
+    </h1>
+    <p class="left-sub">
+      Real-time fair value, custom price alerts, and portfolio tracking
+      for One Piece and Pokémon collectors.
+    </p>
+    <ul class="feature-list">
+      <li class="feature-item">
+        <div class="feature-icon">📈</div>
+        <div class="feature-text">
+          <div class="feature-title">Price Alerts</div>
+          <div class="feature-desc">Get notified the moment a card hits your target price.</div>
+        </div>
+      </li>
+      <li class="feature-item">
+        <div class="feature-icon">💼</div>
+        <div class="feature-text">
+          <div class="feature-title">Portfolio Tracking</div>
+          <div class="feature-desc">Track your collection's fair value in real time.</div>
+        </div>
+      </li>
+      <li class="feature-item">
+        <div class="feature-icon">⭐</div>
+        <div class="feature-text">
+          <div class="feature-title">Chase Radar</div>
+          <div class="feature-desc">See what's rising and falling across all sets, daily.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="left-footer">
+    <div class="testimonial">
+      <div class="testimonial-text" style="font-style:normal;">
+        Price intelligence and portfolio tracking for One Piece &amp; Pokémon chase cards.
+        Not a marketplace — just honest prices.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RIGHT PANEL ────────────────────────────────────────── -->
+<div class="right-panel">
+  <div class="form-card">
+
+    <!-- Tab toggle -->
+    <div class="form-toggle">
+      <button class="form-toggle-btn active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+      <button class="form-toggle-btn" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Sign In form -->
+    <div id="form-signin">
+      <h2 class="form-title" id="signin-title">Welcome back</h2>
+      <p class="form-sub">New to ChaseTrackr? <a href="#" onclick="switchTab('signup');return false;">Create an account</a></p>
+
+      <!-- Error banner -->
+      <div class="form-error-banner" id="signin-error">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M7 4v3.5M7 10h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span id="signin-error-text">Invalid email or password.</span>
+      </div>
+
+      <form id="signin-form" onsubmit="handleSignIn(event)" novalidate>
+        <div class="field-group">
+          <label class="field-label" for="signin-email">Email Address</label>
+          <input class="field-input" type="email" id="signin-email"
+            name="email" autocomplete="email" placeholder="you@email.com"
+            required oninput="clearFieldError(this)" />
+          <div class="field-error" id="signin-email-error">Please enter a valid email.</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="signin-password">Password</label>
+          <div class="field-wrap">
+            <input class="field-input" type="password" id="signin-password"
+              name="password" autocomplete="current-password" placeholder="••••••••"
+              required oninput="clearFieldError(this)" />
+            <button type="button" class="pw-toggle" onclick="togglePw('signin-password', this)" aria-label="Show password">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <ellipse cx="8" cy="8" rx="7" ry="4.5" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </button>
+          </div>
+          <div class="field-error" id="signin-password-error">Password is required.</div>
+        </div>
+
+        <div class="forgot-row">
+          <a class="forgot-link" href="#" onclick="handleForgotPassword(event)">Forgot password?</a>
+        </div>
+
+        <button class="btn-submit" type="submit" id="signin-submit">Sign In</button>
+      </form>
+    </div>
+
+    <!-- Sign Up form -->
+    <div id="form-signup" style="display:none;">
+      <h2 class="form-title">Create your account</h2>
+      <p class="form-sub">Already have an account? <a href="#" onclick="switchTab('signin');return false;">Sign in</a></p>
+
+      <div class="form-error-banner" id="signup-error">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M7 4v3.5M7 10h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span id="signup-error-text">Something went wrong. Please try again.</span>
+      </div>
+
+      <form id="signup-form" onsubmit="handleSignUp(event)" novalidate>
+        <div class="field-group">
+          <label class="field-label" for="signup-email">Email Address</label>
+          <input class="field-input" type="email" id="signup-email"
+            name="email" autocomplete="email" placeholder="you@email.com"
+            required oninput="clearFieldError(this)" />
+          <div class="field-error" id="signup-email-error">Please enter a valid email.</div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="signup-password">Password</label>
+          <div class="field-wrap">
+            <input class="field-input" type="password" id="signup-password"
+              name="password" autocomplete="new-password" placeholder="8+ characters"
+              required oninput="clearFieldError(this); checkPwStrength(this.value)" />
+            <button type="button" class="pw-toggle" onclick="togglePw('signup-password', this)" aria-label="Show password">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <ellipse cx="8" cy="8" rx="7" ry="4.5" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </button>
+          </div>
+          <div class="field-error" id="signup-password-error">Password must be at least 8 characters.</div>
+          <!-- strength bar -->
+          <div style="margin-top:8px;display:flex;gap:4px;" id="pw-strength-bars">
+            <div style="flex:1;height:3px;border-radius:3px;background:var(--border);" id="pwb-1"></div>
+            <div style="flex:1;height:3px;border-radius:3px;background:var(--border);" id="pwb-2"></div>
+            <div style="flex:1;height:3px;border-radius:3px;background:var(--border);" id="pwb-3"></div>
+            <div style="flex:1;height:3px;border-radius:3px;background:var(--border);" id="pwb-4"></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="pw-strength-label"></div>
+        </div>
+
+        <div class="terms-row">
+          <div class="terms-check" id="terms-check" onclick="toggleTerms()"></div>
+          <div class="terms-text">
+            By creating an account I agree to the
+            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          </div>
+        </div>
+
+        <button class="btn-submit" type="submit" id="signup-submit">Create Account</button>
+      </form>
+    </div>
+
+    <!-- Success state (shown after form submission) -->
+    <div class="success-wrap" id="success-wrap">
+      <div class="success-icon">✓</div>
+      <div class="success-title" id="success-title">You're in!</div>
+      <p class="success-sub" id="success-sub">Taking you to ChaseTrackr…</p>
+    </div>
+
+  </div><!-- /form-card -->
+</div><!-- /right-panel -->
+
+<script src="js/auth.js"></script>
+<script>
+// Real auth wired to the ChaseTrackr backend via CT.auth (js/auth.js).
+
+// Already signed in? Skip the form.
+if (window.CT && CT.auth && CT.auth.isLoggedIn()) window.location.replace('index.html');
+
+// Deep-link: signin.html?tab=signup opens the Sign Up tab.
+document.addEventListener('DOMContentLoaded', () => {
+  if (new URLSearchParams(location.search).get('tab') === 'signup') switchTab('signup');
+});
+
+let termsAccepted = false;
+
+function switchTab(tab) {
+  const isSignin = tab === 'signin';
+  document.getElementById('form-signin').style.display = isSignin ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = isSignin ? 'none' : 'block';
+  document.getElementById('tab-signin').classList.toggle('active', isSignin);
+  document.getElementById('tab-signup').classList.toggle('active', !isSignin);
+}
+
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const shown = input.type === 'text';
+  input.type = shown ? 'password' : 'text';
+  btn.style.opacity = shown ? '0.5' : '1';
+}
+
+function clearFieldError(input) {
+  input.classList.remove('error');
+  const err = document.getElementById(input.id + '-error');
+  if (err) err.classList.remove('show');
+}
+
+function showFieldError(inputId, msg) {
+  const input = document.getElementById(inputId);
+  input.classList.add('error');
+  const err = document.getElementById(inputId + '-error');
+  if (err) { if (msg) err.textContent = msg; err.classList.add('show'); }
+  return false;
+}
+
+function checkPwStrength(pw) {
+  const bars = ['pwb-1','pwb-2','pwb-3','pwb-4'];
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const colors = ['#FF4D6A','#F5A623','#29B6F6','#00C48C'];
+  const labels = ['Weak','Fair','Good','Strong'];
+  bars.forEach((id, i) => {
+    document.getElementById(id).style.background = i < score ? colors[score-1] : 'var(--border)';
+  });
+  const label = document.getElementById('pw-strength-label');
+  label.textContent = pw.length ? labels[score-1] || '' : '';
+  label.style.color = score > 0 ? colors[score-1] : 'var(--muted)';
+}
+
+function toggleTerms() {
+  termsAccepted = !termsAccepted;
+  document.getElementById('terms-check').classList.toggle('checked', termsAccepted);
+}
+
+async function handleSignIn(e) {
+  e.preventDefault();
+  hideBanner('signin-error');
+  const email = document.getElementById('signin-email').value.trim();
+  const pw = document.getElementById('signin-password').value;
+  let valid = true;
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) valid = showFieldError('signin-email', 'Please enter a valid email.');
+  if (!pw) valid = showFieldError('signin-password', 'Password is required.');
+  if (!valid) return;
+
+  const btn = document.getElementById('signin-submit');
+  btn.classList.add('loading');
+  btn.textContent = 'Signing in…';   // cold-start aware: the backend can take a moment on the first hit
+  try {
+    await CT.auth.login(email, pw);
+    btn.textContent = 'Success';
+    showSuccess('Welcome back!', 'Taking you to ChaseTrackr…');
+  } catch (err) {
+    btn.classList.remove('loading');
+    btn.textContent = 'Sign In';
+    showBanner('signin-error', 'signin-error-text',
+      err.status === 401 ? 'Invalid email or password.'
+      : err.status === 429 ? 'Too many attempts — please wait a minute.'
+      : 'Couldn’t reach the server. Please try again.');
+  }
+}
+
+async function handleSignUp(e) {
+  e.preventDefault();
+  hideBanner('signup-error');
+  const email = document.getElementById('signup-email').value.trim();
+  const pw = document.getElementById('signup-password').value;
+  let valid = true;
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFieldError('signup-email', 'Please enter a valid email.'); valid = false; }
+  if (!pw || pw.length < 8) { showFieldError('signup-password', 'Password must be at least 8 characters.'); valid = false; }
+  if (!termsAccepted) { showBanner('signup-error', 'signup-error-text', 'Please accept the Terms of Service to continue.'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('signup-submit');
+  btn.classList.add('loading');
+  btn.textContent = 'Creating account…';
+  try {
+    await CT.auth.register(email, pw);
+    btn.textContent = 'Success';
+    showSuccess('Account created!', 'Check your inbox to verify your email — taking you in…');
+  } catch (err) {
+    btn.classList.remove('loading');
+    btn.textContent = 'Create Account';
+    showBanner('signup-error', 'signup-error-text',
+      err.status === 409 ? 'That email is already registered — try signing in.'
+      : err.status === 400 ? (err.message || 'Please check your email and password.')
+      : err.status === 429 ? 'Too many attempts — please wait a bit.'
+      : 'Couldn’t reach the server. Please try again.');
+  }
+}
+
+async function handleForgotPassword(e) {
+  e.preventDefault();
+  const email = document.getElementById('signin-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showFieldError('signin-email', 'Enter your email above, then click forgot password.');
+    return;
+  }
+  const link = e.target;
+  const original = link.textContent;
+  link.textContent = 'Sending…';
+  try {
+    await CT.auth.forgotPassword(email);   // backend returns the same response whether or not the account exists
+    alert(`If an account exists for ${email}, a password reset link is on its way. Check your inbox.`);
+  } catch (err) {
+    alert(err.status === 429 ? 'Too many requests — please wait a minute.' : 'Something went wrong. Please try again.');
+  } finally {
+    link.textContent = original;
+  }
+}
+
+function showSuccess(title, sub) {
+  document.getElementById('form-signin').style.display = 'none';
+  document.getElementById('form-signup').style.display = 'none';
+  document.querySelector('.form-toggle').style.display = 'none';
+  document.getElementById('success-title').textContent = title;
+  document.getElementById('success-sub').textContent = sub;
+  document.getElementById('success-wrap').classList.add('show');
+  setTimeout(() => { window.location.href = 'index.html'; }, 1600);
+}
+
+// Small helpers for the error banners
+function showBanner(id, textId, msg) { document.getElementById(textId).textContent = msg; document.getElementById(id).classList.add('show'); }
+function hideBanner(id) { document.getElementById(id).classList.remove('show'); }
+</script>
+</body>
+</html>
