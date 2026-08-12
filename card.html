@@ -623,7 +623,7 @@
       <div class="stat-box-cell">
         <div class="stat-box-label">Market Price</div>
         <div class="stat-box-value" id="market-price">—</div>
-        <div class="stat-box-sub">Catalogue value</div>
+        <div class="stat-box-sub">Live market price</div>
       </div>
     </div>
 
@@ -644,9 +644,9 @@
     </div>
     <div class="fv-headline">
       <div class="fv-cell">
-        <div class="fv-label">Fair Value</div>
-        <div class="fv-value" id="fair-value">$240</div>
-        <div class="fv-sub">Updated 2 hours ago</div>
+        <div class="fv-label">Market Price</div>
+        <div class="fv-value" id="fair-value">—</div>
+        <div class="fv-sub" id="fv-sub"></div>
       </div>
       <div class="fv-cell" style="border-left:1px solid rgba(255,255,255,0.08);">
         <div class="fv-conf-label">Confidence</div>
@@ -685,7 +685,6 @@
     <!-- Price by Source -->
     <div class="section-head">
       <span class="section-title">Price by Source</span>
-      <span class="section-updated">Last updated 2 hrs ago</span>
     </div>
     <div class="source-grid" id="source-grid">
       <div class="source-cell">
@@ -884,15 +883,24 @@ function render(card, prices, isFallback) {
   mainImg.src = window.CT.cardImage(card);
   $('thumbs').style.display = 'none';
 
-  // Market price ← catalogue market_price ("—" if null)
-  $('market-price').textContent = fmtPrice(card.marketPrice);
+  // COALESCED MARKET PRICE — the single headline value shown identically on every
+  // surface (home/search/portfolio/watchlist/trends). Sourced from the /api/v2
+  // response's `market_price` (computed by the shared services/pricing helper),
+  // falling back to the card row's coalesced market_price when prices are absent.
+  const coalesced = (prices && prices.market_price != null) ? prices.market_price : card.marketPrice;
+  const mconf = (prices && prices.market_confidence) ? prices.market_confidence : (card.confidence || 'none');
 
-  // Fair value + confidence + sources ← prices endpoint
-  const fv   = prices ? prices.fair_value : null;
-  const conf = prices ? (prices.confidence || 'none') : 'none';
+  $('market-price').textContent = fmtPrice(coalesced);   // top quick-stat
+  $('fair-value').textContent   = fmtPrice(coalesced);   // Price-Intelligence headline (SAME value)
+
+  // Fair value is a SECONDARY, derived estimate — labeled + subordinate, never the
+  // headline that could contradict other pages.
+  const fv    = prices ? prices.fair_value : null;
+  const fvSub = $('fv-sub');
+  if (fvSub) fvSub.textContent = (fv != null) ? `Fair value est. ${fmtPrice(fv)}` : '';
+
+  const conf = mconf || 'none';
   const srcs = (prices && Array.isArray(prices.sources)) ? prices.sources : [];
-
-  $('fair-value').textContent = fmtPrice(fv);
   $('confidence').textContent = (conf === 'none') ? '—' : conf.toUpperCase();
 
   const activeBars = CONF_BARS[conf] ?? 0;
@@ -954,7 +962,7 @@ function hideFabricatedModules() {
     const el = $(id);
     if (el && el.closest('.stat-item')) el.closest('.stat-item').style.display = 'none';
   });
-  const fvSub  = document.querySelector('.fv-sub');          if (fvSub)  fvSub.style.display = 'none';
+  // .fv-sub now holds the real, labeled "Fair value est. $X" secondary — keep it.
   const secUpd = document.querySelector('.section-updated'); if (secUpd) secUpd.style.display = 'none';
 }
 
