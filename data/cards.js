@@ -122,11 +122,12 @@ window.CT.cardPlaceholder = function(card) {
 //   'placeholder' → One Piece uses the branded navy placeholder (no external art).
 // Pokémon ALWAYS uses real pokemontcg.io art, in BOTH modes.
 //
-// TODO(SHIP-BLOCKER): IMAGE_MODE must be 'placeholder' (or licensed art) before
-// any public / TestFlight build — SAMPLE art is Bandai's watermarked proof scans
-// and is NOT licensed for display. Do not let 'sample' reach a shared build.
-// 'sample' is a LOCAL-DEV convenience for seeing real OP art while building.
-window.CT.IMAGE_MODE = 'sample';
+// SHIP MODE: 'placeholder'. SAMPLE art is Bandai's watermarked proof scans and is
+// NOT licensed for public display, so 'sample' must never reach a shared/public
+// build. 'sample' remains a LOCAL-DEV-only convenience for seeing real OP art
+// while building — flip it back locally if needed, but keep 'placeholder' on
+// anything that gets pushed/deployed until licensed art exists.
+window.CT.IMAGE_MODE = 'placeholder';
 
 window.CT.cardImage = function(card) {
   // Pokémon: real art in every mode.

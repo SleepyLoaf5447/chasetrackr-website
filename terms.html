@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Service — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { padding-top: var(--nav-h); background: var(--bg); min-height: 100vh; }
+    .legal { max-width: 760px; margin: 0 auto; padding: 40px 24px 72px; }
+    .legal h1 { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 32px; color: var(--navy); margin-bottom: 6px; }
+    .legal .updated { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .legal h2 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 19px; color: var(--navy); margin: 30px 0 10px; }
+    .legal p, .legal li { font-size: 15px; line-height: 1.7; color: var(--text-mid); }
+    .legal ul { margin: 8px 0 8px 22px; }
+    .legal li { margin-bottom: 6px; }
+    .legal a { color: var(--blue); }
+    .review-flag { display: flex; gap: 10px; background: #FFF6E6; border: 1px solid var(--gold); border-left: 4px solid var(--gold);
+      border-radius: 10px; padding: 14px 16px; margin-bottom: 28px; font-size: 13px; line-height: 1.55; color: #6B4E00; }
+    .review-flag b { color: #593f00; }
+  </style>
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <main class="legal">
+    <div class="review-flag">
+      <span>⚖️</span>
+      <span><b>Draft — pending legal review.</b> This is a plain-language draft describing how ChaseTrackr works
+      today. It has <b>not</b> been reviewed by qualified legal counsel and is not legal advice. Review and
+      finalize before public launch. <b>[TODO: set a real, monitored contact address before launch.]</b></span>
+    </div>
+
+    <h1>Terms of Service</h1>
+    <div class="updated">Last updated: 2026-08-12 · Draft v1</div>
+
+    <p>These terms cover your use of ChaseTrackr, a price-intelligence and portfolio-tracking service for trading
+    card games. By creating an account or using the service, you agree to these terms.</p>
+
+    <h2>What ChaseTrackr is</h2>
+    <p>ChaseTrackr helps you track trading-card prices and record the cards you own in a personal portfolio. It is
+    an informational tool. <strong>ChaseTrackr is not a marketplace</strong>: you cannot buy, sell, bid on, trade,
+    or vault cards through it, and we do not handle payments or facilitate transactions between users.</p>
+
+    <h2>Prices are estimates, not guarantees</h2>
+    <p>Prices, "fair value" estimates, market prices, and 7-day movement figures are derived from third-party and
+    catalogue data and may be delayed, incomplete, or inaccurate. They are provided for informational purposes
+    only and are <strong>not financial, investment, or appraisal advice</strong>. Do not rely on them as the sole
+    basis for buying, selling, or valuing any card. You are solely responsible for your own decisions.</p>
+
+    <h2>Your account</h2>
+    <ul>
+      <li>You must provide an accurate email address and keep your login credentials secure.</li>
+      <li>You are responsible for activity under your account.</li>
+      <li>You must be old enough to form a binding contract in your jurisdiction (and at least 13).</li>
+    </ul>
+
+    <h2>Acceptable use</h2>
+    <p>Don't misuse the service. In particular, don't attempt to break, overload, scrape at abusive rates, or gain
+    unauthorized access to the service or other users' data, and don't use it for anything unlawful.</p>
+
+    <h2>Your content</h2>
+    <p>The portfolio, watchlist, and alert data you enter remains yours. You grant us the limited permission
+    needed to store and display it back to you as part of running the service.</p>
+
+    <h2>Intellectual property</h2>
+    <p>Card names, images, and game content are the property of their respective rights holders and are used for
+    identification and informational purposes. ChaseTrackr's own branding and software remain ours.</p>
+
+    <h2>Availability</h2>
+    <p>The service is provided on an "as is" and "as available" basis. We may change, suspend, or discontinue
+    features, and we don't guarantee uninterrupted or error-free operation.</p>
+
+    <h2>Limitation of liability</h2>
+    <p>To the extent permitted by law, ChaseTrackr is not liable for indirect or consequential damages, or for
+    losses arising from reliance on price estimates or from decisions you make using the service.</p>
+
+    <h2>Changes to these terms</h2>
+    <p>We may update these terms as the product evolves; we'll update the date above when we do. Continued use
+    after a change means you accept the updated terms.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about these terms: <strong>[TODO: real contact address before launch]</strong>.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          <img class="footer-icon" src="brand_assets/Homescreen App icon.png" alt="ChaseTrackr" />
+          <span class="footer-wm">Chase<span class="cyan">Trackr</span></span>
+        </div>
+        <p class="footer-desc">TCG price intelligence for serious collectors and traders.</p>
+      </div>
+      <div>
+        <div class="footer-col-t">Company</div>
+        <ul class="footer-links">
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 ChaseTrackr · TCG Price Intelligence</div>
+    </div>
+  </footer>
+
+  <script src="data/cards.js"></script>
+  <script src="js/cards-api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>

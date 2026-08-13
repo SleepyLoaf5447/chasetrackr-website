@@ -3,27 +3,33 @@
 // to the auth endpoints directly — always go through CT.auth, same discipline
 // as CT.mapCard.
 //
-// SESSION STORAGE — the JWT is kept in localStorage.
-//   XSS TRADEOFF (explicit): any injected script on our origin could read the
-//   token. The safer option is an httpOnly cookie, but that needs the backend
-//   to set Set-Cookie (Secure, SameSite=None) and CORS credentials with a
-//   locked-down origin (today CORS is "*"). That's a backend change, out of
-//   Phase 3 scope — tracked for the pre-launch hardening pass.
+// SESSION STORAGE (Phase 6 hardening) — the JWT now lives in an httpOnly cookie
+//   set by the backend on login/register, NOT in localStorage. JS cannot read it,
+//   which closes the XSS token-theft exposure from Phase 3. We keep only the
+//   non-sensitive USER object in localStorage for instant UI state; the browser
+//   attaches the cookie automatically on every request via credentials:'include'.
+//   Logout must call the backend (JS can't delete an httpOnly cookie).
+//
+//   CROSS-SITE CAVEAT: the site and API are on different registrable domains
+//   (chasetrackr.com vs onrender.com), so the session cookie is a THIRD-PARTY
+//   cookie. It works where third-party cookies are allowed (verified in Chrome),
+//   but Safari (ITP) and Chrome with third-party cookies disabled will drop it,
+//   breaking login. The durable fix is serving the API first-party from
+//   api.chasetrackr.com — pairs with the DNS cutover step.
 window.CT = window.CT || {};
 
 (function () {
   const B = window.CT.BACKEND || 'https://chasetrackr-backend.onrender.com';
-  const TOKEN_KEY = 'ct_token';
-  const USER_KEY  = 'ct_user';
+  const USER_KEY = 'ct_user';
 
-  const save   = (token, user) => { localStorage.setItem(TOKEN_KEY, token); localStorage.setItem(USER_KEY, JSON.stringify(user)); };
-  const clear  = () => { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); };
-  const token  = () => localStorage.getItem(TOKEN_KEY);
-  const user   = () => { try { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); } catch { return null; } };
+  const saveUser = (user) => localStorage.setItem(USER_KEY, JSON.stringify(user));
+  const clear    = () => localStorage.removeItem(USER_KEY);
+  const user     = () => { try { return JSON.parse(localStorage.getItem(USER_KEY) || 'null'); } catch { return null; } };
 
   async function post(path, body) {
     const res = await fetch(`${B}${path}`, {
       method: 'POST',
+      credentials: 'include',                 // send/receive the httpOnly session cookie
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(body || {}),
     });
@@ -38,45 +44,47 @@ window.CT = window.CT || {};
   }
 
   window.CT.auth = {
-    getToken:   token,
     getUser:    user,
-    isLoggedIn: () => !!token(),
+    // Optimistic: presence of the cached user. The cookie is the real credential;
+    // refresh()/authFetch() reconcile with the backend and clear on 401.
+    isLoggedIn: () => !!user(),
     isVerified: () => { const u = user(); return !!(u && u.is_verified); },
-    logout() { clear(); },
+
+    async logout() {
+      // JS can't delete an httpOnly cookie — the backend clears it.
+      try { await fetch(`${B}/api/v1/auth/logout`, { method: 'POST', credentials: 'include' }); }
+      catch { /* clear local state regardless */ }
+      clear();
+    },
 
     async register(email, password) {
       const d = await post('/api/v1/auth/register', { email, password });
-      save(d.token, d.user);
+      saveUser(d.user);                       // cookie already set by the response
       return d;
     },
     async login(email, password) {
       const d = await post('/api/v1/auth/login', { email, password });
-      save(d.token, d.user);
+      saveUser(d.user);
       return d;
     },
     // Refresh the cached user from the backend; clears session on 401.
     async refresh() {
-      const t = token();
-      if (!t) return null;
-      const res = await fetch(`${B}/api/v1/auth/me`, { headers: { Authorization: `Bearer ${t}` } });
+      const res = await fetch(`${B}/api/v1/auth/me`, { credentials: 'include' });
       if (res.status === 401) { clear(); return null; }
       if (!res.ok) return user();
       const d = await res.json();
-      if (d && d.user) localStorage.setItem(USER_KEY, JSON.stringify(d.user));
+      if (d && d.user) saveUser(d.user);
       return d && d.user;
     },
-    forgotPassword:     (email)          => post('/api/v1/auth/forgot-password', { email }),
+    forgotPassword:     (email)             => post('/api/v1/auth/forgot-password', { email }),
     resetPassword:      (tok, new_password) => post('/api/v1/auth/reset-password', { token: tok, new_password }),
-    verifyEmail:        (tok)            => post('/api/v1/auth/verify', { token: tok }),
-    resendVerification: (email)          => post('/api/v1/auth/resend-verification', { email }),
+    verifyEmail:        (tok)               => post('/api/v1/auth/verify', { token: tok }),
+    resendVerification: (email)             => post('/api/v1/auth/resend-verification', { email }),
 
-    // For protected endpoints (portfolio/watchlist in Phase 4): attaches the
-    // Bearer token; clears the session on a 401 so the UI can react.
+    // For protected endpoints (portfolio/watchlist): the cookie authenticates,
+    // so just include credentials. Clears the session on a 401 so the UI reacts.
     async authFetch(path, opts = {}) {
-      const t = token();
-      const headers = { ...(opts.headers || {}) };
-      if (t) headers.Authorization = `Bearer ${t}`;
-      const res = await fetch(`${B}${path}`, { ...opts, headers });
+      const res = await fetch(`${B}${path}`, { ...opts, credentials: 'include' });
       if (res.status === 401) clear();
       return res;
     },

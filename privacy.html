@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { padding-top: var(--nav-h); background: var(--bg); min-height: 100vh; }
+    .legal { max-width: 760px; margin: 0 auto; padding: 40px 24px 72px; }
+    .legal h1 { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 32px; color: var(--navy); margin-bottom: 6px; }
+    .legal .updated { font-size: 13px; color: var(--muted); margin-bottom: 22px; }
+    .legal h2 { font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 19px; color: var(--navy); margin: 30px 0 10px; }
+    .legal p, .legal li { font-size: 15px; line-height: 1.7; color: var(--text-mid); }
+    .legal ul { margin: 8px 0 8px 22px; }
+    .legal li { margin-bottom: 6px; }
+    .legal a { color: var(--blue); }
+    .review-flag { display: flex; gap: 10px; background: #FFF6E6; border: 1px solid var(--gold); border-left: 4px solid var(--gold);
+      border-radius: 10px; padding: 14px 16px; margin-bottom: 28px; font-size: 13px; line-height: 1.55; color: #6B4E00; }
+    .review-flag b { color: #593f00; }
+  </style>
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <main class="legal">
+    <div class="review-flag">
+      <span>⚖️</span>
+      <span><b>Draft — pending legal review.</b> This is a plain-language draft written to describe what
+      ChaseTrackr actually does today. It has <b>not</b> been reviewed by qualified legal counsel and is not
+      legal advice. Review and finalize before public launch. <b>[TODO: set a real, monitored contact address
+      before launch.]</b></span>
+    </div>
+
+    <h1>Privacy Policy</h1>
+    <div class="updated">Last updated: 2026-08-12 · Draft v1</div>
+
+    <p>ChaseTrackr is a price-intelligence and portfolio tracker for trading card games. This policy explains
+    what we collect, why, and who we share it with. ChaseTrackr is <strong>not a marketplace</strong> — we do
+    not process payments, and we do not collect payment-card or bank details.</p>
+
+    <h2>Information we collect</h2>
+    <ul>
+      <li><strong>Account data:</strong> the email address you register with, and your password (stored only as
+        a salted argon2 hash — we never store your password in plain text) and whether your email is verified.</li>
+      <li><strong>Data you create in the app:</strong> the portfolios, holdings (card, quantity, purchase price,
+        condition), watchlists, and price alerts you choose to save.</li>
+      <li><strong>Limited technical data:</strong> your IP address is used transiently for rate-limiting and
+        abuse prevention. We do not use advertising or cross-site tracking cookies.</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>After you sign in, we set a single <strong>httpOnly authentication cookie</strong> so your session stays
+    logged in. It is used only to keep you signed in — not for advertising or tracking. We do not use
+    third-party advertising cookies.</p>
+
+    <h2>How we use your information</h2>
+    <ul>
+      <li>To create and secure your account and keep you signed in.</li>
+      <li>To store and show the portfolios, watchlists, and alerts you create.</li>
+      <li>To send transactional email you request or that is required for your account (email verification and
+        password reset). We do not send marketing email at this time.</li>
+    </ul>
+
+    <h2>Service providers we share data with</h2>
+    <p>We use a small number of providers to run the service, and share only what each needs:</p>
+    <ul>
+      <li><strong>Render</strong> — application hosting and the managed database that stores your account and
+        app data.</li>
+      <li><strong>Resend</strong> — sends our transactional email (verification and password-reset messages).</li>
+    </ul>
+    <p>Card catalogue data and images come from public trading-card data sources; that content is not personal
+    data about you. <strong>We do not sell your personal information.</strong></p>
+
+    <h2>Data retention &amp; your choices</h2>
+    <p>We keep your account and app data until you ask us to delete it. You can request access to, correction of,
+    or deletion of your data by contacting us. Deleting your account removes your portfolios, watchlists, and
+    alerts.</p>
+
+    <h2>Security</h2>
+    <p>Passwords are hashed with argon2 and never stored in plain text. Sessions use an httpOnly cookie to reduce
+    exposure to cross-site scripting. No system is perfectly secure, but we aim to follow reasonable, current
+    practices.</p>
+
+    <h2>Children</h2>
+    <p>ChaseTrackr is not directed to children under 13, and we do not knowingly collect their personal data.</p>
+
+    <h2>Changes</h2>
+    <p>We may update this policy as the product evolves; we will update the date above when we do.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this policy or your data: <strong>[TODO: real contact address before launch]</strong>.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">
+          <img class="footer-icon" src="brand_assets/Homescreen App icon.png" alt="ChaseTrackr" />
+          <span class="footer-wm">Chase<span class="cyan">Trackr</span></span>
+        </div>
+        <p class="footer-desc">TCG price intelligence for serious collectors and traders.</p>
+      </div>
+      <div>
+        <div class="footer-col-t">Company</div>
+        <ul class="footer-links">
+          <li><a href="privacy.html">Privacy</a></li>
+          <li><a href="terms.html">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 ChaseTrackr · TCG Price Intelligence</div>
+    </div>
+  </footer>
+
+  <script src="data/cards.js"></script>
+  <script src="js/cards-api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>

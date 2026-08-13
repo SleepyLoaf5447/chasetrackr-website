@@ -100,7 +100,9 @@ ${loggedIn && !verified ? `
   }
 
   // Log out
-  function doLogout(e) { if (e) e.preventDefault(); if (auth) auth.logout(); location.href = 'index.html'; }
+  // logout() is async (it calls the backend to clear the httpOnly cookie) — await
+  // it before navigating so the clear isn't cancelled by the page change.
+  async function doLogout(e) { if (e) e.preventDefault(); if (auth) await auth.logout(); location.href = 'index.html'; }
   document.getElementById('nav-logout')?.addEventListener('click', doLogout);
   document.getElementById('nav-drawer-logout')?.addEventListener('click', doLogout);
 
