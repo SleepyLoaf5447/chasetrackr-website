@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market Trends — ChaseTrackr</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <style>
+    body { padding-top: var(--nav-h); background: var(--bg); min-height: 100vh; }
+    [hidden] { display: none !important; }
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 40px 60px; }
+    .page-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 30px; color: var(--navy); }
+    .page-sub { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+    .note { display: flex; gap: 10px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--gold); border-radius: 10px; padding: 12px 16px; margin: 18px 0 26px; font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+    .note b { color: var(--navy); }
+
+    .radar-section { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .radar-panel { background: var(--white); border-radius: 12px; border: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(41,121,255,0.06); overflow: hidden; }
+    .radar-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px;
+      border-bottom: 1px solid var(--border); background: var(--surface); }
+    .radar-panel-title { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-mid); display: flex; align-items: center; gap: 6px; }
+    .radar-panel-title .arrow { font-size: 16px; }
+    .radar-panel-title.up .arrow { color: var(--green); }
+    .radar-panel-title.down .arrow { color: var(--red); }
+    .radar-col-heads { display: grid; grid-template-columns: 1fr auto; padding: 10px 24px; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+
+    .radar-row { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 12px; padding: 14px 24px;
+      border-bottom: 1px solid rgba(197,217,245,0.5); text-decoration: none; color: inherit; transition: background 0.12s; }
+    .radar-row:last-child { border-bottom: none; }
+    .radar-row:hover { background: var(--surface); }
+    .radar-thumb { width: 46px; height: 64px; border-radius: 6px; overflow: hidden; background: rgb(5,11,22); flex-shrink: 0; }
+    .radar-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .radar-name { font-size: 15px; font-weight: 700; color: var(--navy); line-height: 1.3; }
+    .radar-set { font-size: 12px; font-weight: 500; color: var(--muted); }
+    .radar-right { text-align: right; white-space: nowrap; }
+    .radar-change { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 17px; }
+    .radar-change.up { color: var(--green); }
+    .radar-change.down { color: var(--red); }
+    .radar-price { font-size: 12px; color: var(--text-mid); font-weight: 600; margin-top: 1px; }
+    .radar-price small { color: var(--muted); font-weight: 500; }
+
+    .panel-msg { padding: 40px 24px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .panel-msg .big { display: block; font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 16px; color: var(--navy); margin-bottom: 6px; }
+    .skel-row { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 12px; padding: 14px 24px; }
+    .skel-box { background: linear-gradient(90deg, var(--surface) 25%, #E1ECFB 37%, var(--surface) 63%); background-size: 400% 100%;
+      animation: sh 1.4s ease-in-out infinite; border-radius: 6px; }
+    .skel-box.t { width: 46px; height: 64px; } .skel-box.l { height: 14px; width: 70%; } .skel-box.s { height: 22px; width: 54px; }
+    @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: 0 0; } }
+
+    /* collecting-data full-width honest state */
+    .collecting { grid-column: 1 / -1; text-align: center; padding: 70px 20px; background: var(--white);
+      border: 1px solid var(--border); border-radius: 12px; }
+    .collecting .icon { font-size: 40px; opacity: 0.35; margin-bottom: 12px; }
+    .collecting .big { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 20px; color: var(--navy); margin-bottom: 8px; }
+    .collecting .sub { font-size: 14px; color: var(--muted); max-width: 420px; margin: 0 auto; line-height: 1.6; }
+
+    @media (max-width: 760px) { .page { padding: 24px 18px 48px; } .radar-section { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div id="site-nav"></div>
+
+  <main class="page">
+    <h1 class="page-title">Market Trends</h1>
+    <div class="page-sub" id="tr-sub">Biggest 7-day movers across chase cards</div>
+
+    <div class="note" id="tr-note" hidden></div>
+
+    <section class="radar-section" id="tr-section">
+      <!-- Rising -->
+      <div class="radar-panel" id="panel-rising">
+        <div class="radar-panel-head">
+          <span class="radar-panel-title up"><span class="arrow">▲</span> Top Rising · 7d</span>
+        </div>
+        <div class="radar-col-heads"><span>Card</span><span>Change</span></div>
+        <div id="rising-body"></div>
+      </div>
+      <!-- Falling -->
+      <div class="radar-panel" id="panel-falling">
+        <div class="radar-panel-head">
+          <span class="radar-panel-title down"><span class="arrow">▼</span> Top Falling · 7d</span>
+        </div>
+        <div class="radar-col-heads"><span>Card</span><span>Change</span></div>
+        <div id="falling-body"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="data/cards.js"></script>
+  <script src="js/cards-api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+  (function () {
+    // No auth required — public page.
+    const B = CT.BACKEND;
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n) => (n == null ? '—' : '$' + Number(n).toLocaleString('en-US', {
+      minimumFractionDigits: Number.isInteger(Number(n)) ? 0 : 2, maximumFractionDigits: 2 }));
+
+    const skelRows = (n) => Array.from({ length: n }, () =>
+      `<div class="skel-row"><div class="skel-box t"></div><div><div class="skel-box l"></div><div class="skel-box l" style="width:40%;margin-top:6px;"></div></div><div class="skel-box s"></div></div>`).join('');
+
+    function moverRow(raw) {
+      const c = CT.mapCard(raw);                 // shared normalization
+      const pct = raw.change_7d_pct;
+      const dir = pct >= 0 ? 'up' : 'down';
+      const sign = pct >= 0 ? '+' : '';
+      return `<a class="radar-row" href="card.html?id=${encodeURIComponent(c.id)}">
+        <div class="radar-thumb"><img ${CT.imgAttrs(c, true)} /></div>
+        <div class="radar-info">
+          <div class="radar-name">${c.name}</div>
+          <div class="radar-set">${c.setCode} · #${c.number}</div>
+        </div>
+        <div class="radar-right">
+          <div class="radar-change ${dir}">${sign}${pct.toFixed(2)}%</div>
+          <div class="radar-price">${fmt(c.marketPrice)} <small>now</small></div>
+        </div>
+      </a>`;
+    }
+
+    function panelState(html) { $('rising-body').innerHTML = html; $('falling-body').innerHTML = html; }
+
+    async function load() {
+      $('rising-body').innerHTML = skelRows(6);
+      $('falling-body').innerHTML = skelRows(6);
+      try {
+        const res = await fetch(`${B}/api/v1/trends?limit=8`);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const d = await res.json();
+
+        // Continuity gate: backend says data isn't continuous yet → honest state.
+        if (d.status !== 'ok') {
+          $('tr-section').innerHTML = `<div class="collecting">
+            <div class="icon">📈</div>
+            <div class="big">Collecting data — trends available soon</div>
+            <div class="sub">We need continuous daily price history before showing 7-day movers.
+              ${d.coverage ? `Currently ${d.coverage.days_present}/${d.coverage.window_days} days covered.` : ''}
+              This avoids showing a change computed across a gap.</div>
+          </div>`;
+          return;
+        }
+
+        // Honest disclosures: price floor + Pokémon staleness note from the API.
+        const floorTxt = `Movers among cards valued <b>$${d.floor}+</b> (small-price swings excluded).`;
+        $('tr-note').innerHTML = `<span>ℹ️</span><span>${floorTxt}${d.note ? ' ' + d.note : ''}</span>`;
+        $('tr-note').hidden = false;
+
+        if (!d.rising.length && !d.falling.length) {
+          panelState('<div class="panel-msg"><span class="big">No qualifying movers</span>No cards over the price floor moved in the last 7 days.</div>');
+          return;
+        }
+        $('rising-body').innerHTML = d.rising.length ? d.rising.map(moverRow).join('')
+          : '<div class="panel-msg">No risers over the floor this week.</div>';
+        $('falling-body').innerHTML = d.falling.length ? d.falling.map(moverRow).join('')
+          : '<div class="panel-msg">No fallers over the floor this week.</div>';
+      } catch (e) {
+        console.warn('[trends] load failed:', e.message);
+        $('tr-section').innerHTML = `<div class="collecting">
+          <div class="icon">⚠</div>
+          <div class="big">Couldn't load market trends</div>
+          <div class="sub">The server may be waking up — refresh in a moment.</div>
+        </div>`;
+      }
+    }
+
+    load();
+  })();
+  </script>
+</body>
+</html>

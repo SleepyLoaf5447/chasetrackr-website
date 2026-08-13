@@ -45,7 +45,7 @@
   <div class="nav-right">
     <ul class="nav-links">
       <li><a href="search.html" class="nav-link" data-page="search">All Cards</a></li>
-      <li><a href="#" class="nav-link" data-page="trends">Market Trends</a></li>
+      <li><a href="trends.html" class="nav-link" data-page="trends">Market Trends</a></li>
       ${authedLinks}
     </ul>
     ${rightSide}
@@ -62,7 +62,7 @@
 <div class="nav-mobile-drawer" id="nav-drawer" role="menu">
   <a href="index.html">Home</a>
   <a href="search.html">All Cards</a>
-  <a href="#">Market Trends</a>
+  <a href="trends.html">Market Trends</a>
   ${drawerLinks}
 </div>
 
