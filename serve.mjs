@@ -78,7 +78,10 @@ async function serveFile(req, res) {
   // as-is (assets, .html, etc.).
   if (!extname(pathname)) pathname += '.html';
 
-  const filePath    = join(__dirname, pathname);
+  // Serve from ./public — the same directory Render publishes. Dev-only files
+  // (CLAUDE.md, HANDOFF.md, serve.mjs, brand guidelines) live at the repo root,
+  // OUTSIDE public/, so they are never web-reachable here or in production.
+  const filePath    = join(__dirname, 'public', pathname);
   const ext         = extname(filePath).toLowerCase();
   const contentType = MIME[ext] || 'application/octet-stream';
 

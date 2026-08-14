@@ -3,7 +3,10 @@
 ## Always Do First
 - Invoke the `frontend-design` skill before writing any frontend code, every session.
 - Invoke the `chasetrackr-web` skill (`.claude/skills/chasetrackr-web/SKILL.md`).
-- Read `brand_assets/chasetrackr_brand_guidelines_v2.html` — it is authoritative.
+- Read `chasetrackr_brand_guidelines_v2.html` (repo root, dev-only — kept out of
+  the `public/` publish dir so it isn't served on the live site) — it is authoritative.
+- Site files live under `public/` (Render's publish directory); dev artifacts
+  (this file, HANDOFF.md, serve.mjs, brand guidelines) stay at the repo root.
 
 ## What This Product Is
 ChaseTrackr is a TCG **price-intelligence and portfolio** web app for One Piece

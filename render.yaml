@@ -1,0 +1,24 @@
+# Render Blueprint — ChaseTrackr static website.
+#
+# PUBLISH DIRECTORY is ./public. All dev-only files (CLAUDE.md, HANDOFF.md,
+# serve.mjs, chasetrackr_brand_guidelines_v2.html) live at the REPO ROOT, outside
+# ./public, so Render never serves them — chasetrackr.com/HANDOFF.md 404s.
+#
+# EMAIL LINKS: the backend emails link to /verify and /reset (no .html). Render
+# static sites do NOT automatically strip .html, so these paths would 404 without
+# the rewrites below. `type: rewrite` serves the target file while keeping the
+# URL and preserving the ?token=... query string, so the email links resolve.
+services:
+  - type: web
+    runtime: static
+    name: chasetrackr-website
+    branch: redesign          # change to `main` if you deploy from main
+    buildCommand: "echo 'static site — no build step'"
+    staticPublishPath: ./public
+    routes:
+      - type: rewrite
+        source: /verify
+        destination: /verify.html
+      - type: rewrite
+        source: /reset
+        destination: /reset.html
