@@ -700,8 +700,14 @@
 
   async function loadFeatured() {
     heroSkeleton(FEATURED_N);
+    // Timeout so a cold/spun-down Render backend can't hang the skeletons forever
+    // (an un-aborted fetch never rejects → the honest fallback below never fires,
+    // which reads as a "blank" hero). On timeout we fall over to the labeled
+    // cached-sample state instead of waiting indefinitely.
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 15000);
     try {
-      const cards = await window.CT.fetchTopValued(FEATURED_N);
+      const cards = await window.CT.fetchTopValued(FEATURED_N, ctrl.signal);
       if (!cards.length) throw new Error('no priced cards returned');
       heroFallback.hidden = true;
       heroWrap.innerHTML = cards.map(heroCardHTML).join('');
@@ -715,6 +721,8 @@
       heroWrap.innerHTML = cards.length
         ? cards.map(heroCardHTML).join('')
         : `<div class="hero-empty">No priced cards available right now.</div>`;
+    } finally {
+      clearTimeout(timer);
     }
   }
 
