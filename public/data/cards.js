@@ -116,33 +116,64 @@ window.CT.cardPlaceholder = function(card) {
   return 'data:image/svg+xml,' + encodeURIComponent(svg);
 };
 
-// ── THE SINGLE IMAGE SWITCH ──────────────────────────────────────────────────
-// IMAGE_MODE is the ONE place that decides where One Piece art comes from:
-//   'sample'      → One Piece uses Limitless CDN scans (Bandai "SAMPLE" watermark).
-//   'placeholder' → One Piece uses the branded navy placeholder (no external art).
-// Pokémon ALWAYS uses real pokemontcg.io art, in BOTH modes.
+// ── SWITCHABLE ARTWORK RESOLVER ──────────────────────────────────────────────
+// CT.cardImage(card) is the ONE image abstraction every surface calls. Internally
+// it is now a provider chain: each provider returns a URL for the card or null to
+// pass. Resolution walks CT.artChain in order and returns the first ENABLED
+// provider's URL; a runtime 404 falls back to the branded placeholder via
+// CT.imgFallback. This makes any source switchable on/off WITHOUT touching card
+// components (see card-art/README.md).
 //
-// SHIP MODE: 'placeholder'. SAMPLE art is Bandai's watermarked proof scans and is
-// NOT licensed for public display, so 'sample' must never reach a shared/public
-// build. 'sample' remains a LOCAL-DEV-only convenience for seeing real OP art
-// while building — flip it back locally if needed, but keep 'placeholder' on
-// anything that gets pushed/deployed until licensed art exists.
+// PROVIDER STATUS (see card-art/reports/art_audit_summary.md):
+//   pokemon     — real pokemontcg.io art (Pokémon only). ENABLED.
+//   local       — authorized local OP assets under public/card-art/. DISABLED:
+//                 the only OP source audited so far (the Limitless set PDFs) is
+//                 Bandai "SAMPLE"-watermarked, low-res (≤600×838), and covers
+//                 only ~20% of main sets — not display-grade. Enable once clean,
+//                 licensed, complete, high-res assets are promoted into
+//                 public/card-art/one-piece/.
+//   sample      — Limitless SAMPLE-watermarked CDN. DISABLED / DEV-ONLY. Never
+//                 enable for a shared/public build (unlicensed, defaced art).
+//   placeholder — branded navy SVG. ALWAYS enabled, always last.
+window.CT.artProviders = {
+  pokemon:     { enabled: true  },
+  local:       { enabled: false, base: 'card-art/one-piece' },
+  sample:      { enabled: false },
+  placeholder: { enabled: true  },
+};
+window.CT.artChain = ['pokemon', 'local', 'sample', 'placeholder'];
+
+// Back-compat: the old single switch. 'sample' flips the sample provider on for
+// local dev; anything else keeps it off. Kept so existing code/paths still work.
 window.CT.IMAGE_MODE = 'placeholder';
+if (window.CT.IMAGE_MODE === 'sample') window.CT.artProviders.sample.enabled = true;
+
+window.CT._artResolvers = {
+  pokemon(card) {
+    return (card.game === 'POKÉMON' && card._pkSetId)
+      ? `https://images.pokemontcg.io/${card._pkSetId}/${card.number}_hires.png` : null;
+  },
+  local(card) {
+    if (card.game !== 'ONE PIECE' || !card.setCode || !card.number) return null;
+    const v = card.printVariant ? `_${card.printVariant}` : '';
+    return `${window.CT.artProviders.local.base}/${card.setCode}/${card.setCode}-${card.number}${v}.png`;
+  },
+  sample(card) {
+    if (card.game !== 'ONE PIECE') return null;
+    const v = card.printVariant ? `_${card.printVariant}` : '';
+    return `https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/one-piece/${card.setCode}/${card.setCode}-${card.number}${v}_EN.webp`;
+  },
+  placeholder(card) { return window.CT.cardPlaceholder(card); },
+};
 
 window.CT.cardImage = function(card) {
-  // Pokémon: real art in every mode.
-  if (card.game === 'POKÉMON' && card._pkSetId) {
-    return `https://images.pokemontcg.io/${card._pkSetId}/${card.number}_hires.png`;
+  for (const name of window.CT.artChain) {
+    const cfg = window.CT.artProviders[name];
+    if (!cfg || !cfg.enabled) continue;
+    const url = window.CT._artResolvers[name] && window.CT._artResolvers[name](card);
+    if (url) return url;
   }
-  // One Piece: mode-dependent.
-  if (card.game === 'ONE PIECE') {
-    if (window.CT.IMAGE_MODE === 'sample') {
-      const variant = card.printVariant ? `_${card.printVariant}` : '';
-      return `https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/one-piece/${card.setCode}/${card.setCode}-${card.number}${variant}_EN.webp`;
-    }
-    return window.CT.cardPlaceholder(card);
-  }
-  // Unknown game / missing id: branded placeholder so we never emit a dead <img>.
+  // Guaranteed non-empty: branded placeholder so we never emit a dead <img>.
   return window.CT.cardPlaceholder(card);
 };
 

@@ -1,0 +1,18 @@
+# card-art workspace — never commit image binaries or bulky extracts to the repo
+# (the site deploys from public/; only APPROVED, clean assets are copied into
+# public/card-art/ in a separate, reviewed step). Reports, manifests, schema, and
+# scripts ARE tracked so the audit + pipeline are version-controlled.
+one-piece/raw/
+one-piece/normalized/
+one-piece/quarantine/
+pokemon/raw/
+pokemon/normalized/
+pokemon/quarantine/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.pdf
+!reports/**
+!manifests/**
+!scripts/**

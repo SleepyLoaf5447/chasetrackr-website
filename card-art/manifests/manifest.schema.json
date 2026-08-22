@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ChaseTrackr card-art manifest entry",
+  "description": "One record per extracted/ingested artwork asset. Provenance + mapping + quality, so any asset is traceable and reversible.",
+  "type": "object",
+  "required": ["asset_id", "game", "source", "width", "height", "mapping_status"],
+  "properties": {
+    "asset_id":       { "type": "string", "description": "stable id, e.g. op05-119-candidate-001" },
+    "game":           { "type": "string", "enum": ["ONE_PIECE", "POKEMON"] },
+    "source":         { "type": "string", "description": "provider/source name, e.g. 'limitless-pdf', 'pokemontcg.io', 'licensed-api'" },
+    "source_pdf":     { "type": ["string", "null"] },
+    "source_page":    { "type": ["integer", "null"] },
+    "original_file":  { "type": ["string", "null"] },
+    "format":         { "type": "string" },
+    "width":          { "type": "integer" },
+    "height":         { "type": "integer" },
+    "aspect_ratio":   { "type": "number" },
+    "file_size":      { "type": ["integer", "null"] },
+    "hash":           { "type": ["string", "null"], "description": "sha256 for dedupe" },
+    "ocr_card_id":    { "type": ["string", "null"] },
+    "ocr_confidence": { "type": ["number", "null"] },
+    "watermarked":    { "type": ["boolean", "null"], "description": "true if a SAMPLE/proof watermark is present" },
+    "resolution_class": { "type": "string", "enum": ["HIGH", "ACCEPTABLE", "LOW_RES", "UPGRADE_REQUIRED", "UNKNOWN"] },
+    "card_id":        { "type": ["string", "null"], "description": "DB card id if mapped" },
+    "mapping_status": { "type": "string", "enum": ["MATCHED", "MISSING", "MIS_MAPPED", "AMBIGUOUS", "OCR_FAILED", "DUPLICATE", "LOW_RES", "QUARANTINED"] },
+    "verified":       { "type": "boolean", "default": false },
+    "ingested_at":    { "type": ["string", "null"], "description": "ISO8601" }
+  }
+}
